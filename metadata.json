@@ -1,0 +1,6 @@
+{
+  "name": "BoardAce AI",
+  "description": "AI-powered Class 12 board exam preparation platform. Practice smarter, understand deeper, and ace your boards with intelligent chapter drills and Mistake Detective.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
