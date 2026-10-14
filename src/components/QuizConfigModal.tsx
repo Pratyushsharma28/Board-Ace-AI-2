@@ -37,6 +37,11 @@ export const QuizConfigModal: React.FC<QuizConfigModalProps> = ({
   const [questionType, setQuestionType] = useState<QuestionType>(initialConfig?.questionType || 'mcq');
   const [mode, setMode] = useState<QuizMode>(initialConfig?.mode || 'practice');
   const [useAi, setUseAi] = useState<boolean>(initialConfig?.useAi !== undefined ? initialConfig.useAi : true);
+  const [examDurationMinutes, setExamDurationMinutes] = useState<number>(
+    initialConfig?.examDurationMinutes || 20
+  );
+  const [customDurationInput, setCustomDurationInput] = useState<string>('');
+  const [isCustomDuration, setIsCustomDuration] = useState<boolean>(false);
 
   // Sync state if initialConfig is updated
   React.useEffect(() => {
@@ -55,6 +60,9 @@ export const QuizConfigModal: React.FC<QuizConfigModalProps> = ({
     if (initialConfig?.questionCount) setQuestionCount(initialConfig.questionCount);
     if (initialConfig?.questionType) setQuestionType(initialConfig.questionType);
     if (initialConfig?.mode) setMode(initialConfig.mode);
+    if (initialConfig?.examDurationMinutes) {
+      setExamDurationMinutes(initialConfig.examDurationMinutes);
+    }
   }, [initialConfig]);
 
   if (!isOpen) return null;
@@ -79,6 +87,7 @@ export const QuizConfigModal: React.FC<QuizConfigModalProps> = ({
       questionType,
       mode,
       useAi,
+      examDurationMinutes: mode === 'exam' ? examDurationMinutes : undefined,
     });
   };
 
@@ -192,6 +201,82 @@ export const QuizConfigModal: React.FC<QuizConfigModalProps> = ({
               </button>
             </div>
           </div>
+
+          {/* 1.1 Examination Duration (Exam Mode Only) */}
+          {mode === 'exam' && (
+            <div className="p-4 bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 rounded-2xl space-y-3 animate-fadeIn">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-amber-900 dark:text-amber-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <span>{t.config.examDurationLabel}</span>
+                </label>
+                <span className="text-xs font-extrabold text-amber-700 dark:text-amber-300 tabular-nums px-2.5 py-0.5 rounded-full bg-white dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700">
+                  {examDurationMinutes} {t.config.examDurationMinutesUnit}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { value: 10, label: t.config.examDurationOption10 },
+                  { value: 15, label: t.config.examDurationOption15 },
+                  { value: 20, label: t.config.examDurationOption20 },
+                  { value: 30, label: t.config.examDurationOption30 },
+                  { value: 45, label: t.config.examDurationOption45 },
+                  { value: 60, label: t.config.examDurationOption60 },
+                ].map((dur) => (
+                  <button
+                    key={dur.value}
+                    type="button"
+                    onClick={() => {
+                      setExamDurationMinutes(dur.value);
+                      setIsCustomDuration(false);
+                    }}
+                    className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                      !isCustomDuration && examDurationMinutes === dur.value
+                        ? 'border-amber-600 bg-amber-600 text-white shadow-xs'
+                        : 'border-amber-200 dark:border-amber-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-amber-100/50 dark:hover:bg-amber-900/40'
+                    }`}
+                  >
+                    {dur.value} {t.config.examDurationMinutesUnit}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setIsCustomDuration(true)}
+                  className={`col-span-2 py-2 px-3 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                    isCustomDuration
+                      ? 'border-amber-600 bg-amber-600 text-white shadow-xs'
+                      : 'border-amber-200 dark:border-amber-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-amber-100/50 dark:hover:bg-amber-900/40'
+                  }`}
+                >
+                  {t.config.examDurationCustom}
+                </button>
+              </div>
+
+              {isCustomDuration && (
+                <div className="pt-2 flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={5}
+                    max={180}
+                    placeholder="5 - 180"
+                    value={customDurationInput}
+                    onChange={(e) => {
+                      setCustomDurationInput(e.target.value);
+                      const parsed = parseInt(e.target.value, 10);
+                      if (!isNaN(parsed) && parsed >= 5 && parsed <= 180) {
+                        setExamDurationMinutes(parsed);
+                      }
+                    }}
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-amber-300 dark:border-amber-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                  <span className="text-xs font-semibold text-amber-800 dark:text-amber-200 shrink-0">
+                    {t.config.examDurationMinutesUnit}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* 2. Subject Selection */}
           <div className="space-y-2">

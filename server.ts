@@ -12,7 +12,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Initialize Gemini client
 const getGeminiClient = () => {
@@ -588,6 +589,155 @@ Your Task:
     });
   } catch (error: any) {
     console.error('Mistake Detective Error:', error);
+    const friendlyError = formatErrorMessage(error);
+    return res.status(500).json({
+      success: false,
+      error: friendlyError,
+    });
+  }
+});
+
+// Endpoint: AI Personal Tutor
+app.post('/api/tutor', async (req: Request, res: Response) => {
+  try {
+    const {
+      subject: rawSubject = 'physics',
+      question = '',
+      action = 'standard',
+      conversationHistory = [],
+      language = 'en',
+      image,
+    } = req.body;
+
+    const validSubjects = ['mathematics', 'physics', 'chemistry'];
+    const subject = validSubjects.includes(String(rawSubject).toLowerCase())
+      ? String(rawSubject).toLowerCase()
+      : 'physics';
+
+    if (!question && (!image || !image.data)) {
+      return res.status(400).json({
+        success: false,
+        error:
+          language === 'hi'
+            ? 'कृपया अपना प्रश्न लिखें या प्रश्न की फोटो अपलोड करें।'
+            : 'Please provide your question text or upload a question image.',
+      });
+    }
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return res.status(503).json({
+        success: false,
+        error:
+          language === 'hi'
+            ? 'AI ट्यूटर सेवा वर्तमान में उपलब्ध नहीं है। कृपया कुछ समय बाद पुनः प्रयास करें।'
+            : 'Gemini API key is not configured on the server. AI Tutor is currently offline.',
+      });
+    }
+
+    const systemInstruction = `You are "BoardAce Tutor", a dedicated, empathetic, and academically rigorous CBSE Class 12 Master Teacher and Examination Mentor for the 2026–27 academic session.
+You specialize strictly in:
+1. Mathematics (CBSE Subject Code: 041)
+2. Physics (CBSE Subject Code: 042)
+3. Chemistry (CBSE Subject Code: 043)
+
+Pedagogical Rules:
+- Deliver clear, well-structured step-by-step explanations directly aligned with the official NCERT CBSE Class 12 curriculum.
+- For Mathematics (041):
+  * State the governing definition, formula, or theorem (e.g. Chain Rule, Integration by Parts, Matrix Properties, Bayes' Theorem, Vector Cross Product).
+  * Show intermediate calculations step-by-step so the student understands each algebraic step.
+  * Point out common calculation traps (e.g., negative signs, constant of integration + C, domain/range restrictions).
+- For Physics (042):
+  * State the underlying physical law or concept (e.g., Gauss's Law, Biot-Savart Law, Faraday-Lenz Law, Total Internal Reflection, de Broglie relation).
+  * State the formula and show numerical substitution with explicit SI units (e.g., N/C, V, A, Ω, T, Wb, rad/s).
+  * Explain the physical intuition, direction (rules like Fleming's Left/Right hand, Right hand thumb rule), and sign conventions.
+- For Chemistry (043):
+  * Write balanced chemical equations with state symbols and reaction conditions (temperature, catalyst, acid/base medium).
+  * For Organic Chemistry: Clearly explain reaction mechanisms or reagent roles (e.g., nucleophilic addition, elimination, electrophilic substitution, Aldol, Cannizzaro, Williamson ether synthesis, Sandmeyer reaction).
+  * For Physical Chemistry: Write formulas (Nernst equation, Arrhenius equation, Colligative property formulas) and perform step-by-step calculations with units.
+  * For Coordination Compounds: Use correct IUPAC nomenclature and Crystal Field Theory reasoning.
+- Format with clean Markdown:
+  * Use bold headers for structure (e.g., ### Concept Overview, ### Step-by-Step Solution, ### Key Formula & Units, ### Common Board Trap, ### CBSE 2026–27 Examiner Tip).
+  * Use clear numbered steps for derivations or numericals.
+${language === 'hi' ? '- Language Requirement: Provide the entire response in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Hindi-medium terminology, while keeping mathematical formulas, chemical equations, and SI units intact.' : '- Language Requirement: Provide the response in clear, student-friendly English.'}
+- Keep explanations encouraging and academically authoritative.`;
+
+    let actionPrompt = '';
+    if (action === 'explain_simply') {
+      actionPrompt = `\n[STUDENT ACTION REQUEST: Please explain this concept in the simplest possible terms using an intuitive everyday analogy. Avoid intimidating jargon, and explain the core intuition step-by-step.]`;
+    } else if (action === 'another_example') {
+      actionPrompt = `\n[STUDENT ACTION REQUEST: Please provide a fresh, high-yield CBSE Class 12 exam-style solved example on this exact topic with complete numerical steps or reaction steps.]`;
+    } else if (action === 'explain_formula') {
+      actionPrompt = `\n[STUDENT ACTION REQUEST: Please break down the governing formula(s) in detail. Explain what each symbol represents, their SI units, dimensional formula if relevant, when to apply it, and common rearrangement tricks in board exams.]`;
+    } else if (action === 'summarize') {
+      actionPrompt = `\n[STUDENT ACTION REQUEST: Please provide a concise, high-impact summary (4-6 key bullet points) of this concept for last-minute revision before the board exam.]`;
+    }
+
+    const contents: any[] = [];
+
+    // Prior conversation history (up to last 6 turns for optimal context & latency)
+    if (Array.isArray(conversationHistory) && conversationHistory.length > 0) {
+      const recent = conversationHistory.slice(-6);
+      for (const turn of recent) {
+        if (turn.content && (turn.role === 'user' || turn.role === 'model' || turn.role === 'assistant')) {
+          contents.push({
+            role: turn.role === 'user' ? 'user' : 'model',
+            parts: [{ text: String(turn.content) }],
+          });
+        }
+      }
+    }
+
+    const userParts: any[] = [];
+    if (image && image.data && image.mimeType) {
+      userParts.push({
+        inlineData: {
+          mimeType: image.mimeType,
+          data: image.data.replace(/^data:image\/[a-zA-Z]+;base64,/, ''),
+        },
+      });
+    }
+
+    const promptMessage = `Subject: ${subject.toUpperCase()} (CBSE Class 12)
+${question ? `Student Question: ${question}` : 'Please review and solve the question in the uploaded image.'}
+${actionPrompt}`;
+
+    userParts.push({ text: promptMessage });
+
+    contents.push({
+      role: 'user',
+      parts: userParts,
+    });
+
+    const buildTutorPayload = (modelName: string) => ({
+      model: modelName,
+      contents,
+      config: {
+        systemInstruction,
+        temperature: 0.25,
+      },
+    });
+
+    const generatePromise = callGeminiWithModelFallback(ai, buildTutorPayload);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('AI Tutor request timed out after 40 seconds.')), 40000)
+    );
+
+    const response = await Promise.race([generatePromise, timeoutPromise]);
+    const answer = (response.text || '').trim();
+
+    if (!answer) {
+      throw new Error('Received empty response from AI Tutor.');
+    }
+
+    return res.json({
+      success: true,
+      answer,
+      subject,
+      action,
+    });
+  } catch (error: any) {
+    console.error('AI Tutor Endpoint Error:', error);
     const friendlyError = formatErrorMessage(error);
     return res.status(500).json({
       success: false,

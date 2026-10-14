@@ -29,6 +29,7 @@ export function clearAllStorage(): void {
   try {
     localStorage.removeItem(ATTEMPTS_KEY);
     localStorage.removeItem(BOOKMARKS_KEY);
+    localStorage.removeItem('boardace_revision_items_v2');
   } catch (e) {
     console.error('Failed to clear localStorage', e);
   }
@@ -71,6 +72,131 @@ export function toggleBookmark(question: Question): boolean {
   } catch (e) {
     console.error('Failed to toggle bookmark', e);
     return false;
+  }
+}
+
+export function isQuestionBookmarked(questionId: string): boolean {
+  try {
+    const bookmarks = getBookmarks();
+    return bookmarks.some(b => b.id === questionId);
+  } catch (e) {
+    return false;
+  }
+}
+
+export function removeBookmark(questionId: string): void {
+  try {
+    const bookmarks = getBookmarks();
+    const updated = bookmarks.filter(b => b.id !== questionId);
+    localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to remove bookmark', e);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Question Reporting (Stored locally on student's browser)
+// ---------------------------------------------------------------------
+const REPORTS_KEY = 'boardace_question_reports_v1';
+
+export type ReportReason =
+  | 'Incorrect Answer'
+  | 'Incorrect Explanation'
+  | 'Confusing Question'
+  | 'Other';
+
+export interface QuestionReport {
+  id: string;
+  questionId: string;
+  questionText: string;
+  subject: string;
+  chapter: string;
+  reason: ReportReason;
+  comment?: string;
+  reportedAt: string;
+}
+
+export function getSavedReports(): QuestionReport[] {
+  try {
+    const raw = localStorage.getItem(REPORTS_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error('Failed to read reports from localStorage', e);
+    return [];
+  }
+}
+
+export function saveQuestionReport(report: QuestionReport): void {
+  try {
+    const existing = getSavedReports();
+    // Prevent exact duplicate report on the same question with same reason
+    const duplicate = existing.some(
+      r => r.questionId === report.questionId && r.reason === report.reason
+    );
+    if (!duplicate) {
+      const updated = [report, ...existing].slice(0, 50);
+      localStorage.setItem(REPORTS_KEY, JSON.stringify(updated));
+    }
+  } catch (e) {
+    console.error('Failed to save question report locally', e);
+  }
+}
+
+export function deleteQuestionReport(reportId: string): void {
+  try {
+    const existing = getSavedReports();
+    const updated = existing.filter(r => r.id !== reportId);
+    localStorage.setItem(REPORTS_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to delete report', e);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Active Exam State Persistence (Continue Previous Exam)
+// ---------------------------------------------------------------------
+const ACTIVE_EXAM_KEY = 'boardace_active_exam_v1';
+
+export interface ActiveExamState {
+  questions: Question[];
+  config: import('../types/quiz').QuizConfig;
+  currentIndex: number;
+  answers: Record<string, string>;
+  flagged: Record<string, boolean>;
+  secondsRemaining: number;
+  elapsedSeconds: number;
+  savedAt: string;
+}
+
+export function saveActiveExamState(state: ActiveExamState): void {
+  try {
+    localStorage.setItem(ACTIVE_EXAM_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error('Failed to save active exam state', e);
+  }
+}
+
+export function getActiveExamState(): ActiveExamState | null {
+  try {
+    const raw = localStorage.getItem(ACTIVE_EXAM_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0 && parsed.config) {
+      return parsed;
+    }
+    return null;
+  } catch (e) {
+    console.error('Failed to read active exam state', e);
+    return null;
+  }
+}
+
+export function clearActiveExamState(): void {
+  try {
+    localStorage.removeItem(ACTIVE_EXAM_KEY);
+  } catch (e) {
+    console.error('Failed to clear active exam state', e);
   }
 }
 
@@ -260,4 +386,48 @@ export function calculateAnalytics(): AnalyticsSummary {
     subjectBreakdown: subjectMap,
     currentStreakDays: Math.min(Math.max(attempts.length, 1), 7)
   };
+}
+
+// ---------------------------------------------------------------------
+// Saved Doubts (AI Tutor doubt history stored in browser localStorage)
+// ---------------------------------------------------------------------
+const SAVED_DOUBTS_KEY = 'boardace_saved_doubts_v1';
+
+export function getSavedDoubts(): import('../types/quiz').SavedDoubt[] {
+  try {
+    const raw = localStorage.getItem(SAVED_DOUBTS_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error('Failed to read saved doubts from localStorage', e);
+    return [];
+  }
+}
+
+export function saveDoubt(doubt: import('../types/quiz').SavedDoubt): void {
+  try {
+    const existing = getSavedDoubts();
+    const updated = [doubt, ...existing.filter(d => d.id !== doubt.id)].slice(0, 50);
+    localStorage.setItem(SAVED_DOUBTS_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to save doubt to localStorage', e);
+  }
+}
+
+export function deleteSavedDoubt(doubtId: string): void {
+  try {
+    const existing = getSavedDoubts();
+    const updated = existing.filter(d => d.id !== doubtId);
+    localStorage.setItem(SAVED_DOUBTS_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to delete doubt from localStorage', e);
+  }
+}
+
+export function clearAllSavedDoubts(): void {
+  try {
+    localStorage.removeItem(SAVED_DOUBTS_KEY);
+  } catch (e) {
+    console.error('Failed to clear saved doubts', e);
+  }
 }

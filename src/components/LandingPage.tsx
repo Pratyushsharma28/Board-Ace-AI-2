@@ -23,19 +23,24 @@ import {
   X,
   Play,
   RotateCcw,
-  LayoutDashboard
+  LayoutDashboard,
+  GraduationCap
 } from 'lucide-react';
 
 interface LandingPageProps {
   onStartQuiz: (prefill?: { subject?: SubjectId; chapter?: string; mode?: 'practice' | 'exam' }) => void;
   onOpenMistakeDetective: (question: Question, selectedAnswer: string) => void;
   onNavigateToDashboard: () => void;
+  onNavigateToTutor?: () => void;
+  onNavigateToSmartPractice?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onStartQuiz,
   onOpenMistakeDetective,
   onNavigateToDashboard,
+  onNavigateToTutor,
+  onNavigateToSmartPractice,
 }) => {
   const { language, t, translateSubject, translateChapter } = useLanguage();
 
@@ -117,6 +122,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <LayoutDashboard className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                   <span>{t.hero.btnDashboard}</span>
                 </button>
+
+                {onNavigateToTutor && (
+                  <button
+                    onClick={onNavigateToTutor}
+                    className="px-5 py-3.5 bg-violet-50 dark:bg-violet-950/60 hover:bg-violet-100 dark:hover:bg-violet-900 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 font-bold text-sm sm:text-base rounded-2xl transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+                  >
+                    <GraduationCap className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                    <span>{t.nav.aiTutor}</span>
+                  </button>
+                )}
               </div>
 
               {/* Trust Metric Strip */}

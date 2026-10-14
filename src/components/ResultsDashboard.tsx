@@ -16,15 +16,20 @@ import {
   ChevronDown,
   ChevronUp,
   BookOpen,
-  Target
+  Target,
+  Bookmark,
+  ShieldCheck,
+  Brain,
 } from 'lucide-react';
 import { MistakeDetectiveSection } from './MistakeDetectiveSection';
+import { toggleBookmark, isQuestionBookmarked } from '../utils/storage';
 
 interface ResultsDashboardProps {
   attempt: QuizAttempt;
   onRetryQuiz: () => void;
   onPracticeWeakTopics: (weakTopics: string[]) => void;
   onOpenMistakeDetective: (question: Question, selectedAnswer: string) => void;
+  onOpenRevision?: () => void;
   onHome: () => void;
 }
 
@@ -33,16 +38,38 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   onRetryQuiz,
   onPracticeWeakTopics,
   onOpenMistakeDetective,
+  onOpenRevision,
   onHome,
 }) => {
   const { language, t, translateSubject, translateChapter } = useLanguage();
 
+  const answeredCount = Object.keys(attempt.userAnswers).length;
+  const unansweredCount = attempt.totalQuestions - answeredCount;
+  const correctCount = attempt.score;
   const incorrectCount = attempt.totalQuestions - attempt.score;
+  const incorrectAttemptedCount = Math.max(0, answeredCount - correctCount);
+
   const [activeTab, setActiveTab] = useState<'mistake-detective' | 'all-questions' | 'radar'>(
     incorrectCount > 0 ? 'mistake-detective' : 'all-questions'
   );
-  const [filter, setFilter] = useState<'all' | 'incorrect' | 'flagged'>('all');
+  const [filter, setFilter] = useState<'all' | 'incorrect' | 'unanswered' | 'flagged'>('all');
   const [expandedQuestions, setExpandedQuestions] = useState<Record<string, boolean>>({});
+
+  const [bookmarkedMap, setBookmarkedMap] = useState<Record<string, boolean>>(() => {
+    const map: Record<string, boolean> = {};
+    attempt.questions.forEach(q => {
+      map[q.id] = isQuestionBookmarked(q.id);
+    });
+    return map;
+  });
+
+  const handleToggleBookmark = (q: Question) => {
+    const nowBookmarked = toggleBookmark(q);
+    setBookmarkedMap(prev => ({
+      ...prev,
+      [q.id]: nowBookmarked,
+    }));
+  };
 
   const toggleExpand = (id: string) => {
     setExpandedQuestions(prev => ({
@@ -58,10 +85,13 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   };
 
   const filteredQuestions = attempt.questions.filter(q => {
-    const isCorrect = attempt.userAnswers[q.id] === q.correctAnswer;
+    const userAns = attempt.userAnswers[q.id];
+    const isAnswered = Boolean(userAns);
+    const isCorrect = userAns === q.correctAnswer;
     const isFlagged = attempt.flaggedQuestions[q.id];
 
-    if (filter === 'incorrect') return !isCorrect;
+    if (filter === 'incorrect') return isAnswered && !isCorrect;
+    if (filter === 'unanswered') return !isAnswered;
     if (filter === 'flagged') return isFlagged;
     return true;
   });
@@ -92,6 +122,67 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
             ← {t.results.backToDashboard}
           </button>
         </div>
+
+        {/* Simulated Board Exam Mode Header Banner */}
+        {attempt.quizConfig.mode === 'exam' && (
+          <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 border border-amber-300 dark:border-amber-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 text-[11px] font-bold uppercase tracking-wider">
+                  {t.quiz.simulatedExamBadge}
+                </div>
+                <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
+                  {language === 'hi' ? 'सीबीएसई कक्षा 12 परीक्षा सिम्युलेशन परिणाम' : 'CBSE Class 12 Examination Simulation Diagnostic'}
+                </h2>
+                <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+                  {t.results.simulatedExamNotice}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+              <div className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-amber-200 dark:border-amber-800 text-[11px] font-bold text-amber-800 dark:text-amber-200 font-mono">
+                {attempt.quizConfig.examDurationMinutes ? `${attempt.quizConfig.examDurationMinutes}m allocated` : `${Math.round(attempt.questions.length * 2)}m allocated`}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Auto-saved to Smart Revision Notice */}
+        {incorrectAttemptedCount > 0 && (
+          <div className="p-4 sm:p-5 rounded-3xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-indigo-900 dark:text-indigo-200 animate-fadeIn">
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                <Brain className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <span className="font-bold text-sm block text-slate-900 dark:text-white">
+                  {language === 'hi'
+                    ? `${incorrectAttemptedCount} गलत प्रश्न स्मार्ट दोहराव में स्वतः सहेजे गए`
+                    : `${incorrectAttemptedCount} incorrect questions auto-saved to Smart Revision`}
+                </span>
+                <span className="text-slate-600 dark:text-slate-300 text-xs">
+                  {language === 'hi'
+                    ? 'अंतराल दोहराव (1d → 3d → 7d) के साथ तैयार। आप कभी भी पुनः अभ्यास कर सकते हैं।'
+                    : 'Scheduled with spaced repetition (1d → 3d → 7d). Practice them anytime to master the concepts.'}
+                </span>
+              </div>
+            </div>
+
+            {onOpenRevision && (
+              <button
+                onClick={onOpenRevision}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>{language === 'hi' ? 'स्मार्ट दोहराव देखें' : 'Open Smart Revision'}</span>
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Hero Scorecard Row */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -126,7 +217,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
               </div>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 flex-1">
               <div className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                 {t.results.scoreLabel}
               </div>
@@ -136,6 +227,21 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-snug">
                 {attempt.accuracy >= 80 ? t.results.gradeGreat : attempt.accuracy >= 50 ? t.results.gradeGood : t.results.gradeNeedsWork}
               </p>
+
+              {/* Status Breakdown Pills */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                  {t.results.correctCount}: {correctCount}
+                </span>
+                <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                  {t.results.incorrectCount}: {incorrectAttemptedCount}
+                </span>
+                {unansweredCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600">
+                    {t.results.unansweredCount}: {unansweredCount}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -317,7 +423,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
         {activeTab === 'all-questions' && (
           <div className="space-y-4 animate-fadeIn">
             {/* Filter buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setFilter('all')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
@@ -326,7 +432,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                 }`}
               >
-                {t.results.filterAll}
+                {t.results.filterAll} ({attempt.questions.length})
               </button>
               <button
                 onClick={() => setFilter('incorrect')}
@@ -336,8 +442,20 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                 }`}
               >
-                {t.results.filterIncorrect}
+                {t.results.filterIncorrect} ({incorrectAttemptedCount})
               </button>
+              {unansweredCount > 0 && (
+                <button
+                  onClick={() => setFilter('unanswered')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                    filter === 'unanswered'
+                      ? 'bg-slate-700 text-white'
+                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  {t.results.filterUnanswered} ({unansweredCount})
+                </button>
+              )}
               <button
                 onClick={() => setFilter('flagged')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
@@ -346,7 +464,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                 }`}
               >
-                {t.results.filterFlagged}
+                {t.results.filterFlagged} ({attempt.questions.filter(q => attempt.flaggedQuestions[q.id]).length})
               </button>
             </div>
 
@@ -367,13 +485,13 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span
                             className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ${
-                              isCorrect ? 'bg-emerald-500' : 'bg-rose-500'
+                              isCorrect ? 'bg-emerald-500' : !userAns ? 'bg-slate-400 dark:bg-slate-600' : 'bg-rose-500'
                             }`}
                           >
-                            {isCorrect ? '✓' : '✗'}
+                            {isCorrect ? '✓' : !userAns ? '—' : '✗'}
                           </span>
                           <span className="text-xs font-bold text-slate-900 dark:text-white">
                             {t.quiz.questionLabel} {idx + 1}
@@ -381,29 +499,60 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                           <span className="text-[11px] text-slate-400 dark:text-slate-500">
                             • {q.topic}
                           </span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+                            {q.source === 'curated' ? t.quiz.curatedSourceBadge : t.quiz.aiSourceBadge}
+                          </span>
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 uppercase">
+                            {q.difficulty}
+                          </span>
+                          {!userAns && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                              {language === 'hi' ? 'अनुत्तरित (0 अंक)' : 'Unanswered (0 marks)'}
+                            </span>
+                          )}
                         </div>
                         <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 pt-1 leading-relaxed">
                           {displayQ}
                         </p>
                       </div>
 
-                      <button
-                        onClick={() => toggleExpand(q.id)}
-                        className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition-colors cursor-pointer"
-                      >
-                        {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                      </button>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => handleToggleBookmark(q)}
+                          title={bookmarkedMap[q.id] ? t.quiz.bookmarked : t.quiz.bookmark}
+                          aria-label={bookmarkedMap[q.id] ? t.quiz.bookmarked : t.quiz.bookmark}
+                          className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                            bookmarkedMap[q.id]
+                              ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/70'
+                              : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          <Bookmark className={`w-4 h-4 ${bookmarkedMap[q.id] ? 'fill-current' : ''}`} />
+                        </button>
+                        <button
+                          onClick={() => toggleExpand(q.id)}
+                          className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition-colors cursor-pointer"
+                        >
+                          {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                        </button>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                      <div className="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <div className={`p-3 rounded-xl border ${
+                        !userAns
+                          ? 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-700'
+                          : isCorrect
+                          ? 'bg-emerald-50/50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800'
+                          : 'bg-rose-50/50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800'
+                      }`}>
                         <span className="text-slate-400 dark:text-slate-500 font-medium">{language === 'hi' ? 'आपका उत्तर:' : 'Your Answer:'} </span>
-                        <span className={isCorrect ? 'font-bold text-emerald-700 dark:text-emerald-400' : 'font-bold text-rose-700 dark:text-rose-400'}>
-                          {userAns || (language === 'hi' ? '(छोड़ दिया गया)' : '(Skipped)')}
+                        <span className={isCorrect ? 'font-bold text-emerald-700 dark:text-emerald-400' : !userAns ? 'font-bold text-slate-600 dark:text-slate-400 italic' : 'font-bold text-rose-700 dark:text-rose-400'}>
+                          {userAns || (language === 'hi' ? '(अनुत्तरित - हल नहीं किया)' : '(Unanswered - Skipped)')}
                         </span>
                       </div>
                       <div className="p-3 bg-emerald-50 dark:bg-emerald-950/50 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                        <span className="text-emerald-700 dark:text-emerald-300 font-medium">{language === 'hi' ? 'सही उत्तर:' : 'Correct Answer:'} </span>
+                        <span className="text-emerald-700 dark:text-emerald-300 font-medium">{language === 'hi' ? 'प्रमाणित उत्तर कुंजी:' : 'Verified Answer Key:'} </span>
                         <span className="font-bold text-emerald-900 dark:text-emerald-100">
                           {q.correctAnswer}
                         </span>

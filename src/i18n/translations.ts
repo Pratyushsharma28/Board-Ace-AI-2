@@ -15,6 +15,112 @@ export interface Translations {
     langHi: string;
     lightMode: string;
     darkMode: string;
+    aiTutor: string;
+    smartPractice: string;
+    revision: string;
+    quiz: string;
+    exam: string;
+    analytics: string;
+    flashcards: string;
+    formulas: string;
+    studyPlanner: string;
+    bookmarks: string;
+    settings: string;
+    collapseSidebar: string;
+    expandSidebar: string;
+  };
+  revision: {
+    navTitle: string;
+    brandKicker: string;
+    pageTitle: string;
+    pageSubtitle: string;
+    totalSaved: string;
+    dueForRevision: string;
+    mastered: string;
+    autoSavedMistakes: string;
+    bookmarkedQuestions: string;
+    srsBannerTitle: string;
+    srsBannerDesc: string;
+    tabDue: string;
+    tabAll: string;
+    tabIncorrect: string;
+    tabBookmarked: string;
+    tabMastered: string;
+    practiceDueBtn: string;
+    practiceAllBtn: string;
+    subjectFilterAll: string;
+    searchPlaceholder: string;
+    dueNowBadge: string;
+    stage1Badge: string;
+    stage2Badge: string;
+    stage3Badge: string;
+    masteredBadge: string;
+    markAsRevised: string;
+    markedRevised: string;
+    retryBtn: string;
+    cancelRetry: string;
+    checkAnswer: string;
+    retryCorrectFeedback: string;
+    retryIncorrectFeedback: string;
+    savedBecauseIncorrect: string;
+    savedBecauseBookmark: string;
+    recommendedHeader: string;
+    recommendedSub: string;
+    addRecommendedToRevision: string;
+    practiceRecommendedBtn: string;
+    emptyDueTitle: string;
+    emptyDueDesc: string;
+    emptyAllTitle: string;
+    emptyAllDesc: string;
+    emptyFilterTitle: string;
+    emptyFilterDesc: string;
+    startQuizPrompt: string;
+    deleteItem: string;
+    itemDeletedToast: string;
+    revisedToast: string;
+    correctCelebration: string;
+    incorrectRetryNote: string;
+    viewExplanation: string;
+    hideExplanation: string;
+    reviewCountLabel: string;
+    incorrectCountLabel: string;
+  };
+  smartPractice: {
+    pageTitle: string;
+    pageSubtitle: string;
+    kicker: string;
+    heroHeading: string;
+    heroSub: string;
+    startRecommendedDrill: string;
+    targetDifficulty: string;
+    allSubjects: string;
+    subjectFilterLabel: string;
+    difficultyFilterLabel: string;
+    autoStepUpLabel: string;
+    autoStepUpDesc: string;
+    metricsAttempted: string;
+    metricsAccuracy: string;
+    metricsTrend: string;
+    trendImproving: string;
+    trendDeclining: string;
+    trendSteady: string;
+    trendNew: string;
+    reasonBadgeMistake: string;
+    reasonBadgeAccuracy: string;
+    reasonBadgeMastery: string;
+    reasonBadgeUnattempted: string;
+    stepUpBadge: string;
+    revisionBadge: string;
+    questionsCount: string;
+    startSessionBtn: string;
+    viewQuestionsBtn: string;
+    emptyTitle: string;
+    emptyDesc: string;
+    progressSummaryTitle: string;
+    repeatedMistakesFound: string;
+    adaptiveEngineActive: string;
+    whyRecommendedHeading: string;
+    drillReadyToast: string;
   };
   hero: {
     kicker: string;
@@ -83,6 +189,16 @@ export interface Translations {
     reviewBtn: string;
     chaptersCount: string;
     weightageLabel: string;
+    savedQuestionsHeading: string;
+    savedQuestionsSub: string;
+    noBookmarksTitle: string;
+    noBookmarksDesc: string;
+    continueExamBtn: string;
+    continueExamSub: string;
+    discardExamBtn: string;
+    weakChaptersHeading: string;
+    weakChaptersSub: string;
+    noWeakChapters: string;
   };
   config: {
     modalTitle: string;
@@ -109,6 +225,15 @@ export interface Translations {
     modePracticeDesc: string;
     modeExam: string;
     modeExamDesc: string;
+    examDurationLabel: string;
+    examDurationOption10: string;
+    examDurationOption15: string;
+    examDurationOption20: string;
+    examDurationOption30: string;
+    examDurationOption45: string;
+    examDurationOption60: string;
+    examDurationCustom: string;
+    examDurationMinutesUnit: string;
     aiToggleLabel: string;
     aiToggleDesc: string;
     curatedBadge: string;
@@ -123,20 +248,45 @@ export interface Translations {
     timeRemaining: string;
     practiceModeBadge: string;
     examModeBadge: string;
+    simulatedExamBadge: string;
+    curatedSourceBadge: string;
+    aiSourceBadge: string;
     flagReview: string;
     flagged: string;
+    bookmark: string;
+    bookmarked: string;
+    reportQuestion: string;
+    reportModalTitle: string;
+    reportModalDesc: string;
+    reportReason1: string;
+    reportReason2: string;
+    reportReason3: string;
+    reportReason4: string;
+    reportCommentPlaceholder: string;
+    reportSubmitBtn: string;
+    reportCancelBtn: string;
+    reportNotice: string;
+    reportSavedToast: string;
     clearChoice: string;
     previous: string;
     next: string;
     submitQuiz: string;
     confirmSubmitTitle: string;
     confirmSubmitDesc: string;
+    warnUnanswered: string;
+    warnFlagged: string;
+    btnReviewUnanswered: string;
+    btnReviewFlagged: string;
     cancel: string;
     confirm: string;
     questionPalette: string;
     paletteAttempted: string;
     paletteUnattempted: string;
     paletteFlagged: string;
+    paletteAnsweredReview: string;
+    filterPaletteAll: string;
+    filterPaletteUnattempted: string;
+    filterPaletteReview: string;
     timeAlert5Min: string;
     timeAlert1Min: string;
     viewInHindi: string;
@@ -144,6 +294,25 @@ export interface Translations {
     officialExplanation: string;
     pitfallWarning: string;
     boardTip: string;
+    instructionsTitle: string;
+    instructionsSubtitle: string;
+    instructionsDisclaimer: string;
+    instructionsItemSubject: string;
+    instructionsItemDuration: string;
+    instructionsItemTotalQuestions: string;
+    instructionsItemMarking: string;
+    instructionsItemMarkingDesc: string;
+    instructionsItemRulesTitle: string;
+    instructionsRuleTimer: string;
+    instructionsRuleNav: string;
+    instructionsRuleSave: string;
+    instructionsRuleReview: string;
+    instructionsRulePalette: string;
+    instructionsRuleSubmit: string;
+    instructionsRuleIntegrity: string;
+    instructionsAcknowledge: string;
+    instructionsStartBtn: string;
+    instructionsBackBtn: string;
   };
   results: {
     title: string;
@@ -153,6 +322,11 @@ export interface Translations {
     accuracyLabel: string;
     timeSpent: string;
     attemptedCount: string;
+    unansweredCount: string;
+    correctCount: string;
+    incorrectCount: string;
+    avgTimePerQuestion: string;
+    simulatedExamNotice: string;
     gradeGreat: string;
     gradeGood: string;
     gradeNeedsWork: string;
@@ -165,6 +339,7 @@ export interface Translations {
     notEnoughData: string;
     filterAll: string;
     filterIncorrect: string;
+    filterUnanswered: string;
     filterFlagged: string;
     analyzeMistakeBtn: string;
     solutionSteps: string;
@@ -217,6 +392,44 @@ export interface Translations {
     analyzing: string;
     closeBtn: string;
   };
+  tutor: {
+    pageTitle: string;
+    pageSubtitle: string;
+    kicker: string;
+    subjectLabel: string;
+    mathsOption: string;
+    physicsOption: string;
+    chemistryOption: string;
+    inputPlaceholder: string;
+    sendBtn: string;
+    uploadPhotoBtn: string;
+    removePhotoBtn: string;
+    actionExplainSimply: string;
+    actionAnotherExample: string;
+    actionExplainFormula: string;
+    actionSummarize: string;
+    actionCopy: string;
+    actionCopied: string;
+    actionSaveDoubt: string;
+    actionDoubtSaved: string;
+    clearChatBtn: string;
+    loadingTitle: string;
+    loadingStep1: string;
+    loadingStep2: string;
+    followUpPlaceholder: string;
+    suggestedHeading: string;
+    mathsSample1: string;
+    mathsSample2: string;
+    physicsSample1: string;
+    physicsSample2: string;
+    chemSample1: string;
+    chemSample2: string;
+    savedDoubtsTab: string;
+    chatTab: string;
+    noSavedDoubtsTitle: string;
+    noSavedDoubtsDesc: string;
+    disclaimer: string;
+  };
 }
 
 export const TRANSLATIONS: Record<Language, Translations> = {
@@ -235,6 +448,112 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       langHi: 'हिन्दी',
       lightMode: 'Light Mode',
       darkMode: 'Dark Mode',
+      aiTutor: 'AI Tutor',
+      smartPractice: 'Smart Practice',
+      revision: 'Revision Center',
+      quiz: 'AI Quiz Generator',
+      exam: 'Exam Simulator',
+      analytics: 'Analytics',
+      flashcards: 'Flashcards',
+      formulas: 'Formula Library',
+      studyPlanner: 'Study Planner',
+      bookmarks: 'Bookmarks',
+      settings: 'Settings',
+      collapseSidebar: 'Collapse sidebar',
+      expandSidebar: 'Expand sidebar',
+    },
+    revision: {
+      navTitle: 'Smart Revision',
+      brandKicker: 'Science-Backed Spaced Repetition',
+      pageTitle: 'Smart Revision System',
+      pageSubtitle: 'Review questions you missed, revisit bookmarked high-yield concepts, and master difficult CBSE topics using adaptive spaced repetition.',
+      totalSaved: 'Saved Items',
+      dueForRevision: 'Due for Revision',
+      mastered: 'Mastered Concepts',
+      autoSavedMistakes: 'Quiz Mistakes Logged',
+      bookmarkedQuestions: 'Bookmarked Questions',
+      srsBannerTitle: 'Adaptive Spaced-Repetition Active (1d → 3d → 7d → 14d)',
+      srsBannerDesc: 'Questions you get wrong are automatically queued here. Once revised or retried correctly, their review interval doubles until the concept is permanently mastered for your board exams.',
+      tabDue: 'Due for Review',
+      tabAll: 'All Saved',
+      tabIncorrect: 'Quiz Mistakes',
+      tabBookmarked: 'Bookmarked',
+      tabMastered: 'Mastered (Stage 4)',
+      practiceDueBtn: 'Practice Due Questions',
+      practiceAllBtn: 'Practice All Filtered',
+      subjectFilterAll: 'All Subjects',
+      searchPlaceholder: 'Search questions, chapters, or topics...',
+      dueNowBadge: 'Due Today (Stage 0)',
+      stage1Badge: 'Stage 1 (1 Day)',
+      stage2Badge: 'Stage 2 (3 Days)',
+      stage3Badge: 'Stage 3 (7 Days)',
+      masteredBadge: 'Mastered (Stage 4)',
+      markAsRevised: 'Mark as Revised',
+      markedRevised: 'Revised',
+      retryBtn: 'Retry Question',
+      cancelRetry: 'Cancel',
+      checkAnswer: 'Check Answer',
+      retryCorrectFeedback: 'Excellent! You got it right. Advanced to next spaced-repetition stage.',
+      retryIncorrectFeedback: 'Not quite. Check the official NCERT explanation below. Kept due for revision.',
+      savedBecauseIncorrect: 'Auto-saved from Quiz Mistake',
+      savedBecauseBookmark: 'Bookmarked Question',
+      recommendedHeader: 'Targeted Revision Recommendations',
+      recommendedSub: 'Concepts identified from your actual quiz performance and mistake patterns.',
+      addRecommendedToRevision: 'Add to Revision List',
+      practiceRecommendedBtn: 'Practice Topic',
+      emptyDueTitle: 'All Caught Up! No Questions Due Today',
+      emptyDueDesc: 'Great job! You have revised all due concepts. Continue practicing quizzes or review all saved questions to reinforce your memory.',
+      emptyAllTitle: 'No Saved Questions in Revision List',
+      emptyAllDesc: 'Questions you answer incorrectly during quizzes are automatically captured here for revision. You can also bookmark tricky questions anytime.',
+      emptyFilterTitle: 'No Matching Revision Items',
+      emptyFilterDesc: 'No saved questions match your active subject or search criteria.',
+      startQuizPrompt: 'Start a Practice Quiz',
+      deleteItem: 'Remove from Revision',
+      itemDeletedToast: 'Question removed from revision list',
+      revisedToast: 'Concept marked as revised! Next review scheduled.',
+      correctCelebration: 'Correct! Memory reinforced.',
+      incorrectRetryNote: 'Incorrect attempt logged. Added back to today’s review list.',
+      viewExplanation: 'View Official Explanation',
+      hideExplanation: 'Hide Explanation',
+      reviewCountLabel: 'Times Revised',
+      incorrectCountLabel: 'Errors Logged',
+    },
+    smartPractice: {
+      pageTitle: 'Smart Practice Engine',
+      pageSubtitle: 'Adaptive CBSE Class 12 question recommendations tailored to your actual quiz performance, accuracy, and weak areas.',
+      kicker: 'Adaptive CBSE Intelligence',
+      heroHeading: 'Personalized Practice Recommendations',
+      heroSub: 'Our deterministic engine continuously analyzes your quiz attempts, tracks accuracy, flags repeated mistakes, and steps up question difficulty as your understanding solidifies.',
+      startRecommendedDrill: 'Start Recommended Drill',
+      targetDifficulty: 'Target Difficulty',
+      allSubjects: 'All Subjects',
+      subjectFilterLabel: 'Subject Focus',
+      difficultyFilterLabel: 'Difficulty Mode',
+      autoStepUpLabel: 'Adaptive Step-Up',
+      autoStepUpDesc: 'Gradually recommend harder questions as your topic accuracy surpasses 80%',
+      metricsAttempted: 'Questions Attempted',
+      metricsAccuracy: 'Accuracy',
+      metricsTrend: 'Trend',
+      trendImproving: 'Improving',
+      trendDeclining: 'Needs Attention',
+      trendSteady: 'Consolidating',
+      trendNew: 'New Syllabus Area',
+      reasonBadgeMistake: 'Revision Recommended',
+      reasonBadgeAccuracy: 'Concept Strengthening',
+      reasonBadgeMastery: 'HOTS Step-Up',
+      reasonBadgeUnattempted: 'High-Yield Board Coverage',
+      stepUpBadge: 'Gradual Step-Up Active',
+      revisionBadge: 'Revision Drill',
+      questionsCount: 'Questions',
+      startSessionBtn: 'Start Practice Drill',
+      viewQuestionsBtn: 'Inspect Questions',
+      emptyTitle: 'No Recommendations Needed Right Now',
+      emptyDesc: 'Take practice quizzes or simulated board exams to populate personalized topic-by-topic recommendations.',
+      progressSummaryTitle: 'Adaptive Diagnostic Summary',
+      repeatedMistakesFound: 'Repeated mistake patterns identified and addressed with targeted revision.',
+      adaptiveEngineActive: 'Engine is actively calibrating question difficulty (Easy → Medium → Hard).',
+      whyRecommendedHeading: 'Why This Topic Is Recommended',
+      drillReadyToast: 'Smart Practice Drill configured and loaded!',
     },
     hero: {
       kicker: 'CBSE Class 12 · Academic Session 2026–27',
@@ -313,6 +632,16 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       reviewBtn: 'Review Answers',
       chaptersCount: 'Chapters',
       weightageLabel: 'Est. Weightage',
+      savedQuestionsHeading: 'Saved & Bookmarked Questions',
+      savedQuestionsSub: 'Review difficult questions, verify formulas, and launch focused revision drills.',
+      noBookmarksTitle: 'No saved questions yet',
+      noBookmarksDesc: 'Click the Bookmark icon while practicing to pin tricky NCERT problems here.',
+      continueExamBtn: 'Continue Previous Exam',
+      continueExamSub: 'You have an unfinished CBSE exam in progress. Resume where you left off.',
+      discardExamBtn: 'Discard Exam',
+      weakChaptersHeading: 'Priority Chapters to Focus',
+      weakChaptersSub: 'Identified based on your actual quiz accuracy (< 75%). Practice these to maximize board marks.',
+      noWeakChapters: 'Great job! No weak chapters identified yet. Keep practicing to maintain high accuracy.',
     },
     config: {
       modalTitle: 'Custom Quiz Generator',
@@ -339,6 +668,15 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       modePracticeDesc: 'Instant explanations, no time pressure, learn at your pace.',
       modeExam: 'CBSE Exam Mode',
       modeExamDesc: 'Timed test, countdown timer, question palette, real pressure.',
+      examDurationLabel: 'Exam Duration',
+      examDurationOption10: '10 Mins (Quick Section)',
+      examDurationOption15: '15 Mins (Fast Drill)',
+      examDurationOption20: '20 Mins (Standard 10-Q)',
+      examDurationOption30: '30 Mins (Deep Revision)',
+      examDurationOption45: '45 Mins (Mock Section)',
+      examDurationOption60: '60 Mins (Full Section Mock)',
+      examDurationCustom: 'Custom Duration',
+      examDurationMinutesUnit: 'mins',
       aiToggleLabel: 'AI Question Generator (Gemini)',
       aiToggleDesc: 'Generates fresh board questions tailored to your chapter and difficulty.',
       curatedBadge: 'NCERT Verified Board Bank',
@@ -353,21 +691,46 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       timeRemaining: 'Time Remaining',
       practiceModeBadge: 'Practice Mode',
       examModeBadge: 'CBSE Exam Mode',
+      simulatedExamBadge: 'Simulated Board Exam',
+      curatedSourceBadge: 'Curated NCERT Question',
+      aiSourceBadge: 'AI-Generated Question (Verified)',
       flagReview: 'Mark for Review',
       flagged: 'Flagged for Review',
+      bookmark: 'Bookmark',
+      bookmarked: 'Bookmarked',
+      reportQuestion: 'Report Question',
+      reportModalTitle: 'Report Question',
+      reportModalDesc: 'Help identify potential issues. Reports are saved locally on this device.',
+      reportReason1: 'Incorrect Answer',
+      reportReason2: 'Incorrect Explanation',
+      reportReason3: 'Confusing Question',
+      reportReason4: 'Other',
+      reportCommentPlaceholder: 'Additional context or correction (optional)...',
+      reportSubmitBtn: 'Save Report Locally',
+      reportCancelBtn: 'Cancel',
+      reportNotice: 'Note: There is no reporting backend. Reports are saved locally on your device for your own review.',
+      reportSavedToast: 'Question report saved locally on your device.',
       clearChoice: 'Clear Choice',
       previous: 'Previous',
       next: 'Next',
-      submitQuiz: 'Submit Quiz',
-      confirmSubmitTitle: 'Ready to Submit Your Quiz?',
+      submitQuiz: 'Submit Exam',
+      confirmSubmitTitle: 'Ready to Submit Your Examination?',
       confirmSubmitDesc:
-        'You have answered all or part of your questions. Would you like to finish and view your detailed performance breakdown?',
-      cancel: 'Return to Quiz',
-      confirm: 'Yes, Submit Test',
+        'Please review your attempt statistics below before finalizing. Answers are evaluated against verified NCERT keys.',
+      warnUnanswered: 'Warning: You have unanswered question(s). Unanswered questions receive 0 marks.',
+      warnFlagged: 'Note: You have question(s) marked for review. Please verify your selected choices.',
+      btnReviewUnanswered: 'Review Unanswered',
+      btnReviewFlagged: 'Review Flagged',
+      cancel: 'Return to Exam',
+      confirm: 'Yes, Finalize Submission',
       questionPalette: 'Question Palette',
-      paletteAttempted: 'Attempted',
-      paletteUnattempted: 'Unattempted',
-      paletteFlagged: 'Flagged',
+      paletteAttempted: 'Answered',
+      paletteUnattempted: 'Unanswered',
+      paletteFlagged: 'Marked for Review',
+      paletteAnsweredReview: 'Answered & Review',
+      filterPaletteAll: 'All',
+      filterPaletteUnattempted: 'Unanswered',
+      filterPaletteReview: 'Review',
       timeAlert5Min: '⚠️ 5 Minutes Remaining in Exam Mode!',
       timeAlert1Min: '⚠️ 1 Minute Remaining! Please finalize your answers.',
       viewInHindi: 'हिंदी में देखें',
@@ -375,6 +738,25 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       officialExplanation: 'Verified NCERT Board Explanation',
       pitfallWarning: 'Common Trap & Misconception',
       boardTip: 'CBSE Examiner Tip for 2026–27',
+      instructionsTitle: 'Examination Instructions & Rules',
+      instructionsSubtitle: 'CBSE Class 12 Board Exam Simulator · Session 2026–27',
+      instructionsDisclaimer: 'Simulated Practice Examination: Designed strictly for conceptual drill, time management, and self-assessment based on the CBSE Class 12 NCERT curriculum. This is not an official CBSE examination paper.',
+      instructionsItemSubject: 'Subject & Syllabus',
+      instructionsItemDuration: 'Allocated Duration',
+      instructionsItemTotalQuestions: 'Total Questions',
+      instructionsItemMarking: 'Scoring Pattern',
+      instructionsItemMarkingDesc: '+1 mark for correct response, 0 for incorrect/unanswered. Calculated strictly with verified answer keys.',
+      instructionsItemRulesTitle: 'Instructions & Navigation Rules',
+      instructionsRuleTimer: 'Countdown Timer: Ticking starts immediately when you click "Start Examination". Visual warnings appear at 5 minutes and 1 minute remaining. Examination auto-submits when time expires.',
+      instructionsRuleNav: 'Free Question Navigation: Use Previous/Next buttons, keyboard shortcuts (← / →, P / N), or jump instantly to any question using the Question Palette.',
+      instructionsRuleSave: 'Answer Preservation: Selected answers are instantly preserved in your browser during navigation and even if the page refreshes.',
+      instructionsRuleReview: 'Mark for Review: Flag uncertain questions anytime using "Mark for Review" or shortcut "F" to revisit before submission.',
+      instructionsRulePalette: 'Palette Status: Answered (Green), Unanswered (Gray), Marked for Review (Amber), Answered & Marked for Review (Violet).',
+      instructionsRuleSubmit: 'Submission Safeguard: An itemized summary warns you if any questions are unanswered or flagged before finalizing.',
+      instructionsRuleIntegrity: 'Answer Keys: Results are computed purely from verified NCERT keys without simulated estimations.',
+      instructionsAcknowledge: 'I have read, understood, and agree to adhere to all examination guidelines.',
+      instructionsStartBtn: 'Start Examination Now',
+      instructionsBackBtn: 'Exit to Settings',
     },
     results: {
       title: 'Exam Performance Diagnostic',
@@ -384,10 +766,15 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       accuracyLabel: 'Accuracy',
       timeSpent: 'Time Spent',
       attemptedCount: 'Attempted',
+      unansweredCount: 'Unanswered',
+      correctCount: 'Correct',
+      incorrectCount: 'Incorrect',
+      avgTimePerQuestion: 'Avg. Pace',
+      simulatedExamNotice: 'CBSE Class 12 Simulated Practice Exam: Evaluated with verified answer keys. Official CBSE board examinations are conducted offline by the board.',
       gradeGreat: 'Outstanding! Excellent command of the syllabus.',
       gradeGood: 'Good attempt! A few concepts need targeted revision.',
       gradeNeedsWork: 'Needs Practice. Use Mistake Detective to address conceptual gaps.',
-      retakeBtn: 'Retake Quiz',
+      retakeBtn: 'Retake Exam',
       radarHeading: 'Weak Topic Radar for this Attempt',
       radarSub: 'Topic-level diagnostic computed using official CBSE formula.',
       strongTopicsTitle: 'Strong Topics (>75% Accuracy)',
@@ -396,6 +783,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       notEnoughData: 'Not enough data',
       filterAll: 'All Questions',
       filterIncorrect: 'Mistakes Only',
+      filterUnanswered: 'Unanswered Only',
       filterFlagged: 'Flagged Questions',
       analyzeMistakeBtn: 'Mistake Detective',
       solutionSteps: 'Step-by-step Working',
@@ -448,6 +836,44 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       analyzing: 'Investigating mistake forensics with AI...',
       closeBtn: 'Close Analysis',
     },
+    tutor: {
+      pageTitle: 'AI Personal Tutor',
+      pageSubtitle: '24/7 CBSE Class 12 Master Teacher for Mathematics, Physics & Chemistry',
+      kicker: 'CBSE Class 12 · Academic Session 2026–27',
+      subjectLabel: 'Select Subject',
+      mathsOption: 'Mathematics (041)',
+      physicsOption: 'Physics (042)',
+      chemistryOption: 'Chemistry (043)',
+      inputPlaceholder: 'Ask any Class 12 doubt or concept (e.g., Explain Integration by Parts, Lenz\'s Law derivation, Aldol condensation mechanism)...',
+      sendBtn: 'Ask Tutor',
+      uploadPhotoBtn: 'Attach Question Photo',
+      removePhotoBtn: 'Remove Image',
+      actionExplainSimply: 'Explain Simply',
+      actionAnotherExample: 'Give Another Example',
+      actionExplainFormula: 'Explain Formula',
+      actionSummarize: 'Summarize',
+      actionCopy: 'Copy Answer',
+      actionCopied: 'Copied!',
+      actionSaveDoubt: 'Save Doubt',
+      actionDoubtSaved: 'Doubt Saved!',
+      clearChatBtn: 'Clear Conversation',
+      loadingTitle: 'Analyzing CBSE Class 12 Concept...',
+      loadingStep1: 'Reviewing NCERT theory & equations...',
+      loadingStep2: 'Formulating step-by-step master explanation...',
+      followUpPlaceholder: 'Ask a follow-up question or request clarification...',
+      suggestedHeading: 'High-Yield CBSE Doubts & Practice Questions',
+      mathsSample1: 'How do I determine if a relation is Equivalence?',
+      mathsSample2: 'Step-by-step method to solve Integration by Parts with ILATE rule',
+      physicsSample1: 'Explain Gauss\'s Law and how to calculate electric field of an infinite sheet',
+      physicsSample2: 'Derive the magnetic field inside a long current-carrying solenoid',
+      chemSample1: 'Explain Aldol Condensation mechanism and conditions',
+      chemSample2: 'How do I use Nernst equation to calculate cell EMF under non-standard conditions?',
+      savedDoubtsTab: 'Saved Doubts & Solved Notes',
+      chatTab: 'Live Tutoring Session',
+      noSavedDoubtsTitle: 'No doubts saved yet',
+      noSavedDoubtsDesc: 'When you ask the AI Tutor questions, click "Save Doubt" to bookmark key explanations for revision.',
+      disclaimer: 'Explanations are aligned with NCERT CBSE Class 12 curriculum. Always verify with official CBSE marking schemes.',
+    },
   },
   hi: {
     nav: {
@@ -464,6 +890,112 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       langHi: 'हिन्दी',
       lightMode: 'लाइट मोड',
       darkMode: 'डार्क मोड',
+      aiTutor: 'एआई ट्यूटर',
+      smartPractice: 'स्मार्ट अभ्यास',
+      revision: 'दोहराव केंद्र',
+      quiz: 'AI क्विज़ जनरेटर',
+      exam: 'परीक्षा सिम्युलेटर',
+      analytics: 'विश्लेषण',
+      flashcards: 'फ्लैशकार्ड्स',
+      formulas: 'सूत्र पुस्तकालय',
+      studyPlanner: 'अध्ययन योजनाकार',
+      bookmarks: 'बुकमार्क',
+      settings: 'सेटिंग्स',
+      collapseSidebar: 'साइडबार छोटा करें',
+      expandSidebar: 'साइडबार विस्तार करें',
+    },
+    revision: {
+      navTitle: 'स्मार्ट पुनरावलोकन',
+      brandKicker: 'वैज्ञानिक अंतराल दोहराव (Spaced Repetition)',
+      pageTitle: 'स्मार्ट पुनरावलोकन प्रणाली (Smart Revision)',
+      pageSubtitle: 'क्विज़ में गलत हुए प्रश्नों की समीक्षा करें, बुकमार्क किए गए कठिन प्रश्नों का पुनः अभ्यास करें और बोर्ड परीक्षा की तैयारी को सुदृढ़ बनाएं।',
+      totalSaved: 'सहेजे गए प्रश्न',
+      dueForRevision: 'आज दोहराव हेतु देय',
+      mastered: 'कंठस्थ अवधारणाएं',
+      autoSavedMistakes: 'दर्ज क्विज़ गलतियां',
+      bookmarkedQuestions: 'बुकमार्क प्रश्न',
+      srsBannerTitle: 'अनुकूली अंतराल दोहराव सक्रिय (1 दिन → 3 दिन → 7 दिन → 14 दिन)',
+      srsBannerDesc: 'जिन प्रश्नों में आपसे गलती होती है, वे स्वतः यहाँ जुड़ जाते हैं। सही हल करने पर अंतराल बढ़ता जाता है जब तक कि आप उस पर पूर्ण पकड़ न बना लें।',
+      tabDue: 'दोहराव हेतु देय',
+      tabAll: 'सभी सहेजे गए',
+      tabIncorrect: 'क्विज़ की गलतियां',
+      tabBookmarked: 'बुकमार्क किए गए',
+      tabMastered: 'सिद्ध/कंठस्थ (चरण 4)',
+      practiceDueBtn: 'देय प्रश्नों का अभ्यास करें',
+      practiceAllBtn: 'सभी फ़िल्टर किए गए हल करें',
+      subjectFilterAll: 'सभी विषय',
+      searchPlaceholder: 'प्रश्न, अध्याय या टॉपिक खोजें...',
+      dueNowBadge: 'आज देय (चरण 0)',
+      stage1Badge: 'चरण 1 (1 दिन)',
+      stage2Badge: 'चरण 2 (3 दिन)',
+      stage3Badge: 'चरण 3 (7 दिन)',
+      masteredBadge: 'कंठस्थ (चरण 4)',
+      markAsRevised: 'दोहराया गया चिह्नित करें',
+      markedRevised: 'दोहराया गया',
+      retryBtn: 'पुनः हल करें',
+      cancelRetry: 'रद्द करें',
+      checkAnswer: 'उत्तर जांचें',
+      retryCorrectFeedback: 'बहुत बढ़िया! आपका उत्तर सही है। अगले अंतराल चरण में स्थानांतरित किया गया।',
+      retryIncorrectFeedback: 'सही नहीं है। नीचे आधिकारिक NCERT व्याख्या देखें। आज दोहराव सूची में बनाए रखा गया।',
+      savedBecauseIncorrect: 'क्विज़ गलती से स्वतः सहेजा गया',
+      savedBecauseBookmark: 'बुकमार्क किया गया प्रश्न',
+      recommendedHeader: 'लक्षित दोहराव सिफारिशें',
+      recommendedSub: 'आपके वास्तविक क्विज़ प्रदर्शन और गलतियों के विश्लेषण के आधार पर अनुशंसित।',
+      addRecommendedToRevision: 'दोहराव सूची में जोड़ें',
+      practiceRecommendedBtn: 'टॉपिक अभ्यास करें',
+      emptyDueTitle: 'उत्कृष्ट! आज कोई प्रश्न देय नहीं है',
+      emptyDueDesc: 'बहुत खूब! आपने सभी देय अवधारणाओं की समीक्षा कर ली है। अधिक अभ्यास के लिए नई क्विज़ लें या सभी सहेजे प्रश्नों को देखें।',
+      emptyAllTitle: 'दोहराव सूची में कोई सहेजा प्रश्न नहीं है',
+      emptyAllDesc: 'क्विज़ के दौरान गलत होने वाले प्रश्न स्वतः यहाँ दर्ज हो जाते हैं। आप किसी भी प्रश्न को बुकमार्क भी कर सकते हैं।',
+      emptyFilterTitle: 'कोई मेल खाता प्रश्न नहीं मिला',
+      emptyFilterDesc: 'वर्तमान विषय या खोज मानदंडों से मेल खाता कोई प्रश्न उपलब्ध नहीं है।',
+      startQuizPrompt: 'अभ्यास क्विज़ शुरू करें',
+      deleteItem: 'दोहराव से हटाएं',
+      itemDeletedToast: 'प्रश्न दोहराव सूची से हटा दिया गया',
+      revisedToast: 'अवधारणा दोहराई गई चिह्नित! अगला दोहराव निर्धारित।',
+      correctCelebration: 'सही उत्तर! स्मृति सुदृढ़ हुई।',
+      incorrectRetryNote: 'पुनः प्रयास में गलती दर्ज। आज की दोहराव सूची में रखा गया।',
+      viewExplanation: 'आधिकारिक व्याख्या देखें',
+      hideExplanation: 'व्याख्या छिपाएं',
+      reviewCountLabel: 'दोहराव की संख्या',
+      incorrectCountLabel: 'दर्ज गलतियां',
+    },
+    smartPractice: {
+      pageTitle: 'स्मार्ट अभ्यास इंजन',
+      pageSubtitle: 'आपके वास्तविक क्विज़ प्रदर्शन, सटीकता और कमज़ोर क्षेत्रों के अनुरूप व्यक्तिगत सीबीएसई कक्षा 12 प्रश्न सिफारिशें।',
+      kicker: 'अनुकूली सीबीएसई बुद्धिमत्ता',
+      heroHeading: 'लक्षित अभ्यास सिफारिशें',
+      heroSub: 'हमारा सटीक एल्गोरिथ्म आपके सभी प्रयासों का विश्लेषण करता है, बार-बार होने वाली गलतियों को चिह्नित करता है और समझ मजबूत होने पर कठिन प्रश्नों की ओर अग्रसर करता है।',
+      startRecommendedDrill: 'सिफारिश किया गया अभ्यास शुरू करें',
+      targetDifficulty: 'लक्षित कठिनाई स्तर',
+      allSubjects: 'सभी विषय',
+      subjectFilterLabel: 'विषय चुनें',
+      difficultyFilterLabel: 'कठिनाई मोड',
+      autoStepUpLabel: 'अनुकूली स्तर वृद्धि',
+      autoStepUpDesc: '80% से अधिक सटीकता प्राप्त होने पर स्वतः उच्च स्तरीय (HOTS) प्रश्नों की सिफारिश करें',
+      metricsAttempted: 'हल किए गए प्रश्न',
+      metricsAccuracy: 'सटीकता',
+      metricsTrend: 'प्रवृत्ति',
+      trendImproving: 'सुधार जारी',
+      trendDeclining: 'ध्यान अपेक्षित',
+      trendSteady: 'स्थिर',
+      trendNew: 'नया अध्याय',
+      reasonBadgeMistake: 'दोहराव आवश्यक',
+      reasonBadgeAccuracy: 'अवधारणा सुदृढ़ीकरण',
+      reasonBadgeMastery: 'HOTS स्तर वृद्धि',
+      reasonBadgeUnattempted: 'महत्वपूर्ण बोर्ड कवरेज',
+      stepUpBadge: 'स्तर वृद्धि सक्रिय',
+      revisionBadge: 'रिवीजन सत्र',
+      questionsCount: 'प्रश्न',
+      startSessionBtn: 'अभ्यास शुरू करें',
+      viewQuestionsBtn: 'प्रश्न देखें',
+      emptyTitle: 'वर्तमान में कोई नई सिफारिश नहीं है',
+      emptyDesc: 'अपनी वैयक्तिकृत सिफारिशें देखने के लिए क्विज़ या परीक्षा का अभ्यास करें।',
+      progressSummaryTitle: 'अनुकूली विश्लेषण सारांश',
+      repeatedMistakesFound: 'बार-बार होने वाली गलतियों की पहचान कर लक्षित दोहराव तैयार किया गया।',
+      adaptiveEngineActive: 'इंजन कठिनाई स्तर को निरंतर संतुलित कर रहा है (सरल → मध्यम → कठिन)।',
+      whyRecommendedHeading: 'इस विषय की सिफारिश का कारण',
+      drillReadyToast: 'स्मार्ट अभ्यास सत्र सफलतापूर्वक तैयार किया गया!',
     },
     hero: {
       kicker: 'सीबीएसई कक्षा 12 · शैक्षणिक सत्र 2026–27',
@@ -541,6 +1073,16 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       reviewBtn: 'उत्तरों की समीक्षा',
       chaptersCount: 'अध्याय',
       weightageLabel: 'अनुमानित अंक',
+      savedQuestionsHeading: 'सहेजे गए एवं बुकमार्क प्रश्न',
+      savedQuestionsSub: 'कठिन प्रश्नों की समीक्षा करें, सूत्रों की जांच करें और लक्षित अभ्यास सत्र शुरू करें।',
+      noBookmarksTitle: 'कोई सहेजा गया प्रश्न नहीं',
+      noBookmarksDesc: 'क्विज़ के दौरान महत्वपूर्ण प्रश्नों को यहाँ सुरक्षित करने के लिए बुकमार्क आइकन पर क्लिक करें।',
+      continueExamBtn: 'पिछली परीक्षा जारी रखें',
+      continueExamSub: 'आपकी एक सीबीएसई बोर्ड परीक्षा प्रगति पर है। जहाँ छोड़ा था वहीं से पुनः शुरू करें।',
+      discardExamBtn: 'परीक्षा निरस्त करें',
+      weakChaptersHeading: 'प्राथमिकता वाले कमज़ोर अध्याय',
+      weakChaptersSub: 'वास्तविक क्विज़ परिणामों (< 75% सटीकता) के आधार पर चुने गए। बोर्ड में अधिकतम अंक हेतु इन पर ध्यान दें।',
+      noWeakChapters: 'शानदार! अभी तक कोई कमज़ोर अध्याय नहीं पाया गया। उच्च सटीकता बनाए रखने के लिए अभ्यास जारी रखें।',
     },
     config: {
       modalTitle: 'कस्टम क्विज़ जनरेटर',
@@ -567,6 +1109,15 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       modePracticeDesc: 'तुरंत व्याख्या, समय का कोई दबाव नहीं, अपनी गति से सीखें।',
       modeExam: 'सीबीएसई परीक्षा मोड (Exam Mode)',
       modeExamDesc: 'उलटी गिनती टाइमर, प्रश्न पैलेट, वास्तविक परीक्षा जैसा दबाव।',
+      examDurationLabel: 'परीक्षा अवधि',
+      examDurationOption10: '10 मिनट (त्वरित खंड टेस्ट)',
+      examDurationOption15: '15 मिनट (तीव्र अभ्यास)',
+      examDurationOption20: '20 मिनट (मानक 10-प्रश्न)',
+      examDurationOption30: '30 मिनट (गहन पुनरीक्षण)',
+      examDurationOption45: '45 मिनट (मॉक खंड)',
+      examDurationOption60: '60 मिनट (पूर्ण मॉक)',
+      examDurationCustom: 'कस्टम अवधि',
+      examDurationMinutesUnit: 'मिनट',
       aiToggleLabel: 'AI प्रश्न जनरेटर (Gemini)',
       aiToggleDesc: 'आपके चुने हुए अध्याय और स्तर के अनुसार नए बोर्ड प्रश्न तैयार करता है।',
       curatedBadge: 'प्रमाणित NCERT बोर्ड प्रश्न बैंक',
@@ -581,21 +1132,46 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       timeRemaining: 'शेष समय',
       practiceModeBadge: 'अभ्यास मोड',
       examModeBadge: 'सीबीएसई परीक्षा मोड',
+      simulatedExamBadge: 'सिम्युलेटेड बोर्ड परीक्षा',
+      curatedSourceBadge: 'प्रमाणित NCERT प्रश्न',
+      aiSourceBadge: 'AI-निर्मित प्रश्न (सत्यापित)',
       flagReview: 'समीक्षा हेतु चिह्नित करें',
       flagged: 'समीक्षा के लिए चिह्नित',
+      bookmark: 'बुकमार्क',
+      bookmarked: 'बुकमार्क किया गया',
+      reportQuestion: 'प्रश्न रिपोर्ट करें',
+      reportModalTitle: 'प्रश्न की रिपोर्ट करें',
+      reportModalDesc: 'प्रश्न की गुणवत्ता जांच में मदद करें। यह रिपोर्ट आपके डिवाइस पर स्थानीय रूप से सुरक्षित होती है।',
+      reportReason1: 'गलत उत्तर',
+      reportReason2: 'गलत व्याख्या',
+      reportReason3: 'भ्रमित करने वाला प्रश्न',
+      reportReason4: 'अन्य',
+      reportCommentPlaceholder: 'अतिरिक्त विवरण या सुधार (वैकल्पिक)...',
+      reportSubmitBtn: 'रिपोर्ट स्थानीय रूप से सहेजें',
+      reportCancelBtn: 'रद्द करें',
+      reportNotice: 'सूचना: कोई रिपोर्टिंग बैकएंड नहीं है। यह रिपोर्ट आपके व्यक्तिगत अवलोकन हेतु आपके ब्राउज़र में सुरक्षित की जाती है।',
+      reportSavedToast: 'प्रश्न की रिपोर्ट आपके डिवाइस पर सुरक्षित कर ली गई है।',
       clearChoice: 'विकल्प साफ़ करें',
       previous: 'पिछला',
       next: 'अगला',
-      submitQuiz: 'क्विज़ सबमिट करें',
-      confirmSubmitTitle: 'क्या आप क्विज़ सबमिट करने के लिए तैयार हैं?',
+      submitQuiz: 'परीक्षा सबमिट करें',
+      confirmSubmitTitle: 'क्या आप परीक्षा सबमिट करने के लिए तैयार हैं?',
       confirmSubmitDesc:
-        'आप अपने प्रश्नों को पूरा या आंशिक रूप से हल कर चुके हैं। क्या आप समाप्त करके अपना विस्तृत परिणाम देखना चाहते हैं?',
-      cancel: 'क्विज़ पर वापस जाएं',
-      confirm: 'हाँ, टेस्ट सबमिट करें',
+        'कृपया अंतिम सबमिशन से पहले अपने हल किए गए प्रश्नों के आंकड़े देख लें। उत्तरों का मूल्यांकन केवल प्रमाणित उत्तर कुंजियों द्वारा किया जाता है।',
+      warnUnanswered: 'चेतावनी: आपके पास अनुत्तरित प्रश्न हैं। अनुत्तरित प्रश्नों पर 0 अंक मिलेंगे।',
+      warnFlagged: 'ध्यान दें: आपके प्रश्न समीक्षा के लिए चिह्नित हैं। कृपया अपने उत्तरों की पुष्टि करें।',
+      btnReviewUnanswered: 'अनुत्तरित प्रश्न देखें',
+      btnReviewFlagged: 'चिह्नित प्रश्न देखें',
+      cancel: 'परीक्षा पर वापस जाएं',
+      confirm: 'हाँ, अंतिम सबमिशन करें',
       questionPalette: 'प्रश्न पैलेट',
       paletteAttempted: 'हल किए गए',
-      paletteUnattempted: 'शेष प्रश्न',
+      paletteUnattempted: 'अनुत्तरित',
       paletteFlagged: 'समीक्षा हेतु',
+      paletteAnsweredReview: 'हल व समीक्षा हेतु',
+      filterPaletteAll: 'सभी',
+      filterPaletteUnattempted: 'अनुत्तरित',
+      filterPaletteReview: 'समीक्षा',
       timeAlert5Min: '⚠️ परीक्षा मोड में केवल 5 मिनट शेष हैं!',
       timeAlert1Min: '⚠️ केवल 1 मिनट शेष! कृपया अपने उत्तरों को अंतिम रूप दें।',
       viewInHindi: 'हिंदी में देखें',
@@ -603,6 +1179,25 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       officialExplanation: 'प्रमाणित NCERT बोर्ड व्याख्या',
       pitfallWarning: 'सामान्य भूल एवं परीक्षा का जाल',
       boardTip: 'सीबीएसई 2026–27 परीक्षक युक्ति',
+      instructionsTitle: 'परीक्षा निर्देश एवं दिशा-निर्देश',
+      instructionsSubtitle: 'सीबीएसई कक्षा 12 बोर्ड परीक्षा सिम्युलेटर · सत्र 2026–27',
+      instructionsDisclaimer: 'सिम्युलेटेड अभ्यास परीक्षा: NCERT पाठ्यक्रम के आधार पर अवधारणा अभ्यास, समय प्रबंधन एवं आत्म-मूल्यांकन हेतु निर्मित। यह कोई आधिकारिक सीबीएसई बोर्ड प्रश्न पत्र नहीं है।',
+      instructionsItemSubject: 'विषय एवं पाठ्यक्रम',
+      instructionsItemDuration: 'निर्धारित समय',
+      instructionsItemTotalQuestions: 'कुल प्रश्न',
+      instructionsItemMarking: 'अंकन योजना',
+      instructionsItemMarkingDesc: 'प्रत्येक सही उत्तर के लिए +1 अंक, अनुत्तरित या गलत उत्तर के लिए 0 अंक। पूर्णतः प्रमाणित उत्तर कुंजियों से गणना।',
+      instructionsItemRulesTitle: 'निर्देश एवं नेविगेशन नियम',
+      instructionsRuleTimer: 'उलटी गिनती टाइमर: "परीक्षा शुरू करें" पर क्लिक करते ही समय शुरू हो जाएगा। 5 मिनट और 1 मिनट शेष रहने पर चेतावनी दिखेगी। समय समाप्त होने पर स्वतः सबमिशन होगा।',
+      instructionsRuleNav: 'स्वतंत्र प्रश्न नेविगेशन: अगले/पिछले बटन, कीबोर्ड शॉर्टकट (← / →, P / N) अथवा प्रश्न पैलेट से किसी भी प्रश्न पर सीधे पहुँचें।',
+      instructionsRuleSave: 'उत्तर संरक्षण: आपके चुने हुए उत्तर तुरंत ब्राउज़र में सुरक्षित हो जाते हैं और नेविगेशन या पेज रीलोड होने पर भी सुरक्षित रहते हैं।',
+      instructionsRuleReview: 'समीक्षा हेतु चिह्नित करें: अनिश्चित प्रश्नों को "समीक्षा हेतु चिह्नित करें" या शॉर्टकट "F" से फ्लैग करें ताकि सबमिशन से पहले पुनः जांच सकें।',
+      instructionsRulePalette: 'पैलेट स्थिति: हल किए गए (हरा), अनुत्तरित (धूसर), समीक्षा हेतु (अंबर), हल व समीक्षा हेतु (बैंगनी)।',
+      instructionsRuleSubmit: 'सबमिशन सुरक्षा: अंतिम सबमिशन से पूर्व एक सारांश आपको अनुत्तरित या समीक्षा वाले प्रश्नों के प्रति सचेत करेगा।',
+      instructionsRuleIntegrity: 'उत्तर कुंजी: परिणाम बिना किसी अनुमान के पूरी तरह से सत्यापित NCERT उत्तर कुंजियों द्वारा तय होते हैं।',
+      instructionsAcknowledge: 'मैंने परीक्षा के सभी नियमों एवं निर्देशों को पढ़ व समझ लिया है।',
+      instructionsStartBtn: 'परीक्षा अभी शुरू करें',
+      instructionsBackBtn: 'सेटिंग्स पर वापस',
     },
     results: {
       title: 'परीक्षा प्रदर्शन निदान',
@@ -612,10 +1207,15 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       accuracyLabel: 'सटीकता',
       timeSpent: 'लगा समय',
       attemptedCount: 'हल किए गए प्रश्न',
+      unansweredCount: 'अनुत्तरित',
+      correctCount: 'सही',
+      incorrectCount: 'गलत',
+      avgTimePerQuestion: 'औसत गति',
+      simulatedExamNotice: 'सीबीएसई कक्षा 12 सिम्युलेटेड अभ्यास परीक्षा: प्रमाणित उत्तर कुंजियों से मूल्यांकित। आधिकारिक बोर्ड परीक्षाएं ऑफलाइन पेन-पेपर पर आयोजित होती हैं।',
       gradeGreat: 'उत्कृष्ट प्रदर्शन! पाठ्यक्रम पर आपका मजबूत नियंत्रण है।',
       gradeGood: 'अच्छा प्रयास! कुछ विषयों पर लक्षित दोहराव की आवश्यकता है।',
       gradeNeedsWork: 'अभ्यास की आवश्यकता है। अवधारणाओं को समझने के लिए मिस्टेक डिटेक्टिव का उपयोग करें।',
-      retakeBtn: 'पुनः प्रयास करें',
+      retakeBtn: 'पुनः परीक्षा दें',
       radarHeading: 'इस प्रयास का कमज़ोर टॉपिक रडार',
       radarSub: 'आधिकारिक सीबीएसई सूत्र द्वारा निकाला गया टॉपिक-वार निदान।',
       strongTopicsTitle: 'मजबूत विषय (>75% सटीकता)',
@@ -624,6 +1224,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       notEnoughData: 'अपर्याप्त डेटा',
       filterAll: 'सभी प्रश्न',
       filterIncorrect: 'केवल गलत उत्तर',
+      filterUnanswered: 'केवल अनुत्तरित प्रश्न',
       filterFlagged: 'समीक्षा हेतु चिह्नित प्रश्न',
       analyzeMistakeBtn: 'मिस्टेक डिटेक्टिव',
       solutionSteps: 'चरण-दर-चरण हल',
@@ -675,6 +1276,44 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       askBtn: 'AI शिक्षक से पूछें',
       analyzing: 'AI द्वारा गलती का विस्तृत विश्लेषण किया जा रहा है...',
       closeBtn: 'विश्लेषण बंद करें',
+    },
+    tutor: {
+      pageTitle: 'AI पर्सनल ट्यूटर',
+      pageSubtitle: 'गणित, भौतिकी एवं रसायन विज्ञान हेतु सीबीएसई कक्षा 12 का 24/7 शैक्षणिक मार्गदर्शक',
+      kicker: 'सीबीएसई कक्षा 12 · शैक्षणिक सत्र 2026–27',
+      subjectLabel: 'विषय चुनें',
+      mathsOption: 'गणित (041)',
+      physicsOption: 'भौतिक विज्ञान (042)',
+      chemistryOption: 'रसायन विज्ञान (043)',
+      inputPlaceholder: 'कक्षा 12 का कोई भी प्रश्न या संदेह पूछें (उदा. खंडशः समाकलन समझाइए, लेन्ज़ का नियम निगमन, ऐल्डोल संघनन क्रियाविधि)...',
+      sendBtn: 'ट्यूटर से पूछें',
+      uploadPhotoBtn: 'प्रश्न की फोटो जोड़ें',
+      removePhotoBtn: 'फोटो हटाएं',
+      actionExplainSimply: 'सरल भाषा में समझाएं',
+      actionAnotherExample: 'अन्य उदाहरण दें',
+      actionExplainFormula: 'सूत्र स्पष्ट करें',
+      actionSummarize: 'संक्षेप में बताएं',
+      actionCopy: 'उत्तर कॉपी करें',
+      actionCopied: 'कॉपी हो गया!',
+      actionSaveDoubt: 'संदेह सहेजें',
+      actionDoubtSaved: 'संदेह सुरक्षित!',
+      clearChatBtn: 'बातचीत साफ़ करें',
+      loadingTitle: 'सीबीएसई कक्षा 12 अवधारणा का विश्लेषण हो रहा है...',
+      loadingStep1: 'NCERT सिद्धांत एवं समीकरणों की समीक्षा...',
+      loadingStep2: 'चरणबद्ध विस्तृत समाधान तैयार किया जा रहा है...',
+      followUpPlaceholder: 'इस विषय पर अगला प्रश्न या स्पष्टीकरण पूछें...',
+      suggestedHeading: 'महत्वपूर्ण बोर्ड संदेह एवं अभ्यास प्रश्न',
+      mathsSample1: 'तुल्यता संबंध (Equivalence Relation) की जांच कैसे करें?',
+      mathsSample2: 'ILATE नियम के साथ खंडशः समाकलन (Integration by Parts) का चरणबद्ध तरीका',
+      physicsSample1: 'गाउस का नियम समझाइए और अनंत समतल चादर के कारण विद्युत क्षेत्र निकालिए',
+      physicsSample2: 'एक लंबी धारावाही परिनालिका के भीतर चुंबकीय क्षेत्र का निगमन करें',
+      chemSample1: 'ऐल्डोल संघनन की क्रियाविधि और आवश्यक शर्तें समझाइए',
+      chemSample2: 'गैर-मानक परिस्थितियों में सेल वि.वा.बल की गणना हेतु नर्नस्ट समीकरण कैसे लगाएं?',
+      savedDoubtsTab: 'सहेजे गए संदेह एवं नोट्स',
+      chatTab: 'लाइव ट्यूटर सत्र',
+      noSavedDoubtsTitle: 'अभी तक कोई संदेह सहेजा नहीं गया',
+      noSavedDoubtsDesc: 'जब आप AI ट्यूटर से प्रश्न पूछें, तो मुख्य व्याख्याओं को दोहराव हेतु सुरक्षित करने के लिए "संदेह सहेजें" पर क्लिक करें।',
+      disclaimer: 'सभी व्याख्याएं NCERT सीबीएसई कक्षा 12 पाठ्यक्रम के अनुरूप हैं। आधिकारिक मूल्यांकन के लिए सीबीएसई मार्किंग स्कीम देखें।',
     },
   },
 };

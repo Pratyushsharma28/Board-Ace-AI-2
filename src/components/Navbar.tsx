@@ -11,7 +11,10 @@ import {
   HardDrive,
   Globe,
   Sun,
-  Moon
+  Moon,
+  GraduationCap,
+  Zap,
+  RotateCcw,
 } from 'lucide-react';
 import { AppView } from '../types/quiz';
 import { useLanguage } from '../context/LanguageContext';
@@ -37,6 +40,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navItems: Array<{ label: string; view: AppView; icon: React.ReactNode }> = [
     { label: t.nav.home, view: 'landing', icon: <Home className="w-4 h-4" /> },
     { label: t.nav.dashboard, view: 'dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { label: t.nav.revision, view: 'revision', icon: <RotateCcw className="w-4 h-4 text-emerald-500" /> },
+    { label: t.nav.smartPractice, view: 'smart-practice', icon: <Zap className="w-4 h-4 text-amber-500" /> },
+    { label: t.nav.aiTutor, view: 'tutor', icon: <GraduationCap className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> },
     { label: t.nav.weakTopicRadar, view: 'analytics', icon: <BarChart3 className="w-4 h-4" /> },
   ];
 

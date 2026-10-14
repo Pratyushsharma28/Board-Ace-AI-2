@@ -9,14 +9,20 @@ import { QuizInterface } from './components/QuizInterface';
 import { ResultsDashboard } from './components/ResultsDashboard';
 import { AnalyticsView } from './components/AnalyticsView';
 import { MistakeDetectiveModal } from './components/MistakeDetectiveModal';
-import { Question, QuizConfig, QuizAttempt, SubjectId, AppView } from './types/quiz';
+import { AITutorView } from './components/AITutorView';
+import { SmartPracticeView } from './components/SmartPracticeView';
+import { SmartRevisionView } from './components/SmartRevisionView';
+import { Question, QuizConfig, QuizAttempt, SubjectId, AppView, DifficultyLevel } from './types/quiz';
 import { getCuratedQuestions } from './data/sampleQuestions';
-import { saveAttempt } from './utils/storage';
+import { saveAttempt, getActiveExamState, ActiveExamState } from './utils/storage';
+import { saveToRevision } from './utils/revisionEngine';
+import { classifyMistake } from './utils/mistakeDetective';
 import { CheckCircle2 } from 'lucide-react';
 
 function AppContent() {
   const { language, t } = useLanguage();
   const [currentView, setCurrentView] = useState<AppView>('landing');
+  const [tutorSubject, setTutorSubject] = useState<SubjectId>('physics');
 
   // Toast Notification State
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'info' | 'success' | 'warn' } | null>(null);
@@ -28,6 +34,17 @@ function AppContent() {
     }, 4000);
   };
 
+  // Check for active interrupted exam on startup
+  React.useEffect(() => {
+    const saved = getActiveExamState();
+    if (saved && saved.questions.length > 0) {
+      const msg = language === 'hi'
+        ? 'आपकी अधूरी परीक्षा सुरक्षित है। डैशबोर्ड से कभी भी जारी रखें!'
+        : 'Your in-progress exam is safely preserved. Resume anytime from the Dashboard!';
+      showToast(msg, 'info');
+    }
+  }, []);
+
   // Modal states
   const [isConfigModalOpen, setIsConfigModalOpen] = useState(false);
   const [configPrefill, setConfigPrefill] = useState<Partial<QuizConfig>>({});
@@ -37,6 +54,13 @@ function AppContent() {
   // Active Quiz State
   const [activeQuestions, setActiveQuestions] = useState<Question[]>([]);
   const [activeConfig, setActiveConfig] = useState<QuizConfig | null>(null);
+  const [activeInitialState, setActiveInitialState] = useState<{
+    currentIndex?: number;
+    answers?: Record<string, string>;
+    flagged?: Record<string, boolean>;
+    secondsRemaining?: number;
+    elapsedSeconds?: number;
+  } | undefined>(undefined);
 
   // Active Results State
   const [currentAttempt, setCurrentAttempt] = useState<QuizAttempt | null>(null);
@@ -186,6 +210,17 @@ function AppContent() {
     // Save to browser localStorage locally
     saveAttempt(attempt);
 
+    // Save questions answered incorrectly to Smart Revision System (spaced repetition)
+    activeQuestions.forEach((q) => {
+      const userAns = answers[q.id];
+      if (userAns && userAns !== q.correctAnswer) {
+        saveToRevision(q, 'incorrect_answer', {
+          wrongAnswer: userAns,
+          mistakeCategory: classifyMistake(q, userAns),
+        });
+      }
+    });
+
     setCurrentAttempt(attempt);
     setCurrentView('results');
 
@@ -216,6 +251,88 @@ function AppContent() {
         ? `कमज़ोर टॉपिक "${firstWeak}" पर अभ्यास सत्र सेट किया गया!`
         : `Target drill configured for weak topic: "${firstWeak}"!`;
     showToast(toastDrillText, 'info');
+  };
+
+  const handleContinueExam = (savedExam: ActiveExamState) => {
+    setActiveConfig(savedExam.config);
+    setActiveQuestions(savedExam.questions);
+    setActiveInitialState({
+      currentIndex: savedExam.currentIndex,
+      answers: savedExam.answers,
+      flagged: savedExam.flagged,
+      secondsRemaining: savedExam.secondsRemaining,
+      elapsedSeconds: savedExam.elapsedSeconds,
+    });
+    setCurrentView('quiz');
+    showToast(
+      language === 'hi'
+        ? 'सक्रिय परीक्षा पुनः शुरू की गई!'
+        : 'Resumed your active CBSE board exam session!',
+      'info'
+    );
+  };
+
+  const handlePracticeCustomQuestions = (customQuestions: Question[]) => {
+    if (customQuestions.length === 0) return;
+    const firstQ = customQuestions[0];
+    const subjectId = (
+      ['mathematics', 'physics', 'chemistry'].includes(firstQ.subject?.toLowerCase())
+        ? firstQ.subject.toLowerCase()
+        : 'physics'
+    ) as SubjectId;
+
+    const practiceConfig: QuizConfig = {
+      board: 'CBSE',
+      grade: '12',
+      subject: subjectId,
+      chapter: 'all',
+      difficulty: 'medium',
+      questionCount: customQuestions.length,
+      questionType: 'mixed',
+      mode: 'practice',
+      useAi: false,
+    };
+
+    setActiveConfig(practiceConfig);
+    setActiveQuestions(customQuestions);
+    setActiveInitialState(undefined);
+    setCurrentView('quiz');
+    showToast(
+      language === 'hi'
+        ? `${customQuestions.length} बुकमार्क प्रश्नों का अभ्यास सत्र शुरू!`
+        : `Started practice drill with ${customQuestions.length} saved questions!`,
+      'success'
+    );
+  };
+
+  const handleStartSmartDrill = (
+    questions: Question[],
+    meta: { subject: SubjectId; chapter: string; difficulty: DifficultyLevel; topic: string }
+  ) => {
+    if (questions.length === 0) return;
+
+    const drillConfig: QuizConfig = {
+      board: 'CBSE',
+      grade: '12',
+      subject: meta.subject,
+      chapter: meta.chapter,
+      difficulty: meta.difficulty,
+      questionCount: questions.length,
+      questionType: 'mixed',
+      mode: 'practice',
+      useAi: false,
+    };
+
+    setActiveConfig(drillConfig);
+    setActiveQuestions(questions);
+    setActiveInitialState(undefined);
+    setCurrentView('quiz');
+    showToast(
+      language === 'hi'
+        ? `स्मार्ट अभ्यास शुरू: ${meta.topic} (${meta.difficulty.toUpperCase()})`
+        : `Smart Practice started: ${meta.topic} (${meta.difficulty.toUpperCase()})`,
+      'success'
+    );
   };
 
   return (
@@ -255,18 +372,30 @@ function AppContent() {
             onStartQuiz={(prefill) => handleOpenConfig(prefill)}
             onOpenMistakeDetective={(q, ans) => setMistakeModalData({ question: q, selectedAnswer: ans })}
             onNavigateToDashboard={() => setCurrentView('dashboard')}
+            onNavigateToTutor={() => setCurrentView('tutor')}
           />
         )}
 
         {currentView === 'dashboard' && (
           <StudentDashboard
-            onStartQuiz={(prefill) => handleOpenConfig(prefill)}
+            onStartQuiz={(prefill) => {
+              setActiveInitialState(undefined);
+              handleOpenConfig(prefill);
+            }}
             onPracticeWeakTopics={handlePracticeWeakTopics}
             onReviewAttempt={(att) => {
               setCurrentAttempt(att);
               setCurrentView('results');
             }}
             onOpenMistakeDetective={(q, ans) => setMistakeModalData({ question: q, selectedAnswer: ans })}
+            onContinueExam={handleContinueExam}
+            onPracticeSavedQuestions={handlePracticeCustomQuestions}
+            onOpenTutor={(subj) => {
+              if (subj) setTutorSubject(subj);
+              setCurrentView('tutor');
+            }}
+            onOpenSmartPractice={() => setCurrentView('smart-practice')}
+            onOpenRevision={() => setCurrentView('revision')}
           />
         )}
 
@@ -275,8 +404,12 @@ function AppContent() {
             questions={activeQuestions}
             config={activeConfig}
             onSubmitQuiz={handleSubmitQuiz}
-            onExit={() => setCurrentView('landing')}
+            onExit={() => {
+              setActiveInitialState(undefined);
+              setCurrentView('landing');
+            }}
             onOpenMistakeDetective={(q, ans) => setMistakeModalData({ question: q, selectedAnswer: ans })}
+            initialState={activeInitialState}
           />
         )}
 
@@ -286,6 +419,7 @@ function AppContent() {
             onRetryQuiz={handleRetryQuiz}
             onPracticeWeakTopics={handlePracticeWeakTopics}
             onOpenMistakeDetective={(q, ans) => setMistakeModalData({ question: q, selectedAnswer: ans })}
+            onOpenRevision={() => setCurrentView('revision')}
             onHome={() => setCurrentView('landing')}
           />
         )}
@@ -298,6 +432,28 @@ function AppContent() {
               setCurrentAttempt(att);
               setCurrentView('results');
             }}
+          />
+        )}
+
+        {currentView === 'tutor' && (
+          <AITutorView
+            initialSubject={tutorSubject}
+            onNavigateHome={() => setCurrentView('landing')}
+          />
+        )}
+
+        {currentView === 'smart-practice' && (
+          <SmartPracticeView
+            onStartDrill={handleStartSmartDrill}
+            onNavigateHome={() => setCurrentView('landing')}
+          />
+        )}
+
+        {currentView === 'revision' && (
+          <SmartRevisionView
+            onPracticeQuestions={handlePracticeCustomQuestions}
+            onNavigateHome={() => setCurrentView('landing')}
+            onStartQuiz={() => handleOpenConfig()}
           />
         )}
       </main>
