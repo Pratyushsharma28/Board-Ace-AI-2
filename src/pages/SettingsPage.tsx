@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
+import { useClass } from '../context/ClassContext';
 import {
   Settings,
   Sun,
@@ -13,6 +14,8 @@ import {
   CheckCircle2,
   ShieldCheck,
   RotateCcw,
+  GraduationCap,
+  Sparkles,
 } from 'lucide-react';
 import { clearAllStorage, getSavedAttempts, getBookmarks } from '../utils/storage';
 import { getRevisionItems } from '../utils/revisionEngine';
@@ -20,6 +23,7 @@ import { getRevisionItems } from '../utils/revisionEngine';
 export const SettingsPage: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const { grade, setGrade, gradeLabel, subjects } = useClass();
 
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const [clearedToast, setClearedToast] = useState(false);
@@ -80,6 +84,100 @@ export const SettingsPage: React.FC = () => {
           <span>Local study data reset successfully. Reloading platform...</span>
         </div>
       )}
+
+      {/* Class / Academic Standard Selection */}
+      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <GraduationCap className="w-4 h-4 text-indigo-500" />
+            <span>{language === 'hi' ? 'कक्षा चयन (Academic Class)' : 'Academic Class / Grade Selection'}</span>
+          </div>
+          <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+            CBSE 2026–27
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {language === 'hi'
+            ? 'अपनी कक्षा चुनें। पाठ्यक्रम, अध्याय, मॉक प्रश्न और सूत्र बैंक स्वचालित रूप से अपडेट हो जाएंगे।'
+            : 'Select your enrolled board class. Syllabus, chapters, mock questions, and formula banks update instantly.'}
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <button
+            type="button"
+            onClick={() => setGrade('10')}
+            className={`p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+              grade === '10'
+                ? 'border-indigo-600 dark:border-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-600/20'
+                : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold uppercase tracking-wider mb-2">
+                  CBSE Class X
+                </div>
+                <div className="text-base font-extrabold text-slate-900 dark:text-white">
+                  CBSE Class 10
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Secondary School Examination
+                </div>
+              </div>
+              {grade === '10' && <CheckCircle2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-1" />}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800/80">
+              <div className="text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                {language === 'hi' ? 'शामिल विषय:' : 'Active Subjects:'}
+              </div>
+              <div className="flex flex-wrap gap-1.5 text-[11px]">
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Maths (041)</span>
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Science (086)</span>
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Social Science (087)</span>
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">English (184)</span>
+              </div>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setGrade('12')}
+            className={`p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+              grade === '12'
+                ? 'border-indigo-600 dark:border-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-600/20'
+                : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 text-[10px] font-bold uppercase tracking-wider mb-2">
+                  CBSE Class XII
+                </div>
+                <div className="text-base font-extrabold text-slate-900 dark:text-white">
+                  CBSE Class 12
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Senior School Certificate Examination
+                </div>
+              </div>
+              {grade === '12' && <CheckCircle2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-1" />}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800/80">
+              <div className="text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                {language === 'hi' ? 'शामिल विषय:' : 'Active Subjects:'}
+              </div>
+              <div className="flex flex-wrap gap-1.5 text-[11px]">
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Mathematics (041)</span>
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Physics (042)</span>
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Chemistry (043)</span>
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
 
       {/* 1. Theme Configuration */}
       <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">

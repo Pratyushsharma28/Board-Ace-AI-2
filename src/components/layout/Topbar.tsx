@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
+import { useClass } from '../../context/ClassContext';
 
 interface TopbarProps {
   onOpenMobileSidebar: () => void;
@@ -28,16 +29,17 @@ export const Topbar: React.FC<TopbarProps> = ({
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const { grade, setGrade, gradeLabel } = useClass();
 
   // Page title mapping based on route
   const getPageInfo = () => {
     switch (pathname) {
       case '/dashboard':
-        return { title: t.nav.dashboard, subtitle: 'CBSE Class 12 Performance Hub' };
+        return { title: t.nav.dashboard, subtitle: `${gradeLabel} Performance Hub` };
       case '/quiz':
-        return { title: t.nav.quiz, subtitle: 'Generate Board MCQs & Section A Drills' };
+        return { title: t.nav.quiz, subtitle: `Generate ${gradeLabel} Board MCQs & Section A Drills` };
       case '/exam':
-        return { title: t.nav.exam, subtitle: 'Timed CBSE Board Exam Simulation' };
+        return { title: t.nav.exam, subtitle: `Timed ${gradeLabel} Board Exam Simulation` };
       case '/ai-tutor':
         return { title: t.nav.aiTutor, subtitle: '24/7 NCERT Master Teacher & Doubt Forensics' };
       case '/practice':
@@ -49,15 +51,25 @@ export const Topbar: React.FC<TopbarProps> = ({
       case '/flashcards':
         return { title: t.nav.flashcards, subtitle: 'High-Yield Concept & Definition Cards' };
       case '/formulas':
-        return { title: t.nav.formulas, subtitle: 'Verified Formula Cheat-Sheet & Derivations' };
+        return { title: t.nav.formulas, subtitle: `Verified ${gradeLabel} Formula Cheat-Sheet & Derivations` };
       case '/study-planner':
-        return { title: t.nav.studyPlanner, subtitle: '30-Day CBSE Board Exam Strategy & Checklists' };
+        return { title: t.nav.studyPlanner, subtitle: `30-Day ${gradeLabel} Board Exam Strategy & Checklists` };
       case '/bookmarks':
         return { title: t.nav.bookmarks, subtitle: 'Saved Tricky Questions & Explanations' };
+      case '/pyq-hub':
+        return {
+          title: language === 'hi' ? 'सीबीएसई पिछले वर्षों के प्रश्न' : 'CBSE Previous Year Questions',
+          subtitle: `${gradeLabel} Authentic Board Examination PYQ Hub (2020–2024)`
+        };
+      case '/competency-practice':
+        return {
+          title: language === 'hi' ? 'योग्यता-आधारित अभ्यास' : 'CBSE Competency-Based Practice',
+          subtitle: `${gradeLabel} NEP 2020 Case-Based, Application & Assertion-Reason Practice`
+        };
       case '/settings':
-        return { title: t.nav.settings, subtitle: 'Preferences, Language & Local Data Management' };
+        return { title: t.nav.settings, subtitle: 'Preferences, Language, Class & Local Data Management' };
       default:
-        return { title: 'BoardAce AI', subtitle: 'CBSE Class 12 Preparation' };
+        return { title: 'BoardAce AI', subtitle: `${gradeLabel} Board Exam Preparation` };
     }
   };
 
@@ -107,6 +119,34 @@ export const Topbar: React.FC<TopbarProps> = ({
             <Clock className="w-3.5 h-3.5 text-amber-500" />
             <span>{t.nav.examMode}</span>
           </Link>
+
+          {/* Class Switcher Pill */}
+          <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700 text-xs font-bold">
+            <button
+              onClick={() => setGrade('10')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                grade === '10'
+                  ? 'bg-emerald-600 text-white shadow-xs font-black'
+                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+              }`}
+              title="Switch to CBSE Class 10 Curriculum"
+              aria-label="Switch to CBSE Class 10"
+            >
+              <span className="text-[11px] font-bold">Class 10</span>
+            </button>
+            <button
+              onClick={() => setGrade('12')}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                grade === '12'
+                  ? 'bg-indigo-600 text-white shadow-xs font-black'
+                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+              }`}
+              title="Switch to CBSE Class 12 Curriculum"
+              aria-label="Switch to CBSE Class 12"
+            >
+              <span className="text-[11px] font-bold">Class 12</span>
+            </button>
+          </div>
 
           {/* Language Toggle */}
           <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700 text-xs font-bold">

@@ -1,4 +1,4 @@
-import { Question } from '../types/quiz';
+import { Question, GradeClass } from '../types/quiz';
 
 /**
  * Authentic Curated CBSE Class 12 Board Exam Questions (Session 2026–27)
@@ -8,7 +8,7 @@ import { Question } from '../types/quiz';
  * Fully enriched with English and natural Hindi (हिन्दी) translations.
  */
 
-export const CURATED_BOARD_QUESTIONS: Question[] = [
+export const CURATED_CLASS_12_QUESTIONS: Question[] = [
   // ==========================================
   // MATHEMATICS (041)
   // ==========================================
@@ -777,16 +777,442 @@ export const CURATED_BOARD_QUESTIONS: Question[] = [
   }
 ];
 
+/**
+ * Authentic Curated CBSE Class 10 Board Exam Questions (Session 2026–27)
+ * Across Mathematics (041), Science (086), Social Science (087), and English (184).
+ * Fully aligned with official NCERT rationalized curriculum with English & Hindi translations.
+ */
+export const CURATED_CLASS_10_QUESTIONS: Question[] = [
+  // ==========================================
+  // CLASS 10 MATHEMATICS (041)
+  // ==========================================
+  {
+    id: 'math-10-01',
+    subject: 'mathematics',
+    chapter: 'Real Numbers',
+    topic: 'Fundamental Theorem of Arithmetic',
+    grade: '10',
+    difficulty: 'easy',
+    questionType: 'mcq',
+    question: 'If two positive integers a and b are written as a = x³y² and b = xy³, where x and y are prime numbers, then HCF(a, b) is:',
+    questionHi: 'यदि दो धनात्मक पूर्णांक a और b को a = x³y² तथा b = xy³ के रूप में लिखा जाता है, जहाँ x और y अभाज्य संख्याएँ हैं, तो HCF(a, b) होगा:',
+    options: ['xy', 'xy²', 'x³y³', 'x²y²'],
+    optionsHi: ['xy', 'xy²', 'x³y³', 'x²y²'],
+    correctAnswer: 'xy²',
+    correctAnswerHi: 'xy²',
+    explanation: 'Fundamental Theorem of Arithmetic:\nHCF of two numbers is the product of the smallest power of each common prime factor involved in the numbers.\nCommon prime factors of a and b are x and y.\nSmallest power of x = 1 (from b = x¹y³).\nSmallest power of y = 2 (from a = x³y²).\nTherefore, HCF(a, b) = x¹ · y² = xy².',
+    explanationHi: 'अंकगणित की आधारभूत प्रमेय के अनुसार:\nदो संख्याओं का HCF उनमें उभयनिष्ठ प्रत्येक अभाज्य गुणनखण्ड की सबसे छोटी घात का गुणनफल होता है।\nx की सबसे छोटी घात = 1 तथा y की सबसे छोटी घात = 2 है।\nअतः HCF(a, b) = xy².',
+    pitfall: 'Finding LCM instead of HCF. LCM would be the greatest power: x³y³.',
+    pitfallHi: 'HCF के स्थान पर LCM निकाल देना (LCM = x³y³ होता है)।',
+    boardTip: 'NCERT Standard Section A staple. Remember: HCF uses the minimum power; LCM uses the maximum power.',
+    boardTipHi: 'ध्यान रखें: HCF में न्यूनतम घात ली जाती है तथा LCM में अधिकतम घात।',
+    source: 'curated'
+  },
+  {
+    id: 'math-10-02',
+    subject: 'mathematics',
+    chapter: 'Quadratic Equations',
+    topic: 'Discriminant and Nature of Roots',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is:',
+    questionHi: 'द्विघात समीकरण 2x² - 4x + 3 = 0 का विविक्तकर (Discriminant) क्या होगा?',
+    options: ['-8', '8', '-16', '16'],
+    optionsHi: ['-8', '8', '-16', '16'],
+    correctAnswer: '-8',
+    correctAnswerHi: '-8',
+    explanation: 'Standard form ax² + bx + c = 0.\nHere a = 2, b = -4, c = 3.\nDiscriminant D = b² - 4ac\nD = (-4)² - 4(2)(3) = 16 - 24 = -8.\nSince D < 0, the equation has no real roots (two distinct complex roots).',
+    explanationHi: 'मानक रूप ax² + bx + c = 0 से तुलना करने पर:\na = 2, b = -4, c = 3.\nविविक्तकर D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8.\nचूंकि D < 0 है, अतः इस समीकरण का कोई वास्तविक मूल नहीं है।',
+    pitfall: 'Squaring -4 and writing -16 instead of +16.',
+    pitfallHi: '(-4)² को +16 के बजाय -16 लिख देना।',
+    boardTip: 'Check nature of roots: D > 0 (two distinct real roots), D = 0 (two equal real roots), D < 0 (no real roots).',
+    boardTipHi: 'मूलों की प्रकृति: D > 0 (दो भिन्न वास्तविक मूल), D = 0 (दो बराबर वास्तविक मूल), D < 0 (कोई वास्तविक मूल नहीं)।',
+    source: 'curated'
+  },
+  {
+    id: 'math-10-03',
+    subject: 'mathematics',
+    chapter: 'Arithmetic Progressions',
+    topic: 'nth Term of an AP',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'If the 17th term of an AP exceeds its 10th term by 7, then the common difference (d) is:',
+    questionHi: 'यदि किसी समांतर श्रेढ़ी (AP) का 17वाँ पद उसके 10वें पद से 7 अधिक है, तो सार्व अंतर (d) है:',
+    options: ['1', '2', '7', '-1'],
+    optionsHi: ['1', '2', '7', '-1'],
+    correctAnswer: '1',
+    correctAnswerHi: '1',
+    explanation: 'Formula for nth term: aₙ = a + (n - 1)d.\n17th term: a₁₇ = a + 16d.\n10th term: a₁₀ = a + 9d.\nGiven: a₁₇ - a₁₀ = 7\n(a + 16d) - (a + 9d) = 7\n7d = 7 => d = 1.',
+    explanationHi: 'nवें पद का सूत्र: aₙ = a + (n - 1)d.\na₁₇ = a + 16d तथा a₁₀ = a + 9d.\nप्रश्नानुसार: a₁₇ - a₁₀ = 7\n(a + 16d) - (a + 9d) = 7 => 7d = 7 => d = 1.',
+    pitfall: 'Setting a₁₇ + a₁₀ = 7 instead of the difference.',
+    pitfallHi: 'अंतर के स्थान पर योग कर देना।',
+    boardTip: 'Notice that the first term "a" cancels out completely in such difference equations.',
+    boardTipHi: 'ऐसे प्रश्नों में प्रथम पद "a" सदैव कट जाता है, अतः सीधा 16d - 9d = 7 लिख सकते हैं।',
+    source: 'curated'
+  },
+  {
+    id: 'math-10-04',
+    subject: 'mathematics',
+    chapter: 'Introduction to Trigonometry',
+    topic: 'Trigonometric Identities & Standard Angles',
+    grade: '10',
+    difficulty: 'easy',
+    questionType: 'mcq',
+    question: 'The value of 2 tan²(45°) + cos²(30°) - sin²(60°) is equal to:',
+    questionHi: '2 tan²(45°) + cos²(30°) - sin²(60°) का मान किसके बराबर है?',
+    options: ['2', '1', '0', '√3'],
+    optionsHi: ['2', '1', '0', '√3'],
+    correctAnswer: '2',
+    correctAnswerHi: '2',
+    explanation: 'Substitute the standard trigonometric values:\ntan(45°) = 1 => tan²(45°) = 1² = 1\ncos(30°) = √3/2 => cos²(30°) = 3/4\nsin(60°) = √3/2 => sin²(60°) = 3/4\nExpression = 2(1) + 3/4 - 3/4 = 2.',
+    explanationHi: 'मानक मान रखने पर:\ntan(45°) = 1 => tan²(45°) = 1\ncos(30°) = √3/2 => cos²(30°) = 3/4\nsin(60°) = √3/2 => sin²(60°) = 3/4\nव्यंजक = 2(1) + 3/4 - 3/4 = 2.',
+    pitfall: 'Since cos(30°) = sin(60°), their squares cancel out immediately.',
+    pitfallHi: 'cos(30°) और sin(60°) बराबर होते हैं, अतः उनके वर्ग परस्पर कट जाते हैं।',
+    boardTip: 'Complementary relationship: sin(90° - θ) = cos(θ). Hence cos²(30°) - sin²(60°) = 0.',
+    boardTipHi: 'पूरक कोण संबंध: cos²(30°) - sin²(60°) = 0 सदैव याद रखें।',
+    source: 'curated'
+  },
+  {
+    id: 'math-10-05',
+    subject: 'mathematics',
+    chapter: 'Coordinate Geometry',
+    topic: 'Section Formula',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'The coordinates of the point P which divides the line segment joining A(1, 3) and B(4, 6) in the ratio 2 : 1 internally are:',
+    questionHi: 'बिंदुओं A(1, 3) और B(4, 6) को मिलाने वाले रेखाखंड को 2 : 1 के अनुपात में अंतः विभाजित करने वाले बिंदु P के निर्देशांक हैं:',
+    options: ['(3, 5)', '(2, 4)', '(5, 3)', '(4, 5)'],
+    optionsHi: ['(3, 5)', '(2, 4)', '(5, 3)', '(4, 5)'],
+    correctAnswer: '(3, 5)',
+    correctAnswerHi: '(3, 5)',
+    explanation: 'Internal Section Formula: P(x, y) = [ (m₁x₂ + m₂x₁)/(m₁ + m₂), (m₁y₂ + m₂y₁)/(m₁ + m₂) ]\nHere m₁ = 2, m₂ = 1, (x₁, y₁) = (1, 3), (x₂, y₂) = (4, 6).\nx = (2·4 + 1·1) / (2 + 1) = (8 + 1) / 3 = 9/3 = 3.\ny = (2·6 + 1·3) / (2 + 1) = (12 + 3) / 3 = 15/3 = 5.\nTherefore, P is (3, 5).',
+    explanationHi: 'विभाजन सूत्र: P(x, y) = [ (m₁x₂ + m₂x₁)/(m₁ + m₂), (m₁y₂ + m₂y₁)/(m₁ + m₂) ]\nm₁ = 2, m₂ = 1, x₁ = 1, y₁ = 3, x₂ = 4, y₂ = 6.\nx = (2·4 + 1·1) / 3 = 9/3 = 3.\ny = (2·6 + 1·3) / 3 = 15/3 = 5.\nअतः अभीष्ट बिंदु (3, 5) है।',
+    pitfall: 'Swapping m₁ and m₂ or associating m₁ with (x₁, y₁). Always cross-multiply m₁ with point B and m₂ with point A.',
+    pitfallHi: 'अनुपातों को उल्टा गुणा कर देना। m₁ का गुणा B के निर्देशांकों से तथा m₂ का A से होता है।',
+    boardTip: 'NCERT Check: Midpoint is a special case of section formula where m₁ : m₂ = 1 : 1.',
+    boardTipHi: 'मध्य बिंदु विभाजन सूत्र का विशेष रूप है जहाँ अनुपात 1 : 1 होता है।',
+    source: 'curated'
+  },
+  {
+    id: 'math-10-06',
+    subject: 'mathematics',
+    chapter: 'Statistics',
+    topic: 'Empirical Relationship',
+    grade: '10',
+    difficulty: 'easy',
+    questionType: 'mcq',
+    question: 'For a moderately skewed distribution, if Mean = 30 and Median = 32, then the Mode is:',
+    questionHi: 'एक मध्यम विषम बंटन के लिए, यदि माध्य (Mean) = 30 तथा माध्यक (Median) = 32 है, तो बहुलक (Mode) होगा:',
+    options: ['36', '34', '32', '38'],
+    optionsHi: ['36', '34', '32', '38'],
+    correctAnswer: '36',
+    correctAnswerHi: '36',
+    explanation: 'Empirical relationship between measures of central tendency:\nMode = 3 Median - 2 Mean\nMode = 3(32) - 2(30)\nMode = 96 - 60 = 36.',
+    explanationHi: 'केंद्रीय प्रवृत्ति के मापों में आनुभविक संबंध:\nबहुलक = 3 माध्यक - 2 माध्य\nबहुलक = 3(32) - 2(30) = 96 - 60 = 36.',
+    pitfall: 'Remembering the wrong formula like Mode = 2 Median - 3 Mean.',
+    pitfallHi: 'सूत्र में 3 व 2 को उल्टा याद रखना। बहुलक = 3 माध्यक - 2 माध्य सही सूत्र है।',
+    boardTip: 'Memory rule: "3 Medians - 2 Means". Median has more letters than Mean, so it gets the larger multiplier 3.',
+    boardTipHi: 'याद रखने का नियम: Median बड़ा शब्द है, इसलिए इसके साथ 3 आता है, Mean के साथ 2।',
+    source: 'curated'
+  },
+
+  // ==========================================
+  // CLASS 10 SCIENCE (086)
+  // ==========================================
+  {
+    id: 'sci-10-01',
+    subject: 'science',
+    chapter: 'Chemical Reactions and Equations',
+    topic: 'Oxidation and Reduction (Redox Reactions)',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In the reaction: MnO₂ + 4HCl → MnCl₂ + 2H₂O + Cl₂, the substance that is oxidized is:',
+    questionHi: 'अभिक्रिया MnO₂ + 4HCl → MnCl₂ + 2H₂O + Cl₂ में उपचयित (Oxidized) होने वाला पदार्थ है:',
+    options: ['HCl', 'MnO₂', 'MnCl₂', 'Cl₂'],
+    optionsHi: ['HCl', 'MnO₂', 'MnCl₂', 'Cl₂'],
+    correctAnswer: 'HCl',
+    correctAnswerHi: 'HCl',
+    explanation: 'Oxidation is the loss of hydrogen or gain of oxygen.\nIn this reaction, HCl loses hydrogen to form Cl₂. Therefore, HCl is oxidized to Cl₂.\nMnO₂ loses oxygen to form MnCl₂, meaning MnO₂ is reduced.',
+    explanationHi: 'उपचयन (Oxidation) का अर्थ है हाइड्रोजन का ह्रास या ऑक्सीजन की वृद्धि।\nयहाँ HCl से हाइड्रोजन हटकर Cl₂ बन रहा है, अतः HCl का उपचयन हुआ है।\nMnO₂ से ऑक्सीजन हट रही है, अतः इसका अपचयन हुआ है।',
+    pitfall: 'Picking Cl₂ instead of the reactant HCl. The oxidized substance is always a reactant, not a product.',
+    pitfallHi: 'उत्पाद Cl₂ को चुनना। उपचयित या अपचयित होने वाला पदार्थ सदैव अभिकारक (Reactant) होता है।',
+    boardTip: 'CBSE 1-mark rule: Oxidation/Reduction reactants are ALWAYS on the left-hand side of the arrow.',
+    boardTipHi: 'याद रखें: उपचयित/अपचयित पदार्थ सदैव तीर के बाईं ओर (अभिकारक) होते हैं।',
+    source: 'curated'
+  },
+  {
+    id: 'sci-10-02',
+    subject: 'science',
+    chapter: 'Acids, Bases and Salts',
+    topic: 'Plaster of Paris & Gypsum',
+    grade: '10',
+    difficulty: 'easy',
+    questionType: 'mcq',
+    question: 'The chemical formula of Plaster of Paris (POP) is:',
+    questionHi: 'प्लास्टर ऑफ पेरिस (POP) का रासायनिक सूत्र क्या है?',
+    options: ['CaSO₄·½H₂O', 'CaSO₄·2H₂O', 'CaSO₄·H₂O', 'CaSO₄·5H₂O'],
+    optionsHi: ['CaSO₄·½H₂O', 'CaSO₄·2H₂O', 'CaSO₄·H₂O', 'CaSO₄·5H₂O'],
+    correctAnswer: 'CaSO₄·½H₂O',
+    correctAnswerHi: 'CaSO₄·½H₂O',
+    explanation: 'Plaster of Paris is calcium sulphate hemihydrate: CaSO₄·½H₂O.\nIt is prepared by heating Gypsum (CaSO₄·2H₂O) at 373 K (100°C):\nCaSO₄·2H₂O → CaSO₄·½H₂O + 1½H₂O.',
+    explanationHi: 'प्लास्टर ऑफ पेरिस कैल्शियम सल्फेट अर्ध-हाइड्रेट (हेमीहाइड्रेट) है: CaSO₄·½H₂O.\nयह जिप्सम (CaSO₄·2H₂O) को 373 K पर गर्म करने पर प्राप्त होता है।',
+    pitfall: 'Confusing Plaster of Paris (½ H₂O) with Gypsum (2 H₂O).',
+    pitfallHi: 'प्लास्टर ऑफ पेरिस (½ H₂O) को जिप्सम (2 H₂O) के साथ भ्रमित करना।',
+    boardTip: 'Why ½ H₂O? Because two formula units of CaSO₄ share one molecule of water of crystallisation: 2CaSO₄·H₂O.',
+    boardTipHi: '½ H₂O क्यों? क्योंकि CaSO₄ की दो सूत्र इकाइयाँ मिलकर जल के एक अणु से जुड़ी होती हैं।',
+    source: 'curated'
+  },
+  {
+    id: 'sci-10-03',
+    subject: 'science',
+    chapter: 'Life Processes',
+    topic: 'Respiration and Breakdown of Glucose',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'During cellular respiration, the breakdown of pyruvate into carbon dioxide, water, and energy takes place in:',
+    questionHi: 'कोशिकीय श्वसन के दौरान पायरुवेट का कार्बन डाइऑक्साइड, जल तथा ऊर्जा में विखंडन कहाँ होता है?',
+    options: ['Mitochondria', 'Cytoplasm', 'Chloroplast', 'Nucleus'],
+    optionsHi: ['माइटोकॉन्ड्रिया में', 'कोशिकाद्रव्य में', 'क्लोरोप्लास्ट में', 'केन्द्रक में'],
+    correctAnswer: 'Mitochondria',
+    correctAnswerHi: 'माइटोकॉन्ड्रिया में',
+    explanation: 'Pathway of Glucose Breakdown (NCERT Fig. 6.8):\n1. In Cytoplasm: 6-carbon Glucose is converted into 3-carbon Pyruvate (Glycolysis).\n2. In Mitochondria (Aerobic respiration): Pyruvate is broken down into CO₂ + H₂O + 38 ATP in the presence of Oxygen.\n3. In Yeast (Anaerobic): Pyruvate -> Ethanol + CO₂ + 2 ATP.\n4. In Human muscle (Lack of O₂): Pyruvate -> Lactic Acid + 2 ATP.',
+    explanationHi: 'ग्लूकोज के विखंडन के पथ:\n1. कोशिकाद्रव्य में: ग्लूकोज (6-कार्बन) पायरुवेट (3-कार्बन) में बदलता है।\n2. माइटोकॉन्ड्रिया में (वायवीय श्वसन): ऑक्सीजन की उपस्थिति में पायरुवेट CO₂ + H₂O + ऊर्जा (ATP) में टूटता है।',
+    pitfall: 'Confusing the first step (glycolysis in cytoplasm) with the aerobic breakdown of pyruvate (in mitochondria).',
+    pitfallHi: 'कोशिकाद्रव्य में होने वाले पहले चरण को माइटोकॉन्ड्रिया में होने वाले पूर्ण विखंडन से भ्रमित करना।',
+    boardTip: 'This NCERT flowchart is one of the top 3 most frequently tested questions across all CBSE Class 10 Science papers.',
+    boardTipHi: 'यह NCERT प्रवाह आरेख (Flowchart) कक्षा 10 विज्ञान परीक्षा में सर्वाधिक पूछा जाने वाला प्रश्न है।',
+    source: 'curated'
+  },
+  {
+    id: 'sci-10-04',
+    subject: 'science',
+    chapter: 'Electricity',
+    topic: 'Resistors in Series and Parallel & Ohm’s Law',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Three resistors of 2 Ω, 3 Ω, and 6 Ω are connected in parallel. Their equivalent resistance is:',
+    questionHi: 'तीन प्रतिरोधक 2 Ω, 3 Ω तथा 6 Ω पार्श्वक्रम (समानांतर) में संयोजित हैं। इनका तुल्य प्रतिरोध होगा:',
+    options: ['1 Ω', '11 Ω', '2 Ω', '0.5 Ω'],
+    optionsHi: ['1 Ω', '11 Ω', '2 Ω', '0.5 Ω'],
+    correctAnswer: '1 Ω',
+    correctAnswerHi: '1 Ω',
+    explanation: 'For parallel combination: 1/R_p = 1/R₁ + 1/R₂ + 1/R₃\n1/R_p = 1/2 + 1/3 + 1/6\nLCM of 2, 3, 6 is 6:\n1/R_p = (3 + 2 + 1) / 6 = 6/6 = 1 Ω⁻¹\nTherefore, R_p = 1 Ω.',
+    explanationHi: 'पार्श्वक्रम संयोजन के लिए: 1/R_p = 1/R₁ + 1/R₂ + 1/R₃\n1/R_p = 1/2 + 1/3 + 1/6 = (3 + 2 + 1) / 6 = 6/6 = 1\nअतः R_p = 1 Ω.',
+    pitfall: 'Adding resistances directly (2 + 3 + 6 = 11 Ω), which is only for series combination.',
+    pitfallHi: 'श्रेणीक्रम की तरह सीधे जोड़कर 11 Ω लिख देना।',
+    boardTip: 'Golden rule of parallel circuits: The equivalent resistance is ALWAYS smaller than the smallest individual resistor (1 Ω < 2 Ω).',
+    boardTipHi: 'पार्श्वक्रम का स्वर्णिम नियम: तुल्य प्रतिरोध सबसे छोटे प्रतिरोधक से भी कम होता है (1 Ω < 2 Ω)।',
+    source: 'curated'
+  },
+  {
+    id: 'sci-10-05',
+    subject: 'science',
+    chapter: 'Light - Reflection and Refraction',
+    topic: 'Power of a Lens & Lens Formula',
+    grade: '10',
+    difficulty: 'easy',
+    questionType: 'mcq',
+    question: 'A convex lens has a focal length of +25 cm. The power of this lens is:',
+    questionHi: 'एक उत्तल लेंस की फोकस दूरी +25 cm है। इस लेंस की क्षमता (Power) क्या होगी?',
+    options: ['+4.0 D', '-4.0 D', '+0.04 D', '+2.5 D'],
+    optionsHi: ['+4.0 D', '-4.0 D', '+0.04 D', '+2.5 D'],
+    correctAnswer: '+4.0 D',
+    correctAnswerHi: '+4.0 D',
+    explanation: 'Power of lens formula: P = 1 / f (in metres)\nGiven focal length f = +25 cm = +25/100 m = +0.25 m.\nP = 1 / 0.25 = +4.0 Dioptres (+4.0 D).\nSince it is a convex lens, both focal length and power are positive.',
+    explanationHi: 'लेंस की क्षमता का सूत्र: P = 1 / f (मीटर में)\nf = +25 cm = +0.25 m.\nP = 1 / 0.25 = +4.0 D.\nचूँकि यह उत्तल लेंस है, अतः फोकस दूरी एवं क्षमता धनात्मक होती है।',
+    pitfall: 'Forgetting to convert centimeters to meters before inverting (giving 1/25 = 0.04 D).',
+    pitfallHi: 'सेंटीमीटर को मीटर में बदले बिना 1/25 = 0.04 D लिख देना।',
+    boardTip: 'Unit check: 1 Dioptre (D) = 1 m⁻¹. Convex lens is always positive (+), concave lens is always negative (-).',
+    boardTipHi: 'चिह्न परिपाटी: उत्तल लेंस धनात्मक (+) तथा अवतल लेंस ऋणात्मक (-) होता है।',
+    source: 'curated'
+  },
+
+  // ==========================================
+  // CLASS 10 SOCIAL SCIENCE (087)
+  // ==========================================
+  {
+    id: 'sst-10-01',
+    subject: 'social_science',
+    chapter: 'Nationalism in India',
+    topic: 'Non-Cooperation Movement & Chauri Chaura',
+    grade: '10',
+    difficulty: 'easy',
+    questionType: 'mcq',
+    question: 'Mahatma Gandhi decided to withdraw the Non-Cooperation Movement in February 1922 because of:',
+    questionHi: 'महात्मा गांधी ने फरवरी 1922 में असहयोग आंदोलन को वापस लेने का निर्णय किस कारण लिया?',
+    options: [
+      'The violent incident at Chauri Chaura',
+      'The Jallianwala Bagh massacre',
+      'The arrest of Jawaharlal Nehru',
+      'The signing of the Poona Pact'
+    ],
+    optionsHi: [
+      'चौरी-चौरा की हिंसक घटना के कारण',
+      'जलियांवाला बाग हत्याकांड के कारण',
+      'जवाहरलाल नेहरू की गिरफ्तारी के कारण',
+      'पूना पैक्ट पर हस्ताक्षर के कारण'
+    ],
+    correctAnswer: 'The violent incident at Chauri Chaura',
+    correctAnswerHi: 'चौरी-चौरा की हिंसक घटना के कारण',
+    explanation: 'In February 1922, at Chauri Chaura in Gorakhpur (Uttar Pradesh), a peaceful demonstration turned into a violent clash where protestors set fire to a police station, killing 22 policemen. Feeling that the movement was turning violent in many places and satyagrahis needed proper training before mass struggles, Gandhiji halted the movement.',
+    explanationHi: 'फरवरी 1922 में गोरखपुर के चौरी-चौरा में एक शांतिपूर्ण जुलूस हिंसक झड़प में बदल गया और प्रदर्शनकारियों ने एक थाने में आग लगा दी जिसमें 22 पुलिसकर्मी मारे गए। गांधीजी ने महसूस किया कि आंदोलन हिंसक हो रहा है, अतः उन्होंने इसे वापस ले लिया।',
+    pitfall: 'Confusing Jallianwala Bagh (which occurred in April 1919 and sparked the Non-Cooperation Movement) with Chauri Chaura (which ended it in 1922).',
+    pitfallHi: 'जलियांवाला बाग (1919 - जिससे आंदोलन शुरू हुआ) और चौरी-चौरा (1922 - जिससे आंदोलन समाप्त हुआ) में भ्रमित होना।',
+    boardTip: 'Timeline milestone: Non-Cooperation launched in 1920 (Nagpur session), withdrawn February 1922 (Chauri Chaura).',
+    boardTipHi: 'तिथियां याद रखें: 1920 में असहयोग आंदोलन शुरू हुआ और फरवरी 1922 में चौरी-चौरा के बाद वापस लिया गया।',
+    source: 'curated'
+  },
+  {
+    id: 'sst-10-02',
+    subject: 'social_science',
+    chapter: 'Power Sharing',
+    topic: 'Case Studies: Belgium and Sri Lanka',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In the capital city Brussels of Belgium, what percentage of people speak French?',
+    questionHi: 'बेल्जियम की राजधानी ब्रुसेल्स में कितने प्रतिशत लोग फ्रेंच बोलते हैं?',
+    options: ['80%', '20%', '59%', '40%'],
+    optionsHi: ['80%', '20%', '59%', '40%'],
+    correctAnswer: '80%',
+    correctAnswerHi: '80%',
+    explanation: 'Ethnic composition of Belgium (NCERT Democratic Politics - II):\n- In the whole country: 59% speak Dutch (Flemish region), 40% speak French (Wallonia region), 1% speak German.\n- In the capital Brussels: 80% speak French, while only 20% speak Dutch.\nThis special tension arose because the Dutch-speaking community was in majority in the country, but in minority in the capital.',
+    explanationHi: 'बेल्जियम का जातीय संयोजन:\n- पूरे देश में: 59% डच भाषी, 40% फ्रेंच भाषी, 1% जर्मन भाषी।\n- राजधानी ब्रुसेल्स में: 80% फ्रेंच भाषी और केवल 20% डच भाषी हैं।\nडच भाषी लोग देश में बहुमत में थे परंतु राजधानी में अल्पमत में।',
+    pitfall: 'Selecting 40% (which is the French-speaking population of the country as a whole, not the capital Brussels).',
+    pitfallHi: '40% चुनना जो कि पूरे देश का अनुपात है, राजधानी ब्रुसेल्स का नहीं।',
+    boardTip: 'Common CBSE trick question: Always read whether the question asks for "Belgium country" or "capital city Brussels".',
+    boardTipHi: 'ध्यान से पढ़ें कि प्रश्न पूरे देश के बारे में पूछ रहा है या राजधानी ब्रुसेल्स के बारे में।',
+    source: 'curated'
+  },
+  {
+    id: 'sst-10-03',
+    subject: 'social_science',
+    chapter: 'Sectors of the Indian Economy',
+    topic: 'Disguised Unemployment in Agriculture',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'A situation where more people are working than necessary in a field, such that even if a few are removed, the total production does not fall, is called:',
+    questionHi: 'ऐसी स्थिति जिसमें किसी खेत में आवश्यकता से अधिक लोग काम कर रहे हों, और यदि कुछ लोगों को हटा भी दिया जाए तो उत्पादन पर कोई प्रभाव नहीं पड़ता, कहलाती है:',
+    options: [
+      'Disguised unemployment',
+      'Seasonal unemployment',
+      'Frictional unemployment',
+      'Educated unemployment'
+    ],
+    optionsHi: [
+      'प्रच्छन्न (छिपी हुई) बेरोजगारी',
+      'मौसमी बेरोजगारी',
+      'घर्षण बेरोजगारी',
+      'शिक्षित बेरोजगारी'
+    ],
+    correctAnswer: 'Disguised unemployment',
+    correctAnswerHi: 'प्रच्छन्न (छिपी हुई) बेरोजगारी',
+    explanation: 'Disguised unemployment (also called Underemployment):\nWorkers appear to be employed, but their marginal productivity is zero. If some workers are shifted to another job or removed, agricultural output remains unchanged.\nIt is widely prevalent in rural India among small farming families.',
+    explanationHi: 'प्रच्छन्न या छिपी हुई बेरोजगारी (अल्प-रोजगार):\nलोग काम करते हुए प्रतीत होते हैं लेकिन उनकी सीमांत उत्पादकता शून्य होती है। यदि कुछ श्रमिकों को हटा भी लिया जाए तो कुल उत्पादन में कोई गिरावट नहीं आती।',
+    pitfall: 'Confusing disguised unemployment with seasonal unemployment (which occurs when farmers cannot find work during off-season months).',
+    pitfallHi: 'इसे मौसमी बेरोजगारी समझना, जो कि वर्ष के कुछ महीनों में काम न मिलने की स्थिति होती है।',
+    boardTip: 'Key phrase to identify in CBSE questions: "Marginal productivity is zero" or "Removing workers does not reduce total production".',
+    boardTipHi: 'पहचानने का मुख्य बिंदु: श्रमिकों को हटाने पर भी कुल उत्पादन में कमी न आना।',
+    source: 'curated'
+  },
+
+  // ==========================================
+  // CLASS 10 ENGLISH (184)
+  // ==========================================
+  {
+    id: 'eng-10-01',
+    subject: 'english',
+    chapter: 'A Letter to God (G.L. Fuentes)',
+    topic: 'Lencho’s Faith and Irony of the Situation',
+    grade: '10',
+    difficulty: 'easy',
+    questionType: 'mcq',
+    question: 'When the raindrops began to fall, Lencho compared the large drops of rain to:',
+    questionHi: 'जब वर्षा की बूँदें गिरने लगीं, तो लेंचो ने बड़ी बूँदों की तुलना किससे की?',
+    options: [
+      'New silver coins of ten cents',
+      'Frozen pearls',
+      'Golden nuggets',
+      'Diamonds'
+    ],
+    optionsHi: [
+      'दस सेंट के नए सिक्कों से',
+      'जमे हुए मोतियों से',
+      'सोने के टुकड़ों से',
+      'हीरों से'
+    ],
+    correctAnswer: 'New silver coins of ten cents',
+    correctAnswerHi: 'दस सेंट के नए सिक्कों से',
+    explanation: 'In the chapter "A Letter to God" by G.L. Fuentes, Lencho stepped out to feel the rain and happily exclaimed: "These aren’t raindrops falling from the sky, they are new coins. The big drops are ten cent pieces and the little ones are fives." Later, when hailstones fell, they were compared to frozen pearls.',
+    explanationHi: 'जी.एल. फ्यूएंट्स के पाठ "ए लेटर टू गॉड" में, लेंचो ने बारिश की बड़ी बूंदों की तुलना दस सेंट के नए सिक्कों से तथा छोटी बूंदों की पांच सेंट के सिक्कों से की थी।',
+    pitfall: 'Confusing rain drops (new coins) with hailstones (frozen pearls / silver coins).',
+    pitfallHi: 'बारिश की बूंदों (नए सिक्के) और ओलों (जमे हुए मोती) के बीच भ्रमित होना।',
+    boardTip: 'Metaphors in NCERT: Raindrops = new coins (prosperity); Hailstones = frozen pearls / destroying locusts.',
+    boardTipHi: 'रूपक याद रखें: बारिश = नए सिक्के; ओले = जमे हुए मोती।',
+    source: 'curated'
+  },
+  {
+    id: 'eng-10-02',
+    subject: 'english',
+    chapter: 'Nelson Mandela: Long Walk to Freedom',
+    topic: 'Mandela’s Philosophy on Courage and People',
+    grade: '10',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'According to Nelson Mandela, what is the greatest wealth of his country South Africa?',
+    questionHi: 'नेल्सन मंडेला के अनुसार, उनके देश दक्षिण अफ्रीका की सबसे बड़ी संपत्ति क्या है?',
+    options: [
+      'Its people, finer and truer than the purest diamonds',
+      'Its rich mineral and gem reserves beneath the soil',
+      'Its vast military force and modern infrastructure',
+      'Its fertile agricultural lands and wildlife'
+    ],
+    optionsHi: [
+      'यहाँ के लोग, जो शुद्धतम हीरों से भी अधिक सच्चे और श्रेष्ठ हैं',
+      'भूमि के नीचे दबे इसके समृद्ध खनिज और रत्न भंडार',
+      'इसकी विशाल सैन्य शक्ति और बुनियादी ढांचा',
+      'इसकी उपजाऊ कृषि भूमि और वन्य जीवन'
+    ],
+    correctAnswer: 'Its people, finer and truer than the purest diamonds',
+    correctAnswerHi: 'यहाँ के लोग, जो शुद्धतम हीरों से भी अधिक सच्चे और श्रेष्ठ हैं',
+    explanation: 'Nelson Mandela writes in his autobiography: "My country is rich in the minerals and gems that lie beneath its soil, but I have always known that its greatest wealth is its people, finer and truer than the purest diamonds."',
+    explanationHi: 'नेल्सन मंडेला ने अपनी आत्मकथा में लिखा है: "मेरा देश खनिजों और रत्नों में समृद्ध है, लेकिन मैंने हमेशा यह माना है कि इसकी सबसे बड़ी दौलत इसके लोग हैं, जो शुद्धतम हीरों से भी अधिक सच्चे और श्रेष्ठ हैं।"',
+    pitfall: 'Selecting mineral and gem reserves. While South Africa is famous for gold and diamond mines, Mandela clearly elevated human beings above precious stones.',
+    pitfallHi: 'खनिज और हीरों को चुनना। मंडेला ने स्पष्ट रूप से अपने देश के लोगों को हीरों से भी श्रेष्ठ बताया है।',
+    boardTip: 'Key quotation to memorize for Class 10 Board 3-mark analytical questions on Mandela’s leadership vision.',
+    boardTipHi: 'बोर्ड परीक्षा के दीर्घ उत्तरीय प्रश्नों के लिए यह उद्धरण अत्यंत महत्वपूर्ण है।',
+    source: 'curated'
+  }
+];
+
+export const CURATED_BOARD_QUESTIONS: Question[] = [
+  ...CURATED_CLASS_12_QUESTIONS,
+  ...CURATED_CLASS_10_QUESTIONS,
+];
+
 export function getCuratedQuestions(
   subject?: string,
   chapter?: string,
   count: number = 5,
-  difficulty?: string
+  difficulty?: string,
+  grade: GradeClass = '12'
 ): Question[] {
-  let filtered = [...CURATED_BOARD_QUESTIONS];
+  // First, filter by the requested class grade strictly to avoid mixing Class 10 and 12
+  let pool = CURATED_BOARD_QUESTIONS.filter(q => (q.grade || '12') === grade);
+  let filtered = [...pool];
 
   if (subject) {
-    filtered = filtered.filter(q => q.subject.toLowerCase() === subject.toLowerCase());
+    const subMatches = filtered.filter(q => q.subject.toLowerCase() === subject.toLowerCase());
+    if (subMatches.length > 0) {
+      filtered = subMatches;
+    }
   }
 
   if (chapter && chapter !== 'all') {
@@ -798,7 +1224,7 @@ export function getCuratedQuestions(
     }
   }
 
-  if (difficulty) {
+  if (difficulty && difficulty !== 'mixed') {
     const diffMatches = filtered.filter(q => q.difficulty === difficulty);
     if (diffMatches.length > 0) {
       filtered = diffMatches;
@@ -806,16 +1232,18 @@ export function getCuratedQuestions(
   }
 
   if (filtered.length < count && subject) {
-    const sameSubjectFallback = CURATED_BOARD_QUESTIONS.filter(
+    const sameSubjectFallback = pool.filter(
       q => q.subject.toLowerCase() === subject.toLowerCase() && !filtered.some(f => f.id === q.id)
     );
     filtered = [...filtered, ...sameSubjectFallback];
   }
 
   if (filtered.length === 0) {
-    filtered = [...CURATED_BOARD_QUESTIONS];
+    filtered = [...pool];
   }
 
-  // Shuffle slightly and slice to count
-  return filtered.slice(0, count);
+  // Shuffle and slice to count
+  const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 }
+

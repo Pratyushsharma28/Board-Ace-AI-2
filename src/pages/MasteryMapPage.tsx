@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { getSavedAttempts } from '../utils/storage';
 import { SubjectId } from '../types/quiz';
 import {
@@ -37,19 +37,20 @@ interface ChapterMasteryStats {
 
 export const MasteryMapPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, subjects, gradeLabel } = useClass();
   const navigate = useNavigate();
 
   const [activeSubject, setActiveSubject] = useState<'all' | SubjectId>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('all');
 
-  const attempts = useMemo(() => getSavedAttempts(), []);
+  const attempts = useMemo(() => getSavedAttempts(grade), [grade]);
 
   // Compute chapter-wise mastery using verified actual attempts
   const chapterStats = useMemo(() => {
     const list: ChapterMasteryStats[] = [];
 
-    CBSE_CLASS_12_SUBJECTS.forEach((subj) => {
+    subjects.forEach((subj) => {
       subj.chapters.forEach((ch) => {
         // Find matching questions across attempts
         let total = 0;
@@ -281,21 +282,20 @@ export const MasteryMapPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         {/* Subject Filter Tabs */}
         <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl overflow-x-auto custom-scrollbar">
-          {(['all', 'mathematics', 'physics', 'chemistry'] as const).map((sub) => (
+          {[
+            { id: 'all', label: language === 'hi' ? 'सभी विषय' : `All Subjects (${summary.totalChapters})` },
+            ...subjects.map(s => ({ id: s.id, label: translateSubject(s.id) }))
+          ].map((sub) => (
             <button
-              key={sub}
-              onClick={() => setActiveSubject(sub)}
+              key={sub.id}
+              onClick={() => setActiveSubject(sub.id as any)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                activeSubject === sub
+                activeSubject === sub.id
                   ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              {sub === 'all'
-                ? language === 'hi'
-                  ? 'सभी विषय (All)'
-                  : 'All Subjects (37 Chapters)'
-                : translateSubject(sub)}
+              {sub.label}
             </button>
           ))}
         </div>

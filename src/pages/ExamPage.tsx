@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { getCuratedQuestions } from '../data/sampleQuestions';
 import {
   saveAttempt,
@@ -35,11 +35,19 @@ export const ExamPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { language, t, translateSubject } = useLanguage();
+  const { grade, subjects, gradeLabel } = useClass();
 
   const resumeRequested = searchParams.get('resume') === 'true';
 
   // Config form state
-  const [subject, setSubject] = useState<SubjectId>('physics');
+  const [subject, setSubject] = useState<SubjectId>(() => subjects[0]?.id || 'mathematics');
+
+  useEffect(() => {
+    if (!subjects.some((s) => s.id === subject)) {
+      setSubject(subjects[0]?.id || 'mathematics');
+    }
+  }, [grade, subjects]);
+
   const [paperType, setPaperType] = useState<'standard' | 'full'>('standard'); // standard: 15 Qs (30m), full: 30 Qs (60m)
   const [rulesAcknowledged, setRulesAcknowledged] = useState(false);
 
@@ -88,11 +96,11 @@ export const ExamPage: React.FC = () => {
 
   const handleStartExam = () => {
     const qCount = paperType === 'standard' ? 15 : 30;
-    const questions = getCuratedQuestions(subject, undefined, qCount, 'mixed');
+    const questions = getCuratedQuestions(subject, undefined, qCount, 'mixed', grade);
 
     const config: QuizConfig = {
       board: 'CBSE',
-      grade: '12',
+      grade,
       subject,
       chapter: 'all',
       difficulty: 'mixed',
@@ -222,7 +230,7 @@ export const ExamPage: React.FC = () => {
       <div className="space-y-1">
         <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
           <Clock className="w-4 h-4" />
-          <span>CBSE CLASS 12 EXAMINATION PROTOCOL</span>
+          <span>{gradeLabel.toUpperCase()} EXAMINATION PROTOCOL</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
           {language === 'hi' ? 'बोर्ड परीक्षा सिम्युलेटर' : 'Board Exam Simulator'}
@@ -275,8 +283,8 @@ export const ExamPage: React.FC = () => {
           <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {language === 'hi' ? '1. परीक्षा विषय चुनें' : '1. Select Exam Subject'}
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {CBSE_CLASS_12_SUBJECTS.map((sub) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {subjects.map((sub) => {
               const isSelected = subject === sub.id;
               return (
                 <button

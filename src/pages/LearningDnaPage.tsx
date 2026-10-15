@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import { getSavedAttempts, calculateAnalytics } from '../utils/storage';
 import { getRevisionItems } from '../utils/revisionEngine';
 import { SubjectId, QuizAttempt } from '../types/quiz';
@@ -24,9 +25,10 @@ import {
 
 export const LearningDnaPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, subjects } = useClass();
   const navigate = useNavigate();
 
-  const attempts: QuizAttempt[] = useMemo(() => getSavedAttempts(), []);
+  const attempts: QuizAttempt[] = useMemo(() => getSavedAttempts(grade), [grade]);
   const revItems = useMemo(() => getRevisionItems(), []);
   const analytics = useMemo(() => calculateAnalytics(), []);
 
@@ -34,25 +36,25 @@ export const LearningDnaPage: React.FC = () => {
 
   // 1. Subject-wise Strengths Analysis
   const subjectBreakdown = useMemo(() => {
-    const map: Record<SubjectId, { attempted: number; correct: number; chapters: Set<string> }> = {
-      mathematics: { attempted: 0, correct: 0, chapters: new Set() },
-      physics: { attempted: 0, correct: 0, chapters: new Set() },
-      chemistry: { attempted: 0, correct: 0, chapters: new Set() },
-    };
+    const map: Partial<Record<SubjectId, { attempted: number; correct: number; chapters: Set<string> }>> = {};
+    subjects.forEach((s) => {
+      map[s.id] = { attempted: 0, correct: 0, chapters: new Set() };
+    });
 
     attempts.forEach((att) => {
-      const subj = (att.quizConfig?.subject?.toLowerCase() || 'physics') as SubjectId;
+      const subj = (att.quizConfig?.subject?.toLowerCase() || subjects[0]?.id || 'physics') as SubjectId;
       if (map[subj]) {
-        map[subj].attempted += att.totalQuestions;
-        map[subj].correct += att.score;
+        map[subj]!.attempted += att.totalQuestions;
+        map[subj]!.correct += att.score;
         if (att.quizConfig.chapter && att.quizConfig.chapter !== 'all') {
-          map[subj].chapters.add(att.quizConfig.chapter);
+          map[subj]!.chapters.add(att.quizConfig.chapter);
         }
       }
     });
 
-    return (['mathematics', 'physics', 'chemistry'] as SubjectId[]).map((subj) => {
-      const data = map[subj];
+    return subjects.map((subjInfo) => {
+      const subj = subjInfo.id;
+      const data = map[subj] || { attempted: 0, correct: 0, chapters: new Set() };
       const acc = data.attempted > 0 ? Math.round((data.correct / data.attempted) * 100) : 0;
       let strengthLevel: 'Strong' | 'Developing' | 'Needs Attention' | 'Unattempted' = 'Unattempted';
       if (data.attempted > 0) {
@@ -71,7 +73,7 @@ export const LearningDnaPage: React.FC = () => {
         strengthLevel,
       };
     });
-  }, [attempts]);
+  }, [attempts, subjects]);
 
   // 2. Topics Needing Improvement (Real data only: topics where accuracy < 70% or errors recorded)
   const weakTopics = useMemo(() => {

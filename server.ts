@@ -107,6 +107,7 @@ import {
   validateSingleQuestion,
   validateQuestionBatch,
   VERIFIED_CBSE_CHAPTERS,
+  getVerifiedChapters,
 } from './src/utils/questionValidator.ts';
 
 
@@ -124,16 +125,16 @@ app.post('/api/generate-quiz', async (req: Request, res: Response) => {
       language = 'en',
     } = req.body;
 
-    // Strict validation: Only Mathematics, Physics, Chemistry allowed
-    const validSubjects = ['mathematics', 'physics', 'chemistry'];
+    // Strict validation: Supports Class 10 and Class 12 official subjects
+    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
     const subject = validSubjects.includes(String(rawSubject).toLowerCase())
       ? String(rawSubject).toLowerCase()
       : 'mathematics';
 
-    // Verify Chapter against CBSE 2026-27 Syllabus
+    // Verify Chapter against CBSE 2026-27 Syllabus for the specific grade
     if (chapter !== 'all') {
-      const verifiedList = VERIFIED_CBSE_CHAPTERS[subject] || [];
-      const isVerified = verifiedList.some(
+      const verifiedList = getVerifiedChapters(subject, String(grade));
+      const isVerified = verifiedList.length === 0 || verifiedList.some(
         ch => ch.toLowerCase() === chapter.toLowerCase() ||
               chapter.toLowerCase().includes(ch.toLowerCase()) ||
               ch.toLowerCase().includes(chapter.toLowerCase())
@@ -141,7 +142,7 @@ app.post('/api/generate-quiz', async (req: Request, res: Response) => {
       if (!isVerified) {
         return res.status(400).json({
           success: false,
-          error: `The selected chapter "${chapter}" is not supported by verified CBSE Class 12 (2026–27) syllabus data for ${subject}. Please select a verified chapter.`,
+          error: `The selected chapter "${chapter}" is not supported by verified CBSE Class ${grade} (2026–27) syllabus data for ${subject}. Please select a verified chapter.`,
           fallbackAvailable: false,
         });
       }
@@ -158,13 +159,13 @@ app.post('/api/generate-quiz', async (req: Request, res: Response) => {
       });
     }
 
-    let typeGuidance = `Generate standard CBSE Class 12 Multiple Choice Questions (Section A board format) with 4 distinct options.`;
+    let typeGuidance = `Generate standard CBSE Class ${grade} Multiple Choice Questions (Section A board format) with 4 distinct options.`;
     if (questionType === 'numerical') {
-      typeGuidance = `Generate numerical calculation problems requiring students to compute values. For Mathematics, provide mathematical evaluations; for Physics, include formulas, substitutions, and explicit SI units in the options; for Chemistry, include electrochemical, kinetic, or solution calculations with units. All questions must have 4 distinct numerical options.`;
+      typeGuidance = `Generate numerical calculation problems requiring students to compute values. For Mathematics, provide mathematical evaluations; for Physics and Science, include formulas, substitutions, and explicit SI units in the options; for Chemistry, include electrochemical, kinetic, or solution calculations with units. All questions must have 4 distinct numerical options.`;
     } else if (questionType === 'conceptual') {
       typeGuidance = `Generate conceptual and theoretical problems testing definitions, laws, properties, theorems, and mechanisms. Every question must have 4 distinct options.`;
     } else if (questionType === 'mixed') {
-      typeGuidance = `Generate a balanced mix of conceptual MCQs, formula-based numericals, and application questions reflecting a standard CBSE Class 12 board examination.`;
+      typeGuidance = `Generate a balanced mix of conceptual MCQs, formula-based numericals, and application questions reflecting a standard CBSE Class ${grade} board examination.`;
     } else if (questionType === 'assertion_reason') {
       typeGuidance = `Generate Assertion-Reason questions in CBSE format where each question has Assertion (A) and Reason (R), and options are strictly:
          1. Both (A) and (R) are true and (R) is the correct explanation of (A)
@@ -194,13 +195,30 @@ Subject Requirements for Chemistry (CBSE Code 043, Session 2026–27):
 - Questions MUST support conceptual questions, balanced chemical equations, reaction conditions/reagents, and numerical problems where appropriate (e.g., Nernst equation, colligative properties, rate laws).
 - Options with chemical formulas or IUPAC names MUST be chemically consistent and accurate.
 - In "explanation", explain chemical principles, mechanisms (e.g., SN1, SN2, aldol, Cannizzaro), or numerical calculation steps with units.`;
+    } else if (subject === 'science') {
+      subjectSpecificInstructions = `
+Subject Requirements for Class 10 Science (CBSE Code 086, Session 2026–27):
+- Questions cover official CBSE NCERT units: Chemical Substances, World of Living, Natural Phenomena, and Effects of Current.
+- For light and electricity: include standard formulas (1/f = 1/v - 1/u, V = IR, P = VI) and explicit SI units.
+- For chemistry: ensure balanced reactions and real observations (e.g., precipitate colors, gas evolution).
+- For biology: ensure precise anatomical and physiological terminology (nephron, reflex arc, Mendel crosses 3:1/9:3:3:1).`;
+    } else if (subject === 'social_science') {
+      subjectSpecificInstructions = `
+Subject Requirements for Class 10 Social Science (CBSE Code 087, Session 2026–27):
+- Covers History (Nationalism in India/Europe, Making of Global World), Geography (Resources, Agriculture, Minerals), Democratic Politics (Power Sharing, Federalism), and Economics (Development, Sectors, Money & Credit).
+- Ensure strict alignment with NCERT facts, constitutional provisions, and economic definitions.`;
+    } else if (subject === 'english') {
+      subjectSpecificInstructions = `
+Subject Requirements for Class 10 English Language & Literature (CBSE Code 184, Session 2026–27):
+- Covers First Flight (Prose & Poetry), Footprints Without Feet, and integrated grammar (tenses, modals, reported speech, subject-verb concord).
+- Focus on textual analysis, literary themes, character traits, poetic devices, and grammar rules.`;
     }
 
-    const prompt = `You are a senior CBSE Class 12 Board Exam Chief Paper Setter for Academic Session 2026–27.
+    const prompt = `You are a senior CBSE Class ${grade} Board Exam Chief Paper Setter for Academic Session 2026–27.
 Generate exactly ${count} high-quality, authentic examination questions for:
 - Education Board: ${board}
 - Standard: Class ${grade} (Academic Session 2026–27)
-- Subject: ${subject.toUpperCase()} (CBSE Code: ${subject === 'mathematics' ? '041' : subject === 'physics' ? '042' : '043'})
+- Subject: ${subject.toUpperCase()}
 - Chapter: "${chapter}"
 - Target Difficulty: ${difficulty} (easy = direct definition/formula, medium = standard CBSE board question, hard = Exemplar/HOTS level, mixed = balanced distribution)
 - Question Format: ${questionType}
@@ -209,7 +227,7 @@ ${typeGuidance}
 ${subjectSpecificInstructions}
 
 Academic Requirements:
-1. All scientific, chemical, and mathematical formulas must be 100% accurate as per the verified NCERT CBSE Class 12 (2026–27) curriculum.
+1. All scientific, chemical, literary, and mathematical concepts must be 100% accurate as per the verified NCERT CBSE Class ${grade} (2026–27) curriculum.
 2. Every question must have EXACTLY 4 distinct, unambiguous options.
 3. The "correctAnswer" MUST exactly match one of the 4 options verbatim.
 4. "explanation" must be a concise (2-4 sentences) step-by-step NCERT-aligned justification with intermediate working.
@@ -334,6 +352,7 @@ app.post('/api/generate-similar-question', async (req: Request, res: Response) =
   try {
     const {
       subject,
+      grade = '12',
       chapter,
       topic,
       difficulty,
@@ -342,10 +361,11 @@ app.post('/api/generate-similar-question', async (req: Request, res: Response) =
     } = req.body;
 
     const normalizedSubject = String(subject || 'physics').toLowerCase();
-    if (!['mathematics', 'physics', 'chemistry'].includes(normalizedSubject)) {
+    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+    if (!validSubjects.includes(normalizedSubject)) {
       return res.status(400).json({
         success: false,
-        error: 'Only CBSE Class 12 Mathematics, Physics, and Chemistry are supported.',
+        error: `Subject ${normalizedSubject} is not supported.`,
       });
     }
 
@@ -357,11 +377,11 @@ app.post('/api/generate-similar-question', async (req: Request, res: Response) =
       });
     }
 
-    const prompt = `You are an expert CBSE Class 12 Examination Item Writer for the 2026-27 academic session.
+    const prompt = `You are an expert CBSE Class ${grade} Examination Item Writer for the 2026-27 academic session.
 Generate EXACTLY 1 new, high-yield practice question for a student who made a mistake on this syllabus concept.
 
 Context:
-- Board: CBSE Class 12 (Session 2026–27)
+- Board: CBSE Class ${grade} (Session 2026–27)
 - Subject: ${normalizedSubject}
 - Chapter: ${chapter}
 - Topic: ${topic}
@@ -376,9 +396,10 @@ Strict Guidelines:
 4. "correctAnswer" must match the correct option verbatim.
 5. Provide a rigorous, step-by-step explanation.
 6. For Mathematics, include clear algebraic working and calculations.
-7. For Physics, include SI units, governing formula, and substitution.
+7. For Physics and Science, include SI units, governing formula, and substitution.
 8. For Chemistry, ensure chemical formulas and equations are balanced.
-9. Include "pitfall" (common board trap) and "boardTip" (short exam memory anchor).
+9. For Social Science and English, ensure alignment with NCERT textbooks and curriculum.
+10. Include "pitfall" (common board trap) and "boardTip" (short exam memory anchor).
 
 Return a single JSON object.`;
 
@@ -386,7 +407,7 @@ Return a single JSON object.`;
       model: modelName,
       contents: prompt,
       config: {
-        systemInstruction: 'You are an official CBSE Class 12 Master Item Writer for the 2026-27 session. Produce mathematically rigorous and scientifically accurate questions with zero errors.',
+        systemInstruction: `You are an official CBSE Class ${grade} Master Item Writer for the 2026-27 session. Produce mathematically rigorous and scientifically accurate questions with zero errors.`,
         temperature: 0.2,
         responseMimeType: 'application/json',
         responseSchema: {
@@ -491,6 +512,7 @@ app.post('/api/mistake-deepdive', async (req: Request, res: Response) => {
       correctAnswer,
       explanation,
       subject,
+      grade = '12',
       chapter,
       topic,
       studentQuery,
@@ -506,10 +528,11 @@ app.post('/api/mistake-deepdive', async (req: Request, res: Response) => {
     }
 
     const prompt = `You are "Mistake Detective", an empathetic and deeply analytical CBSE Master Teacher.
-A Class 12 student answered a board exam question incorrectly.
+A Class ${grade} student answered a board exam question incorrectly.
 
 Context:
 - Subject: ${subject}
+- Standard: CBSE Class ${grade} (Session 2026–27)
 - Chapter: ${chapter}
 - Topic: ${topic}
 - Question: "${question}"
@@ -518,7 +541,7 @@ Context:
 - Correct Answer: "${correctAnswer}"
 - Standard Explanation: "${explanation}"
 ${studentQuery ? `- Specific Student Question: "${studentQuery}"` : ''}
-${language === 'hi' ? '- Language Requirement: Provide coreConcept, whyCorrectIsRight, whySelectedIsWrong, memoryAnchor, and followUpQuestion in clear, natural Hindi (हिन्दी) using standard CBSE Class 12 NCERT terminology.' : ''}
+${language === 'hi' ? `- Language Requirement: Provide coreConcept, whyCorrectIsRight, whySelectedIsWrong, memoryAnchor, and followUpQuestion in clear, natural Hindi (हिन्दी) using standard CBSE Class ${grade} NCERT terminology.` : ''}
 
 Your Task:
 1. "coreConcept": Explain the underlying principle in crystal-clear, intuitive language (max 3-4 sentences).
@@ -531,7 +554,7 @@ Your Task:
       model: modelName,
       contents: prompt,
       config: {
-        systemInstruction: 'You are the Mistake Detective for CBSE Class 12 boards. Be encouraging, academically rigorous, and pedagogical.',
+        systemInstruction: `You are the Mistake Detective for CBSE Class ${grade} boards. Be encouraging, academically rigorous, and pedagogical.`,
         temperature: 0.2,
         responseMimeType: 'application/json',
         responseSchema: {
@@ -602,6 +625,7 @@ app.post('/api/tutor', async (req: Request, res: Response) => {
   try {
     const {
       subject: rawSubject = 'physics',
+      grade = '12',
       question = '',
       action = 'standard',
       conversationHistory = [],
@@ -609,7 +633,7 @@ app.post('/api/tutor', async (req: Request, res: Response) => {
       image,
     } = req.body;
 
-    const validSubjects = ['mathematics', 'physics', 'chemistry'];
+    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
     const subject = validSubjects.includes(String(rawSubject).toLowerCase())
       ? String(rawSubject).toLowerCase()
       : 'physics';
@@ -635,31 +659,36 @@ app.post('/api/tutor', async (req: Request, res: Response) => {
       });
     }
 
-    const systemInstruction = `You are "BoardAce Tutor", a dedicated, empathetic, and academically rigorous CBSE Class 12 Master Teacher and Examination Mentor for the 2026–27 academic session.
+    const systemInstruction = `You are "BoardAce Tutor", a dedicated, empathetic, and academically rigorous CBSE Class ${grade} Master Teacher and Examination Mentor for the 2026–27 academic session.
 You specialize strictly in:
 1. Mathematics (CBSE Subject Code: 041)
 2. Physics (CBSE Subject Code: 042)
 3. Chemistry (CBSE Subject Code: 043)
+4. Science (Class 10 CBSE Subject Code: 086)
+5. Social Science (Class 10 CBSE Subject Code: 087)
+6. English Language & Literature (Class 10 CBSE Subject Code: 184)
 
 Pedagogical Rules:
-- Deliver clear, well-structured step-by-step explanations directly aligned with the official NCERT CBSE Class 12 curriculum.
+- Deliver clear, well-structured step-by-step explanations directly aligned with the official NCERT CBSE Class ${grade} curriculum.
 - For Mathematics (041):
-  * State the governing definition, formula, or theorem (e.g. Chain Rule, Integration by Parts, Matrix Properties, Bayes' Theorem, Vector Cross Product).
+  * State the governing definition, formula, or theorem.
   * Show intermediate calculations step-by-step so the student understands each algebraic step.
   * Point out common calculation traps (e.g., negative signs, constant of integration + C, domain/range restrictions).
-- For Physics (042):
-  * State the underlying physical law or concept (e.g., Gauss's Law, Biot-Savart Law, Faraday-Lenz Law, Total Internal Reflection, de Broglie relation).
-  * State the formula and show numerical substitution with explicit SI units (e.g., N/C, V, A, Ω, T, Wb, rad/s).
-  * Explain the physical intuition, direction (rules like Fleming's Left/Right hand, Right hand thumb rule), and sign conventions.
-- For Chemistry (043):
-  * Write balanced chemical equations with state symbols and reaction conditions (temperature, catalyst, acid/base medium).
-  * For Organic Chemistry: Clearly explain reaction mechanisms or reagent roles (e.g., nucleophilic addition, elimination, electrophilic substitution, Aldol, Cannizzaro, Williamson ether synthesis, Sandmeyer reaction).
-  * For Physical Chemistry: Write formulas (Nernst equation, Arrhenius equation, Colligative property formulas) and perform step-by-step calculations with units.
-  * For Coordination Compounds: Use correct IUPAC nomenclature and Crystal Field Theory reasoning.
+- For Physics (042) and Class 10 Science (086):
+  * State the underlying physical law or concept (e.g., Ohm's law, Snell's law, Fleming's rules).
+  * State the formula and show numerical substitution with explicit SI units.
+  * Explain the physical intuition, ray diagrams, and sign conventions.
+- For Chemistry (043) and Chemical Reactions in Science:
+  * Write balanced chemical equations with state symbols and reaction conditions.
+  * Clearly explain reaction mechanisms, observations (color changes, precipitates, gases).
+- For Social Science (087):
+  * Ground answers in NCERT History, Geography, Democratic Politics, and Economics facts and dates.
+- For English (184):
+  * Analyze textual themes, character sketches, poetic devices, and standard grammar rules.
 - Format with clean Markdown:
   * Use bold headers for structure (e.g., ### Concept Overview, ### Step-by-Step Solution, ### Key Formula & Units, ### Common Board Trap, ### CBSE 2026–27 Examiner Tip).
   * Use clear numbered steps for derivations or numericals.
-${language === 'hi' ? '- Language Requirement: Provide the entire response in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Hindi-medium terminology, while keeping mathematical formulas, chemical equations, and SI units intact.' : '- Language Requirement: Provide the response in clear, student-friendly English.'}
+${language === 'hi' ? `- Language Requirement: Provide the entire response in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Hindi-medium terminology, while keeping mathematical formulas, chemical equations, and SI units intact.` : '- Language Requirement: Provide the response in clear, student-friendly English.'}
 - Keep explanations encouraging and academically authoritative.`;
 
     let actionPrompt = '';
@@ -698,7 +727,7 @@ ${language === 'hi' ? '- Language Requirement: Provide the entire response in cl
       });
     }
 
-    const promptMessage = `Subject: ${subject.toUpperCase()} (CBSE Class 12)
+    const promptMessage = `Subject: ${subject.toUpperCase()} (CBSE Class ${grade})
 ${question ? `Student Question: ${question}` : 'Please review and solve the question in the uploaded image.'}
 ${actionPrompt}`;
 
@@ -752,6 +781,7 @@ app.post('/api/pdf-to-quiz', async (req: Request, res: Response) => {
     const {
       pdfBase64,
       filename = 'document.pdf',
+      grade = '12',
       subject: rawSubject = 'physics',
       difficulty = 'medium',
       questionCount = 5,
@@ -782,18 +812,19 @@ app.post('/api/pdf-to-quiz', async (req: Request, res: Response) => {
       });
     }
 
-    const validSubjects = ['mathematics', 'physics', 'chemistry'];
+    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
     const subject = validSubjects.includes(String(rawSubject).toLowerCase())
       ? String(rawSubject).toLowerCase()
       : 'physics';
 
     const count = Math.min(Math.max(parseInt(questionCount, 10) || 5, 1), 15);
 
-    const prompt = `You are an expert CBSE Class 12 Senior Examiner for Academic Session 2026–27.
+    const prompt = `You are an expert CBSE Class ${grade} Senior Examiner for Academic Session 2026–27.
 Analyze the attached study document (${filename}) thoroughly.
 Extract readable core concepts, definitions, formulas, and laws, and generate EXACTLY ${count} high-quality, authentic CBSE-standard multiple-choice questions directly grounded in this document.
 
 Target Subject: ${subject.toUpperCase()}
+Target Standard: CBSE Class ${grade}
 Target Difficulty: ${difficulty}
 
 Rules:
@@ -803,8 +834,8 @@ Rules:
 4. "correctAnswer" must match one of the 4 options verbatim.
 5. "explanation" must provide step-by-step reasoning citing the text.
 6. "pitfall" should highlight the common misconception or trap.
-7. If the document is purely unreadable, blank, or completely unrelated to CBSE Class 12, indicate so.
-${language === 'hi' ? '8. Language Requirement: Provide question, options, explanation, and pitfall in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Class 12 terminology.' : ''}`;
+7. If the document is purely unreadable, blank, or completely unrelated to CBSE Class ${grade}, indicate so.
+${language === 'hi' ? `8. Language Requirement: Provide question, options, explanation, and pitfall in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Class ${grade} terminology.` : ''}`;
 
     const buildPdfPayload = (modelName: string) => ({
       model: modelName,
@@ -901,6 +932,7 @@ app.post('/api/check-answer', async (req: Request, res: Response) => {
   try {
     const {
       subject: rawSubject = 'physics',
+      grade = '12',
       chapter = 'General',
       questionText,
       studentAnswer,
@@ -925,10 +957,10 @@ app.post('/api/check-answer', async (req: Request, res: Response) => {
 
     const marks = Math.min(Math.max(parseInt(maxMarks, 10) || 3, 1), 5);
 
-    const prompt = `You are a Senior CBSE Class 12 Board Exam Evaluator and Head Examiner for Academic Session 2026–27.
+    const prompt = `You are a Senior CBSE Class ${grade} Board Exam Evaluator and Head Examiner for Academic Session 2026–27.
 Evaluate the following student's written response against official CBSE marking schemes.
 
-Subject: ${rawSubject.toUpperCase()} (CBSE Class 12)
+Subject: ${rawSubject.toUpperCase()} (CBSE Class ${grade})
 Chapter: ${chapter}
 Question (${marks} Marks):
 "${questionText}"
@@ -936,20 +968,20 @@ Question (${marks} Marks):
 Student's Written Response:
 "${studentAnswer}"
 
-Evaluate strictly according to CBSE Class 12 standards:
+Evaluate strictly according to CBSE Class ${grade} standards:
 1. estimatedScore: An integer or half-mark score between 0 and ${marks} based on CBSE step-marking rubrics.
 2. conceptAccuracy: A concise paragraph analyzing the accuracy of definitions, formulas, substitutions, and chemical/physical logic.
 3. keyPointsHit: An array of specific concepts, formulas, or steps the student stated correctly.
 4. keyPointsMissed: An array of essential CBSE marking points, SI units, diagram labels, or formula conditions the student omitted or got wrong.
 5. improvementSuggestions: 2-3 specific, actionable examiner recommendations to secure full marks on exam day.
 6. modelAnswer: The ideal CBSE board-topper answer that would earn full ${marks}/${marks} marks with clean formatting.
-${language === 'hi' ? '7. Language Requirement: Provide the entire evaluation in clear Hindi (हिन्दी) using official NCERT CBSE terminology while retaining formulas.' : ''}`;
+${language === 'hi' ? `7. Language Requirement: Provide the entire evaluation in clear Hindi (हिन्दी) using official NCERT CBSE Class ${grade} terminology while retaining formulas.` : ''}`;
 
     const buildCheckerPayload = (modelName: string) => ({
       model: modelName,
       contents: prompt,
       config: {
-        systemInstruction: 'You are an official CBSE Class 12 Chief Examiner evaluating board answer sheets. Be constructive, step-marking oriented, and academically rigorous.',
+        systemInstruction: `You are an official CBSE Class ${grade} Chief Examiner evaluating board answer sheets. Be constructive, step-marking oriented, and academically rigorous.`,
         temperature: 0.2,
         responseMimeType: 'application/json',
         responseSchema: {
@@ -1015,6 +1047,7 @@ app.post('/api/generate-notes', async (req: Request, res: Response) => {
   try {
     const {
       subject: rawSubject = 'physics',
+      grade = '12',
       chapter = 'Electric Charges and Fields',
       language = 'en',
     } = req.body;
@@ -1027,24 +1060,24 @@ app.post('/api/generate-notes', async (req: Request, res: Response) => {
       });
     }
 
-    const prompt = `You are a CBSE Class 12 Master Teacher and NCERT Textbook Author for Session 2026–27.
+    const prompt = `You are a CBSE Class ${grade} Master Teacher and NCERT Textbook Author for Session 2026–27.
 Generate high-yield, comprehensive chapter revision notes for:
-Subject: ${rawSubject.toUpperCase()} (CBSE Class 12)
+Subject: ${rawSubject.toUpperCase()} (CBSE Class ${grade})
 Chapter: "${chapter}"
 
 Structure the response as structured JSON:
 1. chapterSummary: 2-3 paragraph foundational overview explaining the big picture and exam significance.
-2. keyFormulas: Array of objects with "name", "formula", "variables", and "examTip".
+2. keyFormulas: Array of objects with "name", "formula", "variables", and "examTip" (for science/maths) or key literary/historical terms.
 3. coreTheoremsAndConcepts: Array of objects with "title", "content", and "importance".
 4. commonBoardTraps: Array of classic mistakes students make in Section A/B/C.
 5. quickRevisionChecklist: 6-8 rapid-fire bullet points for the night before the board exam.
-${language === 'hi' ? 'Language Requirement: Provide all explanations in clear Hindi (हिन्दी) using official CBSE NCERT terminology while preserving math notation and equations.' : ''}`;
+${language === 'hi' ? `Language Requirement: Provide all explanations in clear Hindi (हिन्दी) using official CBSE NCERT Class ${grade} terminology while preserving math notation and equations.` : ''}`;
 
     const buildNotesPayload = (modelName: string) => ({
       model: modelName,
       contents: prompt,
       config: {
-        systemInstruction: 'You are an author of premier CBSE Class 12 exam revision guides. Provide dense, accurate, highly organized notes.',
+        systemInstruction: `You are an author of premier CBSE Class ${grade} exam revision guides. Provide dense, accurate, highly organized notes.`,
         temperature: 0.25,
         responseMimeType: 'application/json',
         responseSchema: {
@@ -1126,9 +1159,10 @@ app.post('/api/generate-question-paper', async (req: Request, res: Response) => 
   try {
     const {
       subject: rawSubject = 'physics',
+      grade = '12',
       chapters = ['all'],
       difficulty = 'mixed',
-      paperFormat = 'standard', // 'standard' = 35 marks mini board, 'full' = 70 marks full board
+      paperFormat = 'standard', // 'standard' = mini board, 'full' = full board
       language = 'en',
     } = req.body;
 
@@ -1140,13 +1174,27 @@ app.post('/api/generate-question-paper', async (req: Request, res: Response) => 
       });
     }
 
-    const totalMarks = paperFormat === 'full' ? 70 : 35;
+    const subjectCodeMap: Record<string, string> = {
+      mathematics: '041',
+      physics: '042',
+      chemistry: '043',
+      science: '086',
+      social_science: '087',
+      english: '184',
+    };
+    const subjCode = subjectCodeMap[String(rawSubject).toLowerCase()] || '041';
+
+    const isClass10 = String(grade) === '10';
+    const totalMarks = paperFormat === 'full'
+      ? (isClass10 || rawSubject === 'mathematics' ? 80 : 70)
+      : (isClass10 ? 40 : 35);
     const timeMinutes = paperFormat === 'full' ? 180 : 90;
 
-    const prompt = `You are the Chief Question Paper Setter for the Central Board of Secondary Education (CBSE) Class 12 Board Examination (Session 2026–27).
+    const prompt = `You are the Chief Question Paper Setter for the Central Board of Secondary Education (CBSE) Class ${grade} Board Examination (Session 2026–27).
 Construct an authentic, balanced board practice examination paper.
 
-Subject: ${rawSubject.toUpperCase()} (CBSE Code: ${rawSubject === 'mathematics' ? '041' : rawSubject === 'physics' ? '042' : '043'})
+Subject: ${String(rawSubject).toUpperCase()} (CBSE Code: ${subjCode})
+Class / Standard: CBSE Class ${grade}
 Target Marks: ${totalMarks} Marks (${timeMinutes} Minutes)
 Difficulty: ${difficulty}
 Selected Chapters: ${JSON.stringify(chapters)}
@@ -1166,13 +1214,13 @@ For every question across all sections, provide:
 5. options: Array of 4 strings (for Section A MCQs) or empty array
 6. answerKeyAndMarkingScheme: Step-by-step point allocation detailing how marks are distributed (e.g., "Formula: 1 mark, Substitution: 1 mark, Final answer with unit: 1 mark").
 7. topic: Subtopic name
-${language === 'hi' ? 'Language Requirement: Generate question paper, instructions, and marking scheme in clear Hindi (हिन्दी) using standard NCERT terminology while keeping math notation and equations intact.' : ''}`;
+${language === 'hi' ? `Language Requirement: Generate question paper, instructions, and marking scheme in clear Hindi (हिन्दी) using standard CBSE Class ${grade} NCERT terminology while keeping math notation and equations intact.` : ''}`;
 
     const buildPaperPayload = (modelName: string) => ({
       model: modelName,
       contents: prompt,
       config: {
-        systemInstruction: 'You are the official CBSE Chief Moderator. Generate a flawless, curriculum-accurate, mathematically sound board examination paper.',
+        systemInstruction: `You are the official CBSE Class ${grade} Chief Moderator. Generate a flawless, curriculum-accurate, mathematically sound board examination paper.`,
         temperature: 0.25,
         responseMimeType: 'application/json',
         responseSchema: {
@@ -1227,6 +1275,194 @@ ${language === 'hi' ? 'Language Requirement: Generate question paper, instructio
     });
   } catch (error: any) {
     console.error('Question Paper Error:', error);
+    const friendlyError = formatErrorMessage(error);
+    return res.status(500).json({
+      success: false,
+      error: friendlyError,
+    });
+  }
+// Endpoint 5: CBSE Competency-Based Practice Generator (NEP 2020 & CBSE 2026-27 Guidelines)
+app.post('/api/generate-competency', async (req: Request, res: Response) => {
+  try {
+    const {
+      grade = '12',
+      subject: rawSubject = 'physics',
+      chapter = 'all',
+      questionType = 'application_mcq',
+      difficulty = 'medium',
+      questionCount = 5,
+      language = 'en',
+    } = req.body;
+
+    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+    const subject = validSubjects.includes(String(rawSubject).toLowerCase())
+      ? String(rawSubject).toLowerCase()
+      : 'physics';
+
+    // Verify Chapter if specific
+    if (chapter !== 'all') {
+      const verifiedList = getVerifiedChapters(subject, String(grade));
+      const isVerified = verifiedList.length === 0 || verifiedList.some(
+        ch => ch.toLowerCase() === chapter.toLowerCase() ||
+              chapter.toLowerCase().includes(ch.toLowerCase()) ||
+              ch.toLowerCase().includes(chapter.toLowerCase())
+      );
+      if (!isVerified) {
+        return res.status(400).json({
+          success: false,
+          error: `The selected chapter "${chapter}" is not supported by verified CBSE Class ${grade} (2026–27) syllabus data for ${subject}.`,
+        });
+      }
+    }
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return res.status(503).json({
+        success: false,
+        error: 'Gemini API key is not configured on the server.',
+      });
+    }
+
+    const count = Math.min(Math.max(parseInt(questionCount, 10) || 5, 1), 10);
+
+    let formatGuidance = '';
+    if (questionType === 'case_based') {
+      formatGuidance = `Generate Case-Based Competency questions. Provide a realistic 120-180 word authentic scientific, technological, social, or real-world scenario/passage in "casePassage". Then pose a high-order application question based directly on that passage with 4 distinct options.`;
+    } else if (questionType === 'assertion_reason') {
+      formatGuidance = `Generate Assertion-Reason questions in strict CBSE format with Assertion (A) and Reason (R) and standard 4 options:
+        1. Both (A) and (R) are true and (R) is the correct explanation of (A)
+        2. Both (A) and (R) are true but (R) is not the correct explanation of (A)
+        3. (A) is true but (R) is false
+        4. (A) is false but (R) is true.`;
+    } else if (questionType === 'numerical') {
+      formatGuidance = `Generate realistic applied numerical computation problems testing formula synthesis, explicit SI units, and multi-step deduction with 4 distinct options with accurate units.`;
+    } else if (questionType === 'analytical' || questionType === 'problem_solving') {
+      formatGuidance = `Generate Analytical & Problem-Solving questions requiring students to evaluate data, compare scenarios, predict outcomes, or synthesize concepts, with 4 distinct options.`;
+    } else if (questionType === 'source_based') {
+      formatGuidance = `Generate Source-Based questions featuring an experimental observation table, historical document excerpt, data chart description, or graph interpretation in "casePassage" with 4 distinct analytical options.`;
+    } else {
+      formatGuidance = `Generate Application-Based Multiple Choice Questions testing higher-order conceptual understanding (Bloom's taxonomy: Application & Analysis) rather than rote recall, with 4 distinct options.`;
+    }
+
+    const prompt = `You are a Senior CBSE Curriculum Specialist and Competency-Focused Assessment Designer for Academic Session 2026–27.
+In alignment with NEP 2020 and CBSE 2026–27 guidelines (which require ≥50% competency-focused questions), generate EXACTLY ${count} original, syllabus-aligned competency practice questions.
+
+Academic Context:
+- Board: CBSE Class ${grade} (Academic Session 2026–27)
+- Subject: ${subject.toUpperCase()}
+- Chapter / Domain: ${chapter}
+- Competency Format: ${questionType}
+- Target Difficulty: ${difficulty}
+- Assessment Goal: Test conceptual reasoning, real-world application, critical thinking, and problem solving.
+
+Format Rules:
+${formatGuidance}
+
+Mandatory per question:
+1. "id": unique string ID.
+2. "question": clearly worded question statement.
+3. "casePassage": scenario/passage text if case_based or source_based, else empty string.
+4. "options": array of EXACTLY 4 distinct, plausible options (A, B, C, D).
+5. "correctAnswer": must match one of the 4 options verbatim.
+6. "explanation": rigorous step-by-step reasoning explaining why the correct answer is valid.
+7. "conceptTested": concise name of the core competency learning outcome (e.g. "Application of Snell's Law in Optical Fibers", "Ohmic Dissipation in Household Circuits").
+8. "commonMisconception": specific conceptual trap or board pitfall students make on this type of question.
+9. "suggestedRevisionTopic": specific NCERT chapter subtopic to revisit.
+${language === 'hi' ? `10. Language Requirement: Provide question, passage, options, explanation, conceptTested, and commonMisconception in clear, student-friendly Hindi (हिन्दी) using official CBSE NCERT Class ${grade} terminology.` : ''}
+
+Note: Do not claim these are leaked or official past year papers. These are original competency-based practice items.`;
+
+    const buildPayload = (modelName: string) => ({
+      model: modelName,
+      contents: prompt,
+      config: {
+        systemInstruction: `You are an official CBSE Class ${grade} Competency Item Writer for session 2026–27. Produce pristine, scientifically and mathematically sound questions.`,
+        temperature: 0.25,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            questions: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING },
+                  question: { type: Type.STRING },
+                  casePassage: { type: Type.STRING },
+                  options: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                  },
+                  correctAnswer: { type: Type.STRING },
+                  explanation: { type: Type.STRING },
+                  conceptTested: { type: Type.STRING },
+                  commonMisconception: { type: Type.STRING },
+                  suggestedRevisionTopic: { type: Type.STRING },
+                  difficulty: { type: Type.STRING },
+                  marks: { type: Type.NUMBER },
+                },
+                required: ['id', 'question', 'options', 'correctAnswer', 'explanation', 'conceptTested', 'commonMisconception', 'suggestedRevisionTopic'],
+              },
+            },
+          },
+          required: ['questions'],
+        },
+      },
+    });
+
+    const response = await callGeminiWithModelFallback(ai, buildPayload);
+    let rawText = (response.text || '').trim();
+    if (rawText.startsWith('```json')) rawText = rawText.slice(7);
+    if (rawText.startsWith('```')) rawText = rawText.slice(3);
+    if (rawText.endsWith('```')) rawText = rawText.slice(0, -3);
+
+    const parsed = JSON.parse(rawText.trim());
+    const rawQuestions = Array.isArray(parsed) ? parsed : (parsed.questions || []);
+
+    // Validate each question
+    const validatedQuestions = rawQuestions.filter((q: any) => {
+      if (!q.question || !q.correctAnswer || !q.explanation) return false;
+      if (!Array.isArray(q.options) || q.options.length < 2) return false;
+      if (!q.options.includes(q.correctAnswer)) {
+        const matched = q.options.find((o: string) => o.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase());
+        if (matched) {
+          q.correctAnswer = matched;
+        } else {
+          return false;
+        }
+      }
+      return true;
+    }).map((q: any, idx: number) => ({
+      ...q,
+      id: q.id || `comp-${Date.now()}-${idx}`,
+      grade,
+      subject,
+      chapter,
+      questionType,
+      difficulty: q.difficulty || difficulty,
+      marks: q.marks || (questionType === 'case_based' ? 4 : 1),
+      source: 'ai_competency',
+    }));
+
+    if (validatedQuestions.length === 0) {
+      throw new Error('Generated questions failed validation checks. Please retry.');
+    }
+
+    return res.json({
+      success: true,
+      questions: validatedQuestions,
+      metadata: {
+        grade,
+        subject,
+        chapter,
+        questionType,
+        count: validatedQuestions.length,
+        framework: 'CBSE Competency-Focused Education (NEP 2020)',
+      },
+    });
+  } catch (error: any) {
+    console.error('Competency Practice Generator Error:', error);
     const friendlyError = formatErrorMessage(error);
     return res.status(500).json({
       success: false,

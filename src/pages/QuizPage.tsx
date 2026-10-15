@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { getCuratedQuestions } from '../data/sampleQuestions';
 import { saveAttempt, getSavedAttempts } from '../utils/storage';
 import { saveToRevision } from '../utils/revisionEngine';
@@ -34,16 +34,29 @@ export const QuizPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { language, t, translateSubject, translateChapter } = useLanguage();
+  const { grade, subjects, gradeLabel } = useClass();
 
   // Query parameter prefill
-  const querySubject = (searchParams.get('subject') as SubjectId) || 'physics';
+  const querySubject = searchParams.get('subject') as SubjectId;
   const queryChapter = searchParams.get('chapter') || 'all';
   const reviewAttemptId = searchParams.get('review');
 
   // Form State
-  const [subject, setSubject] = useState<SubjectId>(
-    ['mathematics', 'physics', 'chemistry'].includes(querySubject) ? querySubject : 'physics'
-  );
+  const [subject, setSubject] = useState<SubjectId>(() => {
+    if (querySubject && subjects.some((s) => s.id === querySubject)) {
+      return querySubject;
+    }
+    return subjects[0]?.id || 'mathematics';
+  });
+
+  // Keep subject in sync if grade changes
+  useEffect(() => {
+    if (!subjects.some((s) => s.id === subject)) {
+      setSubject(subjects[0]?.id || 'mathematics');
+      setChapter('all');
+    }
+  }, [grade, subjects]);
+
   const [chapter, setChapter] = useState<string>(queryChapter);
   const [difficulty, setDifficulty] = useState<DifficultyLevel>('medium');
   const [questionCount, setQuestionCount] = useState<number>(5);
@@ -77,7 +90,7 @@ export const QuizPage: React.FC = () => {
   }, [reviewAttemptId]);
 
   // Update chapters when subject changes
-  const currentSubjectObj = CBSE_CLASS_12_SUBJECTS.find((s) => s.id === subject);
+  const currentSubjectObj = subjects.find((s) => s.id === subject) || subjects[0];
   const availableChapters = currentSubjectObj ? currentSubjectObj.chapters : [];
 
   const handleStartGeneration = async () => {
@@ -86,7 +99,7 @@ export const QuizPage: React.FC = () => {
 
     const config: QuizConfig = {
       board: 'CBSE',
-      grade: '12',
+      grade,
       subject,
       chapter,
       difficulty,
@@ -138,7 +151,8 @@ export const QuizPage: React.FC = () => {
         config.subject,
         config.chapter === 'all' ? undefined : config.chapter,
         config.questionCount,
-        config.difficulty
+        config.difficulty,
+        grade
       );
       setActiveQuestions(questions);
       setIsGenerating(false);
@@ -151,7 +165,8 @@ export const QuizPage: React.FC = () => {
       activeConfig.subject,
       activeConfig.chapter === 'all' ? undefined : activeConfig.chapter,
       activeConfig.questionCount,
-      activeConfig.difficulty
+      activeConfig.difficulty,
+      grade
     );
     setActiveQuestions(questions);
     setGenerationError(null);
@@ -303,8 +318,8 @@ export const QuizPage: React.FC = () => {
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
           {language === 'hi'
-            ? 'कक्षा 12 बोर्ड परीक्षा (2026–27) के अनुसार अध्याय, कठिनाई और प्रश्न प्रारूप चुनें।'
-            : 'Configure and generate curriculum-verified CBSE Class 12 Section A MCQs with step-by-step NCERT explanations.'}
+            ? `${gradeLabel} बोर्ड परीक्षा (2026–27) के अनुसार अध्याय, कठिनाई और प्रश्न प्रारूप चुनें।`
+            : `Configure and generate curriculum-verified ${gradeLabel} Section A MCQs with step-by-step NCERT explanations.`}
         </p>
       </div>
 
@@ -339,8 +354,8 @@ export const QuizPage: React.FC = () => {
           <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             {language === 'hi' ? '1. विषय चुनें' : '1. Select Subject'}
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {CBSE_CLASS_12_SUBJECTS.map((sub) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {subjects.map((sub) => {
               const isSelected = subject === sub.id;
               return (
                 <button

@@ -30,8 +30,11 @@ import {
   Bot,
   Edit3,
   Target,
+  Award,
+  ShieldCheck,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useClass } from '../../context/ClassContext';
 import { getRevisionSummary } from '../../utils/revisionEngine';
 import { getBookmarks } from '../../utils/storage';
 
@@ -49,6 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
 }) => {
   const { t, language } = useLanguage();
+  const { grade, setGrade, gradeLabel } = useClass();
 
   // Metrics for badges
   const revSummary = React.useMemo(() => {
@@ -114,6 +118,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: t.nav.smartPractice,
           icon: Zap,
           badge: null,
+        },
+        {
+          to: '/pyq-hub',
+          label: t.nav.pyqHub || (language === 'hi' ? 'CBSE पिछले वर्ष प्रश्न' : 'CBSE PYQ Hub'),
+          icon: Award,
+          badge: 'PYQ',
+          badgeColor: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300',
+        },
+        {
+          to: '/competency-practice',
+          label: t.nav.competencyPractice || (language === 'hi' ? 'योग्यता-आधारित अभ्यास' : 'Competency Practice'),
+          icon: ShieldCheck,
+          badge: 'NEP 2020',
+          badgeColor: 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300',
         },
       ],
     },
@@ -281,7 +299,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 BoardAce <span className="text-violet-600 dark:text-violet-400">AI</span>
               </span>
               <span className="text-[10px] font-semibold text-slate-400 tracking-wider -mt-0.5">
-                CBSE Class 12
+                {gradeLabel}
               </span>
             </div>
           )}
@@ -296,6 +314,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <X className="w-5 h-5" />
         </button>
       </div>
+
+      {/* Class Switcher in Sidebar (when not collapsed) */}
+      {!isCollapsed && (
+        <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50">
+          <div className="flex items-center justify-between gap-1 p-1 bg-slate-200/70 dark:bg-slate-800 rounded-xl text-xs font-bold">
+            <button
+              onClick={() => setGrade('10')}
+              className={`flex-1 py-1 px-2 rounded-lg text-center transition-all cursor-pointer ${
+                grade === '10'
+                  ? 'bg-emerald-600 text-white shadow-xs font-black'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Class 10
+            </button>
+            <button
+              onClick={() => setGrade('12')}
+              className={`flex-1 py-1 px-2 rounded-lg text-center transition-all cursor-pointer ${
+                grade === '12'
+                  ? 'bg-indigo-600 text-white shadow-xs font-black'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              Class 12
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Navigation Links with Categorized Sections */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5 custom-scrollbar">

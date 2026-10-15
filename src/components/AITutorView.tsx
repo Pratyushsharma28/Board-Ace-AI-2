@@ -258,7 +258,7 @@ export const AITutorView: React.FC<AITutorViewProps> = ({
   };
 
   // Subject quick suggested doubts
-  const suggestedDoubts = {
+  const doubtMap: Record<SubjectId, string[]> = {
     mathematics: [
       t.tutor.mathsSample1,
       t.tutor.mathsSample2,
@@ -271,7 +271,20 @@ export const AITutorView: React.FC<AITutorViewProps> = ({
       t.tutor.chemSample1,
       t.tutor.chemSample2,
     ],
-  }[selectedSubject];
+    science: [
+      language === 'hi' ? 'प्रकाश संश्लेषण और श्वसन के बीच मुख्य अंतर क्या है?' : 'Explain the difference between aerobic and anaerobic respiration.',
+      language === 'hi' ? 'ओम का नियम और इसका प्रायोगिक सत्यापन समझाइए।' : 'State Ohm\'s Law and explain the V-I characteristic graph.',
+    ],
+    social_science: [
+      language === 'hi' ? 'भारतीय संघवाद की मुख्य विशेषताएं क्या हैं?' : 'What are the key features of federalism in India?',
+      language === 'hi' ? 'सतत विकास क्या है और इसके उद्देश्य क्या हैं?' : 'Define sustainable development and explain resource planning.',
+    ],
+    english: [
+      language === 'hi' ? 'संपादक को पत्र लिखने का सही प्रारूप क्या है?' : 'What is the format for writing a formal Letter to the Editor?',
+      language === 'hi' ? '"A Letter to God" कहानी का मुख्य संदेश क्या है?' : 'Discuss the themes of faith and irony in "A Letter to God".',
+    ],
+  };
+  const suggestedDoubts = doubtMap[selectedSubject] || doubtMap.mathematics;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">

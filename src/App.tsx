@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { ClassProvider } from './context/ClassContext';
 import { AppLayout } from './components/layout/AppLayout';
 
 // Core Application Pages
@@ -43,7 +44,8 @@ export default function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <BrowserRouter>
+        <ClassProvider>
+          <BrowserRouter>
           <Routes>
             {/* Public Landing Page */}
             <Route path="/" element={<LandingPage />} />
@@ -88,6 +90,7 @@ export default function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+        </ClassProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

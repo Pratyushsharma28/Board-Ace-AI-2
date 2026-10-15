@@ -1,7 +1,7 @@
 export type EducationBoard = 'CBSE' | 'CISCE' | 'STATE';
-export type GradeClass = '12';
+export type GradeClass = '10' | '12';
 
-export type SubjectId = 'mathematics' | 'physics' | 'chemistry';
+export type SubjectId = 'mathematics' | 'physics' | 'chemistry' | 'science' | 'social_science' | 'english';
 
 export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'mixed';
 
@@ -18,6 +18,7 @@ export interface Question {
   subject: string;
   chapter: string;
   topic: string;
+  grade?: GradeClass;
   difficulty: DifficultyLevel;
   questionType: QuestionType;
   casePassage?: string;

@@ -35,7 +35,8 @@ export interface ValidatedQuestion {
   options: string[];
   correctAnswer: string;
   explanation: string;
-  subject: 'mathematics' | 'physics' | 'chemistry';
+  subject: 'mathematics' | 'physics' | 'chemistry' | 'science' | 'social_science' | 'english' | string;
+  grade?: string;
   chapter: string;
   topic: string;
   difficulty: 'easy' | 'medium' | 'hard' | 'mixed';
@@ -115,6 +116,93 @@ export const VERIFIED_CBSE_CHAPTERS: Record<string, string[]> = {
     'Biomolecules',
   ],
 };
+
+// ---------------------------------------------------------------------
+// Verified CBSE Class 10 Syllabus (2026-27) Master Reference
+// ---------------------------------------------------------------------
+export const VERIFIED_CBSE_CHAPTERS_CLASS_10: Record<string, string[]> = {
+  mathematics: [
+    'Real Numbers',
+    'Polynomials',
+    'Pair of Linear Equations in Two Variables',
+    'Quadratic Equations',
+    'Arithmetic Progressions',
+    'Triangles',
+    'Coordinate Geometry',
+    'Introduction to Trigonometry',
+    'Some Applications of Trigonometry',
+    'Circles',
+    'Areas Related to Circles',
+    'Surface Areas and Volumes',
+    'Statistics',
+    'Probability',
+  ],
+  science: [
+    'Chemical Reactions and Equations',
+    'Acids, Bases and Salts',
+    'Metals and Non-metals',
+    'Carbon and its Compounds',
+    'Life Processes',
+    'Control and Coordination',
+    'How do Organisms Reproduce?',
+    'Heredity and Evolution',
+    'Light - Reflection and Refraction',
+    'The Human Eye and the Colourful World',
+    'Electricity',
+    'Magnetic Effects of Electric Current',
+    'Our Environment',
+  ],
+  social_science: [
+    'The Rise of Nationalism in Europe',
+    'Nationalism in India',
+    'The Making of a Global World',
+    'Print Culture and the Modern World',
+    'Resources and Development',
+    'Forest and Wildlife Resources',
+    'Water Resources',
+    'Agriculture',
+    'Minerals and Energy Resources',
+    'Manufacturing Industries',
+    'Lifelines of National Economy',
+    'Power Sharing',
+    'Federalism',
+    'Gender, Religion and Caste',
+    'Political Parties',
+    'Outcomes of Democracy',
+    'Development',
+    'Sectors of the Indian Economy',
+    'Money and Credit',
+    'Globalisation and the Indian Economy',
+  ],
+  english: [
+    'A Letter to God',
+    'Nelson Mandela: Long Walk to Freedom',
+    'Two Stories about Flying',
+    'From the Diary of Anne Frank',
+    'Glimpses of India',
+    'Mijbil the Otter',
+    'Madam Rides the Bus',
+    'The Sermon at Benares',
+    'The Proposal',
+    'First Flight: Essential Poems',
+    'A Triumph of Surgery',
+    'The Thief’s Story',
+    'The Midnight Visitor',
+    'A Question of Trust',
+    'Footprints Without Feet',
+    'The Making of a Scientist',
+    'The Necklace',
+    'Bholi',
+  ],
+};
+
+export function getVerifiedChapters(subject: string, grade: string = '12'): string[] {
+  const normSub = subject.toLowerCase();
+  if (grade === '10') {
+    return VERIFIED_CBSE_CHAPTERS_CLASS_10[normSub] || [];
+  }
+  return VERIFIED_CBSE_CHAPTERS[normSub] || [];
+}
 
 // ---------------------------------------------------------------------
 // Physics Standard Units and SI Consistency
@@ -522,18 +610,20 @@ export function validateSingleQuestion(
 
   // Subject and Chapter Validation
   const rawSubject = (raw.subject || expectedSubject || 'mathematics').toLowerCase();
-  const validSubjects = ['mathematics', 'physics', 'chemistry'];
+  const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
   if (!validSubjects.includes(rawSubject)) {
-    errors.push(`Invalid subject "${rawSubject}". Must be mathematics, physics, or chemistry.`);
+    errors.push(`Invalid subject "${rawSubject}". Must be a valid CBSE Class 10 or 12 subject.`);
   } else {
     passedChecks.push('subject_valid');
   }
-  const subject = (validSubjects.includes(rawSubject) ? rawSubject : 'mathematics') as 'mathematics' | 'physics' | 'chemistry';
+  const subject = validSubjects.includes(rawSubject) ? rawSubject : 'mathematics';
 
   const chapter = String(raw.chapter || expectedChapter || '').trim();
   if (chapter && chapter !== 'all') {
-    const verifiedChapters = VERIFIED_CBSE_CHAPTERS[subject] || [];
-    const isChapterValid = verifiedChapters.some(
+    const verifiedChapters = getVerifiedChapters(subject, '12');
+    const verifiedChapters10 = getVerifiedChapters(subject, '10');
+    const combinedVerified = [...verifiedChapters, ...verifiedChapters10];
+    const isChapterValid = combinedVerified.length === 0 || combinedVerified.some(
       c => c.toLowerCase() === chapter.toLowerCase() ||
            chapter.toLowerCase().includes(c.toLowerCase()) ||
            c.toLowerCase().includes(chapter.toLowerCase())

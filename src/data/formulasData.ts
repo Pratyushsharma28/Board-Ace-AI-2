@@ -1,8 +1,9 @@
-import { SubjectId } from '../types/quiz';
+import { SubjectId, GradeClass } from '../types/quiz';
 
 export interface FormulaItem {
   id: string;
   subject: SubjectId;
+  grade?: GradeClass;
   chapter: string;
   name: string;
   nameHi?: string;
@@ -210,5 +211,147 @@ export const CBSE_FORMULAS: FormulaItem[] = [
     explanationHi: 'अयुग्मित इलेक्ट्रॉनों की संख्या n से चुंबकीय आघूर्ण की गणना।',
     variables: 'n = number of unpaired electrons; BM = Bohr Magnetons',
     examTip: 'n=1 ⇒ 1.73 BM; n=2 ⇒ 2.83 BM; n=3 ⇒ 3.87 BM; n=4 ⇒ 4.90 BM; n=5 ⇒ 5.92 BM.'
+  },
+
+  // ====================================================
+  // CBSE CLASS 10 MATHEMATICS & SCIENCE FORMULAS (2026-27)
+  // ====================================================
+  {
+    id: 'f-10-m-1',
+    subject: 'mathematics',
+    grade: '10',
+    chapter: 'Quadratic Equations',
+    name: 'Quadratic Formula (Sridharacharya Formula)',
+    nameHi: 'द्विघाती सूत्र (श्रीधराचार्य सूत्र)',
+    formula: 'x = [ -b ± √(b² - 4ac) ] / (2a)',
+    explanation: 'Solves any standard quadratic equation ax² + bx + c = 0 where a ≠ 0.',
+    explanationHi: 'द्विघात समीकरण ax² + bx + c = 0 के मूल ज्ञात करने का सार्वत्रिक सूत्र।',
+    variables: 'a, b, c = real coefficients; D = b² - 4ac (discriminant)',
+    examTip: 'Evaluate D = b² - 4ac first. If D < 0, write directly: "No real roots exist".'
+  },
+  {
+    id: 'f-10-m-2',
+    subject: 'mathematics',
+    grade: '10',
+    chapter: 'Arithmetic Progressions',
+    name: 'nth Term & Sum of First n Terms of an AP',
+    nameHi: 'समांतर श्रेढ़ी का nवाँ पद एवं n पदों का योग',
+    formula: 'aₙ = a + (n - 1)d\nSₙ = (n / 2) · [ 2a + (n - 1)d ] = (n / 2) · (a + l)',
+    explanation: 'Fundamental formulas for terms and series in an Arithmetic Progression.',
+    explanationHi: 'समांतर श्रेढ़ी के पदों तथा योग की गणना हेतु मूल सूत्र।',
+    variables: 'a = first term; d = common difference; n = number of terms; l = last term',
+    examTip: 'If given Sₙ, you can find the nth term directly via aₙ = Sₙ - Sₙ₋₁.'
+  },
+  {
+    id: 'f-10-m-3',
+    subject: 'mathematics',
+    grade: '10',
+    chapter: 'Coordinate Geometry',
+    name: 'Distance & Internal Section Formula',
+    nameHi: 'दूरी एवं अंतः विभाजन सूत्र',
+    formula: 'd = √[ (x₂ - x₁)² + (y₂ - y₁)² ]\nP(x, y) = [ (m₁x₂ + m₂x₁) / (m₁ + m₂), (m₁y₂ + m₂y₁) / (m₁ + m₂) ]',
+    explanation: 'Calculates Euclidean distance and internal division ratio between two points.',
+    explanationHi: 'दो बिंदुओं के बीच दूरी तथा उन्हें m₁:m₂ में विभाजित करने वाले बिंदु के निर्देशांक।',
+    variables: '(x₁, y₁) and (x₂, y₂) = coordinates; m₁, m₂ = ratio weights',
+    examTip: 'For finding unknown ratio, always assume the ratio to be k : 1 instead of m₁ : m₂ to reduce variables.'
+  },
+  {
+    id: 'f-10-m-4',
+    subject: 'mathematics',
+    grade: '10',
+    chapter: 'Introduction to Trigonometry',
+    name: 'Fundamental Trigonometric Identities',
+    nameHi: 'त्रिकोणमितीय सर्वसमिकाएँ',
+    formula: 'sin²θ + cos²θ = 1\n1 + tan²θ = sec²θ\n1 + cot²θ = cosec²θ',
+    explanation: 'Pythagorean identities true for all acute angles 0° ≤ θ ≤ 90°.',
+    explanationHi: 'सभी न्यूनकोणों के लिए मान्य मूलभूत त्रिकोणमितीय सर्वसमिकाएँ।',
+    variables: 'θ = angle measured in degrees or radians',
+    examTip: 'In proof-based questions: sec²θ - tan²θ = 1 ⇒ (secθ - tanθ)(secθ + tanθ) = 1.'
+  },
+  {
+    id: 'f-10-m-5',
+    subject: 'mathematics',
+    grade: '10',
+    chapter: 'Statistics',
+    name: 'Empirical Relationship & Mode of Grouped Data',
+    nameHi: 'बहुलक एवं आनुभविक संबंध सूत्र',
+    formula: 'Mode = 3 · Median - 2 · Mean\nMode = l + [ (f₁ - f₀) / (2f₁ - f₀ - f₂) ] · h',
+    explanation: 'Calculates the mode of grouped continuous frequency data.',
+    explanationHi: 'वर्गीकृत आंकड़ों का बहुलक ज्ञात करने का आधिकारिक सूत्र।',
+    variables: 'l = lower limit of modal class; f₁ = modal frequency; f₀ = preceding; f₂ = succeeding; h = class size',
+    examTip: 'The modal class is the class interval corresponding to the highest frequency.'
+  },
+  {
+    id: 'f-10-s-1',
+    subject: 'science',
+    grade: '10',
+    chapter: 'Electricity',
+    name: 'Ohm’s Law & Resistance of a Conductor',
+    nameHi: 'ओम का नियम एवं प्रतिरोध',
+    formula: 'V = I · R\nR = ρ · (l / A)',
+    explanation: 'Relates potential difference, current, resistance, and specific resistivity.',
+    explanationHi: 'विभवांतर, धारा, प्रतिरोध तथा विशिष्ट प्रतिरोधकता (Resistivity) का संबंध।',
+    variables: 'V = Volts; I = Amperes; R = Ohms (Ω); ρ = Resistivity (Ω·m); l = length (m); A = area (m²)',
+    examTip: 'Resistivity ρ depends ONLY on the material and temperature, NOT on length or thickness.'
+  },
+  {
+    id: 'f-10-s-2',
+    subject: 'science',
+    grade: '10',
+    chapter: 'Electricity',
+    name: 'Equivalent Resistance in Series & Parallel',
+    nameHi: 'श्रेणीक्रम एवं पार्श्वक्रम तुल्य प्रतिरोध',
+    formula: 'Series: R_s = R₁ + R₂ + R₃\nParallel: 1 / R_p = 1 / R₁ + 1 / R₂ + 1 / R₃',
+    explanation: 'Formulas to compute total resistance across circuit configurations.',
+    explanationHi: 'परिपथ में प्रतिरोधकों के कुल तुल्य प्रतिरोध की गणना।',
+    variables: 'R_s = total series resistance; R_p = total parallel resistance',
+    examTip: 'For two resistors in parallel: R_p = (R₁ · R₂) / (R₁ + R₂).'
+  },
+  {
+    id: 'f-10-s-3',
+    subject: 'science',
+    grade: '10',
+    chapter: 'Electricity',
+    name: 'Joule’s Law of Heating & Electric Power',
+    nameHi: 'जूल का तापन नियम एवं विद्युत शक्ति',
+    formula: 'H = I² · R · t\nP = V · I = I² · R = V² / R',
+    explanation: 'Computes heat generated in a resistor and power consumption in electrical devices.',
+    explanationHi: 'चालक में उत्पन्न ऊष्मा तथा विद्युत शक्ति की गणना।',
+    variables: 'H = Heat energy (Joules); t = time (seconds); P = Power (Watts, W)',
+    examTip: 'Commercial unit of electrical energy: 1 Board of Trade unit (kWh) = 3.6 × 10⁶ Joules.'
+  },
+  {
+    id: 'f-10-s-4',
+    subject: 'science',
+    grade: '10',
+    chapter: 'Light - Reflection and Refraction',
+    name: 'Mirror Formula & Spherical Mirror Magnification',
+    nameHi: 'दर्पण सूत्र एवं आवर्धन',
+    formula: '(1 / f) = (1 / v) + (1 / u)\nm = - (v / u) = (h′ / h)',
+    explanation: 'Relates focal length, image distance, and object distance in spherical mirrors.',
+    explanationHi: 'गोलीय दर्पणों में फोकस दूरी, प्रतिबिंब दूरी एवं बिम्ब दूरी का संबंध।',
+    variables: 'f = focal length; v = image distance; u = object distance; m = magnification',
+    examTip: 'New Cartesian Sign Convention: Object distance "u" is ALWAYS negative (-u).'
+  },
+  {
+    id: 'f-10-s-5',
+    subject: 'science',
+    grade: '10',
+    chapter: 'Light - Reflection and Refraction',
+    name: 'Lens Formula & Power of a Lens',
+    nameHi: 'लेंस सूत्र एवं लेंस की क्षमता',
+    formula: '(1 / f) = (1 / v) - (1 / u)\nm = + (v / u)\nP = 1 / f (in metres)',
+    explanation: 'Relates focal length, distances, and optical power in spherical lenses.',
+    explanationHi: 'लेंस सूत्र तथा डायोप्टर (D) में लेंस की क्षमता की गणना।',
+    variables: 'f = focal length (m); P = power in Dioptres (D); m = magnification',
+    examTip: 'Notice the sign difference: Mirror formula has + (1/v + 1/u) with - (v/u) magnification; Lens formula has - (1/v - 1/u) with + (v/u) magnification!'
   }
 ];
+
+export function getFormulasForGrade(grade: GradeClass = '12'): FormulaItem[] {
+  if (grade === '10') {
+    return CBSE_FORMULAS.filter(f => f.grade === '10');
+  }
+  return CBSE_FORMULAS.filter(f => !f.grade || f.grade === '12');
+}
+

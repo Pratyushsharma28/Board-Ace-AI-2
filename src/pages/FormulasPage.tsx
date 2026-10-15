@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_FORMULAS, FormulaItem } from '../data/formulasData';
+import { useClass } from '../context/ClassContext';
+import { getFormulasForGrade, FormulaItem } from '../data/formulasData';
 import { SubjectId } from '../types/quiz';
 import {
   FileCode,
@@ -15,11 +16,14 @@ import {
 
 export const FormulasPage: React.FC = () => {
   const { language, t } = useLanguage();
+  const { grade, subjects, gradeLabel } = useClass();
 
   const [selectedSubject, setSelectedSubject] = useState<'all' | SubjectId>('all');
   const [selectedChapter, setSelectedChapter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const gradeFormulas = useMemo(() => getFormulasForGrade(grade), [grade]);
 
   const handleCopy = (formula: string, id: string) => {
     navigator.clipboard.writeText(formula);
@@ -30,7 +34,7 @@ export const FormulasPage: React.FC = () => {
   };
 
   const filteredFormulas = useMemo(() => {
-    return CBSE_FORMULAS.filter((item) => {
+    return gradeFormulas.filter((item) => {
       if (selectedSubject !== 'all' && item.subject !== selectedSubject) return false;
       if (selectedChapter !== 'all' && item.chapter !== selectedChapter) return false;
       if (searchQuery.trim()) {
@@ -42,17 +46,17 @@ export const FormulasPage: React.FC = () => {
       }
       return true;
     });
-  }, [selectedSubject, selectedChapter, searchQuery]);
+  }, [gradeFormulas, selectedSubject, selectedChapter, searchQuery]);
 
   const availableChapters = useMemo(() => {
     const list = new Set<string>();
-    CBSE_FORMULAS.forEach((item) => {
+    gradeFormulas.forEach((item) => {
       if (selectedSubject === 'all' || item.subject === selectedSubject) {
         list.add(item.chapter);
       }
     });
     return Array.from(list);
-  }, [selectedSubject]);
+  }, [gradeFormulas, selectedSubject]);
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-fadeIn pb-12">
@@ -64,8 +68,8 @@ export const FormulasPage: React.FC = () => {
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             {language === 'hi'
-              ? 'गणित, भौतिकी एवं रसायन विज्ञान के प्रमाणित सूत्र, चर परिभाषाएं और परीक्षक सुझाव।'
-              : 'Verified equations, variable breakdowns, and examiner tips for CBSE Class 12 (Session 2026–27).'}
+              ? `${gradeLabel} के प्रमाणित सूत्र, चर परिभाषाएं और परीक्षक सुझाव (सत्र 2026–27)।`
+              : `Verified equations, variable breakdowns, and examiner tips for ${gradeLabel} (Session 2026–27).`}
           </p>
         </div>
 
@@ -80,9 +84,7 @@ export const FormulasPage: React.FC = () => {
         <div className="flex flex-wrap items-center gap-1.5">
           {[
             { id: 'all', label: language === 'hi' ? 'सभी विषय' : 'All Subjects' },
-            { id: 'mathematics', label: language === 'hi' ? 'गणित' : 'Mathematics' },
-            { id: 'physics', label: language === 'hi' ? 'भौतिकी' : 'Physics' },
-            { id: 'chemistry', label: language === 'hi' ? 'रसायन विज्ञान' : 'Chemistry' },
+            ...subjects.map(s => ({ id: s.id, label: s.name }))
           ].map((sub) => (
             <button
               key={sub.id}

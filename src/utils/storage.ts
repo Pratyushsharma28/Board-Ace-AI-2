@@ -1,14 +1,19 @@
-import { QuizAttempt, Question } from '../types/quiz';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { QuizAttempt, Question, GradeClass } from '../types/quiz';
+import { CBSE_CLASS_12_SUBJECTS, CBSE_CLASS_10_SUBJECTS, getSubjectsForGrade } from '../data/syllabus';
 
 const ATTEMPTS_KEY = 'boardace_attempts_v1';
 const BOOKMARKS_KEY = 'boardace_bookmarks_v1';
 
-export function getSavedAttempts(): QuizAttempt[] {
+export function getSavedAttempts(grade?: GradeClass): QuizAttempt[] {
   try {
     const raw = localStorage.getItem(ATTEMPTS_KEY);
     if (!raw) return [];
-    return JSON.parse(raw);
+    const all: QuizAttempt[] = JSON.parse(raw);
+    if (!grade) return all;
+    return all.filter(att => {
+      const attGrade = att.quizConfig?.grade || '12';
+      return attGrade === grade;
+    });
   } catch (e) {
     console.error('Failed to read attempts from localStorage', e);
     return [];
@@ -18,6 +23,10 @@ export function getSavedAttempts(): QuizAttempt[] {
 export function saveAttempt(attempt: QuizAttempt): void {
   try {
     const attempts = getSavedAttempts();
+    // Ensure grade is explicitly tagged
+    if (!attempt.quizConfig.grade) {
+      attempt.quizConfig.grade = '12';
+    }
     const updated = [attempt, ...attempts].slice(0, 50); // Keep last 50
     localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(updated));
   } catch (e) {
@@ -46,11 +55,13 @@ export function exportAnalyticsJson(): string {
   return JSON.stringify(data, null, 2);
 }
 
-export function getBookmarks(): Question[] {
+export function getBookmarks(grade?: GradeClass): Question[] {
   try {
     const raw = localStorage.getItem(BOOKMARKS_KEY);
     if (!raw) return [];
-    return JSON.parse(raw);
+    const all: Question[] = JSON.parse(raw);
+    if (!grade) return all;
+    return all.filter(q => (q.grade || '12') === grade);
   } catch (e) {
     console.error('Failed to read bookmarks', e);
     return [];
@@ -59,7 +70,8 @@ export function getBookmarks(): Question[] {
 
 export function toggleBookmark(question: Question): boolean {
   try {
-    const bookmarks = getBookmarks();
+    const raw = localStorage.getItem(BOOKMARKS_KEY);
+    const bookmarks: Question[] = raw ? JSON.parse(raw) : [];
     const exists = bookmarks.some(b => b.id === question.id);
     let updated: Question[];
     if (exists) {
@@ -81,7 +93,9 @@ export function saveBookmark(question: Question): boolean {
 
 export function isQuestionBookmarked(questionId: string): boolean {
   try {
-    const bookmarks = getBookmarks();
+    const raw = localStorage.getItem(BOOKMARKS_KEY);
+    if (!raw) return false;
+    const bookmarks: Question[] = JSON.parse(raw);
     return bookmarks.some(b => b.id === questionId);
   } catch (e) {
     return false;
@@ -94,7 +108,9 @@ export function isBookmarked(questionId: string): boolean {
 
 export function removeBookmark(questionId: string): void {
   try {
-    const bookmarks = getBookmarks();
+    const raw = localStorage.getItem(BOOKMARKS_KEY);
+    if (!raw) return;
+    const bookmarks: Question[] = JSON.parse(raw);
     const updated = bookmarks.filter(b => b.id !== questionId);
     localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(updated));
   } catch (e) {
@@ -228,20 +244,21 @@ export interface AnalyticsSummary {
   currentStreakDays: number;
 }
 
-export function getWeakTopicRadarData(): {
+export function getWeakTopicRadarData(grade: GradeClass = '12'): {
   strongTopics: TopicRadarItem[];
   practiseTopics: TopicRadarItem[];
   weakTopics: TopicRadarItem[];
   unattemptedTopics: TopicRadarItem[];
   allTopics: TopicRadarItem[];
 } {
-  const attempts = getSavedAttempts();
+  const attempts = getSavedAttempts(grade);
+  const subjects = getSubjectsForGrade(grade);
 
   // Aggregate stats from all attempts
   const topicStats: Record<string, { subject: string; attempted: number; correct: number }> = {};
 
   // First, seed with all syllabus topics to ensure 100% syllabus radar coverage
-  CBSE_CLASS_12_SUBJECTS.forEach(sub => {
+  subjects.forEach(sub => {
     sub.chapters.forEach(chap => {
       chap.topics.forEach(t => {
         topicStats[t] = { subject: sub.name, attempted: 0, correct: 0 };
@@ -263,12 +280,20 @@ export function getWeakTopicRadarData(): {
 
   // If no attempts yet, seed a small representative starter batch so the student can inspect the Radar UI immediately
   if (attempts.length === 0) {
-    topicStats["Gauss's Law & Applications"] = { subject: 'Physics', attempted: 4, correct: 2 };
-    topicStats['Crystal Field Theory'] = { subject: 'Chemistry', attempted: 4, correct: 2 };
-    topicStats['Bayes’ Theorem'] = { subject: 'Mathematics', attempted: 3, correct: 2 };
-    topicStats['Matrices Multiplication & Properties'] = { subject: 'Mathematics', attempted: 5, correct: 5 };
-    topicStats['Total Internal Reflection & Fibers'] = { subject: 'Physics', attempted: 4, correct: 4 };
-    topicStats['Nernst Equation Calculations'] = { subject: 'Chemistry', attempted: 3, correct: 1 };
+    if (grade === '10') {
+      topicStats['Fundamental Theorem of Arithmetic'] = { subject: 'Mathematics', attempted: 4, correct: 3 };
+      topicStats['Chemical Equations and Balancing by Hit and Trial'] = { subject: 'Science', attempted: 4, correct: 3 };
+      topicStats['Ohm’s Law (V = IR) and Verification'] = { subject: 'Science', attempted: 4, correct: 2 };
+      topicStats['Case Studies of Belgium and Sri Lanka'] = { subject: 'Social Science', attempted: 3, correct: 2 };
+      topicStats['Lencho’s Faith in God and the Destruction of Crops by Hailstorm'] = { subject: 'English', attempted: 4, correct: 4 };
+    } else {
+      topicStats["Gauss's Law & Applications"] = { subject: 'Physics', attempted: 4, correct: 2 };
+      topicStats['Crystal Field Theory'] = { subject: 'Chemistry', attempted: 4, correct: 2 };
+      topicStats['Bayes’ Theorem'] = { subject: 'Mathematics', attempted: 3, correct: 2 };
+      topicStats['Matrices Multiplication & Properties'] = { subject: 'Mathematics', attempted: 5, correct: 5 };
+      topicStats['Total Internal Reflection & Fibers'] = { subject: 'Physics', attempted: 4, correct: 4 };
+      topicStats['Nernst Equation Calculations'] = { subject: 'Chemistry', attempted: 3, correct: 1 };
+    }
   }
 
   const allTopics: TopicRadarItem[] = Object.entries(topicStats).map(([topic, stat]) => {
@@ -329,9 +354,28 @@ export function getWeakTopicRadarData(): {
   };
 }
 
-export function calculateAnalytics(): AnalyticsSummary {
-  const attempts = getSavedAttempts();
+export function calculateAnalytics(grade: GradeClass = '12'): AnalyticsSummary {
+  const attempts = getSavedAttempts(grade);
   if (attempts.length === 0) {
+    if (grade === '10') {
+      return {
+        totalQuizzesTaken: 4,
+        totalQuestionsAnswered: 30,
+        overallAccuracy: 86,
+        weakTopicsAllTime: [
+          { topic: 'Ohm’s Law (V = IR) and Verification', subject: 'Science', mistakes: 2, accuracy: 50 },
+          { topic: 'Case Studies of Belgium and Sri Lanka', subject: 'Social Science', mistakes: 1, accuracy: 66 },
+          { topic: 'Quadratic Formula & Nature of Roots', subject: 'Mathematics', mistakes: 1, accuracy: 70 }
+        ],
+        subjectBreakdown: {
+          Mathematics: { total: 10, correct: 9 },
+          Science: { total: 10, correct: 8 },
+          'Social Science': { total: 5, correct: 4 },
+          English: { total: 5, correct: 5 }
+        },
+        currentStreakDays: 3
+      };
+    }
     return {
       totalQuizzesTaken: 3,
       totalQuestionsAnswered: 25,

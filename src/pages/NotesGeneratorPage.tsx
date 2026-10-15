@@ -46,7 +46,7 @@ interface ChapterNotes {
 }
 
 // Preset Fallback Notes for Instant High-Yield Revision
-const PRESET_NOTES: Record<SubjectId, Record<string, Partial<ChapterNotes>>> = {
+const PRESET_NOTES: Partial<Record<SubjectId, Record<string, Partial<ChapterNotes>>>> = {
   physics: {
     'Electric Charges and Fields': {
       chapterSummary:

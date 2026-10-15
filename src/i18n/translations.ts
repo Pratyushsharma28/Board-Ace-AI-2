@@ -42,6 +42,8 @@ export interface Translations {
     mistakeNotebook: string;
     focusMode: string;
     chapterTracker: string;
+    pyqHub: string;
+    competencyPractice: string;
     collapseSidebar: string;
     expandSidebar: string;
   };
@@ -491,6 +493,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       mistakeNotebook: 'Mistake Notebook',
       focusMode: 'Focus Mode',
       chapterTracker: 'Chapter Tracker',
+      pyqHub: 'CBSE PYQ Hub',
+      competencyPractice: 'Competency Practice',
       collapseSidebar: 'Collapse sidebar',
       expandSidebar: 'Expand sidebar',
     },
@@ -949,6 +953,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       mistakeNotebook: 'मेरी गलती नोटबुक',
       focusMode: 'फोकस मोड',
       chapterTracker: 'अध्याय ट्रैकर',
+      pyqHub: 'CBSE पिछले वर्ष प्रश्न',
+      competencyPractice: 'योग्यता-आधारित अभ्यास',
       collapseSidebar: 'साइडबार छोटा करें',
       expandSidebar: 'साइडबार विस्तार करें',
     },
