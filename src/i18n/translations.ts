@@ -26,6 +26,22 @@ export interface Translations {
     studyPlanner: string;
     bookmarks: string;
     settings: string;
+    pdfToQuiz: string;
+    studyRoadmap: string;
+    answerChecker: string;
+    mistakeDetective: string;
+    masteryMap: string;
+    dailyChallenge: string;
+    notesGenerator: string;
+    questionPaper: string;
+    learningDna: string;
+    weakChapters: string;
+    studyCoach: string;
+    smartRetry: string;
+    progressTimeline: string;
+    mistakeNotebook: string;
+    focusMode: string;
+    chapterTracker: string;
     collapseSidebar: string;
     expandSidebar: string;
   };
@@ -459,6 +475,22 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       studyPlanner: 'Study Planner',
       bookmarks: 'Bookmarks',
       settings: 'Settings',
+      pdfToQuiz: 'PDF to Quiz',
+      studyRoadmap: 'AI Study Roadmap',
+      answerChecker: 'Mock Board Examiner',
+      mistakeDetective: 'Mistake Detective 2.0',
+      masteryMap: 'Mastery Map',
+      dailyChallenge: 'Daily Challenge',
+      notesGenerator: 'AI Notes Generator',
+      questionPaper: 'Question Paper',
+      learningDna: 'AI Learning DNA',
+      weakChapters: 'Weak Chapter Detector',
+      studyCoach: 'AI Study Coach',
+      smartRetry: 'Smart Retry Mode',
+      progressTimeline: 'Progress Timeline',
+      mistakeNotebook: 'Mistake Notebook',
+      focusMode: 'Focus Mode',
+      chapterTracker: 'Chapter Tracker',
       collapseSidebar: 'Collapse sidebar',
       expandSidebar: 'Expand sidebar',
     },
@@ -901,6 +933,22 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       studyPlanner: 'अध्ययन योजनाकार',
       bookmarks: 'बुकमार्क',
       settings: 'सेटिंग्स',
+      pdfToQuiz: 'PDF से क्विज़',
+      studyRoadmap: 'AI अध्ययन रोडमैप',
+      answerChecker: 'मॉक बोर्ड परीक्षक',
+      mistakeDetective: 'गलती जासूस 2.0',
+      masteryMap: 'अवधारणा दक्षता मानचित्र',
+      dailyChallenge: 'दैनिक अभ्यास चुनौती',
+      notesGenerator: 'AI त्वरित नोट्स',
+      questionPaper: 'प्रश्न पत्र जनरेटर',
+      learningDna: 'AI शिक्षण डीएनए',
+      weakChapters: 'कमजोर अध्याय संसूचक',
+      studyCoach: 'AI अध्ययन कोच',
+      smartRetry: 'स्मार्ट पुनः प्रयास',
+      progressTimeline: 'प्रगति समयरेखा',
+      mistakeNotebook: 'मेरी गलती नोटबुक',
+      focusMode: 'फोकस मोड',
+      chapterTracker: 'अध्याय ट्रैकर',
       collapseSidebar: 'साइडबार छोटा करें',
       expandSidebar: 'साइडबार विस्तार करें',
     },

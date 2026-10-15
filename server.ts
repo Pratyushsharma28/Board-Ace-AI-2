@@ -746,6 +746,495 @@ ${actionPrompt}`;
   }
 });
 
+// Endpoint 1: PDF To Quiz Generator
+app.post('/api/pdf-to-quiz', async (req: Request, res: Response) => {
+  try {
+    const {
+      pdfBase64,
+      filename = 'document.pdf',
+      subject: rawSubject = 'physics',
+      difficulty = 'medium',
+      questionCount = 5,
+      language = 'en',
+    } = req.body;
+
+    if (!pdfBase64) {
+      return res.status(400).json({
+        success: false,
+        error: language === 'hi' ? 'कृपया एक वैध पीडीएफ फाइल अपलोड करें।' : 'Please upload a valid PDF study file.',
+      });
+    }
+
+    // Validate size (base64 string size max ~14MB corresponds to ~10MB PDF)
+    const cleanBase64 = String(pdfBase64).replace(/^data:application\/pdf;base64,/, '').trim();
+    if (cleanBase64.length > 14 * 1024 * 1024) {
+      return res.status(400).json({
+        success: false,
+        error: language === 'hi' ? 'पीडीएफ फाइल का आकार 10MB से अधिक नहीं होना चाहिए।' : 'PDF file size exceeds 10MB limit.',
+      });
+    }
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return res.status(503).json({
+        success: false,
+        error: 'Gemini API key is not configured on the server.',
+      });
+    }
+
+    const validSubjects = ['mathematics', 'physics', 'chemistry'];
+    const subject = validSubjects.includes(String(rawSubject).toLowerCase())
+      ? String(rawSubject).toLowerCase()
+      : 'physics';
+
+    const count = Math.min(Math.max(parseInt(questionCount, 10) || 5, 1), 15);
+
+    const prompt = `You are an expert CBSE Class 12 Senior Examiner for Academic Session 2026–27.
+Analyze the attached study document (${filename}) thoroughly.
+Extract readable core concepts, definitions, formulas, and laws, and generate EXACTLY ${count} high-quality, authentic CBSE-standard multiple-choice questions directly grounded in this document.
+
+Target Subject: ${subject.toUpperCase()}
+Target Difficulty: ${difficulty}
+
+Rules:
+1. Every question must be directly grounded in the content of the provided document.
+2. In "sourceSection", specify the exact heading, section name, or page reference found in the text where this concept appears (e.g., "Section 2.3: Electric Flux", or "Page 4, Colligative Properties"). If no reliable section name can be determined, return an empty string. Do NOT invent fake page numbers or hallucinated headings.
+3. Every question must have EXACTLY 4 distinct, unambiguous options.
+4. "correctAnswer" must match one of the 4 options verbatim.
+5. "explanation" must provide step-by-step reasoning citing the text.
+6. "pitfall" should highlight the common misconception or trap.
+7. If the document is purely unreadable, blank, or completely unrelated to CBSE Class 12, indicate so.
+${language === 'hi' ? '8. Language Requirement: Provide question, options, explanation, and pitfall in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Class 12 terminology.' : ''}`;
+
+    const buildPdfPayload = (modelName: string) => ({
+      model: modelName,
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            {
+              inlineData: {
+                mimeType: 'application/pdf',
+                data: cleanBase64,
+              },
+            },
+            {
+              text: prompt,
+            },
+          ],
+        },
+      ],
+      config: {
+        systemInstruction: 'You are an expert CBSE Class 12 Chief Paper Setter. Ground all questions strictly in the provided PDF material and extract accurate source citations.',
+        temperature: 0.25,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              id: { type: Type.STRING },
+              question: { type: Type.STRING },
+              options: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING },
+              },
+              correctAnswer: { type: Type.STRING },
+              explanation: { type: Type.STRING },
+              subject: { type: Type.STRING },
+              chapter: { type: Type.STRING },
+              topic: { type: Type.STRING },
+              sourceSection: { type: Type.STRING },
+              pitfall: { type: Type.STRING },
+              difficulty: { type: Type.STRING },
+              questionType: { type: Type.STRING },
+            },
+            required: ['id', 'question', 'options', 'correctAnswer', 'explanation', 'subject', 'chapter', 'topic'],
+          },
+        },
+      },
+    });
+
+    const generatePromise = callGeminiWithModelFallback(ai, buildPdfPayload);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('PDF analysis and question generation timed out after 55 seconds.')), 55000)
+    );
+
+    const response = await Promise.race([generatePromise, timeoutPromise]);
+    let rawText = (response.text || '').trim();
+    if (rawText.startsWith('```json')) {
+      rawText = rawText.slice(7);
+    } else if (rawText.startsWith('```')) {
+      rawText = rawText.slice(3);
+    }
+    if (rawText.endsWith('```')) {
+      rawText = rawText.slice(0, -3);
+    }
+    rawText = rawText.trim();
+
+    const parsed = JSON.parse(rawText);
+    const questions = (Array.isArray(parsed) ? parsed : (parsed.questions || [])).map((q: any, i: number) => ({
+      ...q,
+      id: q.id || `pdf-q-${Date.now()}-${i}`,
+      difficulty: q.difficulty || difficulty,
+      questionType: q.questionType || 'mcq',
+      source: 'ai',
+    }));
+
+    return res.json({
+      success: true,
+      questions,
+      filename,
+    });
+  } catch (error: any) {
+    console.error('PDF to Quiz Error:', error);
+    const friendlyError = formatErrorMessage(error);
+    return res.status(500).json({
+      success: false,
+      error: friendlyError || 'Could not process PDF. If this is an image-only scanned document, please ensure text is legible or try a text-based notes PDF.',
+    });
+  }
+});
+
+// Endpoint 2: AI Mock Board Examiner (Written Answer Evaluator)
+app.post('/api/check-answer', async (req: Request, res: Response) => {
+  try {
+    const {
+      subject: rawSubject = 'physics',
+      chapter = 'General',
+      questionText,
+      studentAnswer,
+      maxMarks = 3,
+      language = 'en',
+    } = req.body;
+
+    if (!questionText || !studentAnswer) {
+      return res.status(400).json({
+        success: false,
+        error: language === 'hi' ? 'कृपया प्रश्न और अपना उत्तर दोनों दर्ज करें।' : 'Please provide both the question text and student answer.',
+      });
+    }
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return res.status(503).json({
+        success: false,
+        error: 'Gemini API key is not configured on the server.',
+      });
+    }
+
+    const marks = Math.min(Math.max(parseInt(maxMarks, 10) || 3, 1), 5);
+
+    const prompt = `You are a Senior CBSE Class 12 Board Exam Evaluator and Head Examiner for Academic Session 2026–27.
+Evaluate the following student's written response against official CBSE marking schemes.
+
+Subject: ${rawSubject.toUpperCase()} (CBSE Class 12)
+Chapter: ${chapter}
+Question (${marks} Marks):
+"${questionText}"
+
+Student's Written Response:
+"${studentAnswer}"
+
+Evaluate strictly according to CBSE Class 12 standards:
+1. estimatedScore: An integer or half-mark score between 0 and ${marks} based on CBSE step-marking rubrics.
+2. conceptAccuracy: A concise paragraph analyzing the accuracy of definitions, formulas, substitutions, and chemical/physical logic.
+3. keyPointsHit: An array of specific concepts, formulas, or steps the student stated correctly.
+4. keyPointsMissed: An array of essential CBSE marking points, SI units, diagram labels, or formula conditions the student omitted or got wrong.
+5. improvementSuggestions: 2-3 specific, actionable examiner recommendations to secure full marks on exam day.
+6. modelAnswer: The ideal CBSE board-topper answer that would earn full ${marks}/${marks} marks with clean formatting.
+${language === 'hi' ? '7. Language Requirement: Provide the entire evaluation in clear Hindi (हिन्दी) using official NCERT CBSE terminology while retaining formulas.' : ''}`;
+
+    const buildCheckerPayload = (modelName: string) => ({
+      model: modelName,
+      contents: prompt,
+      config: {
+        systemInstruction: 'You are an official CBSE Class 12 Chief Examiner evaluating board answer sheets. Be constructive, step-marking oriented, and academically rigorous.',
+        temperature: 0.2,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            estimatedScore: { type: Type.NUMBER },
+            maxMarks: { type: Type.NUMBER },
+            conceptAccuracy: { type: Type.STRING },
+            keyPointsHit: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            keyPointsMissed: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            improvementSuggestions: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            modelAnswer: { type: Type.STRING },
+          },
+          required: [
+            'estimatedScore',
+            'maxMarks',
+            'conceptAccuracy',
+            'keyPointsHit',
+            'keyPointsMissed',
+            'improvementSuggestions',
+            'modelAnswer',
+          ],
+        },
+      },
+    });
+
+    const response = await callGeminiWithModelFallback(ai, buildCheckerPayload);
+    let rawText = (response.text || '').trim();
+    if (rawText.startsWith('```json')) rawText = rawText.slice(7);
+    if (rawText.startsWith('```')) rawText = rawText.slice(3);
+    if (rawText.endsWith('```')) rawText = rawText.slice(0, -3);
+
+    const evaluation = JSON.parse(rawText.trim());
+    return res.json({
+      success: true,
+      evaluation: {
+        ...evaluation,
+        maxMarks: marks,
+        disclaimer: 'Note: AI evaluation is an automated pedagogical estimate based on CBSE step-marking rubrics, not official board certification.',
+      },
+    });
+  } catch (error: any) {
+    console.error('Answer Checker Error:', error);
+    const friendlyError = formatErrorMessage(error);
+    return res.status(500).json({
+      success: false,
+      error: friendlyError,
+    });
+  }
+});
+
+// Endpoint 3: AI Notes Generator
+app.post('/api/generate-notes', async (req: Request, res: Response) => {
+  try {
+    const {
+      subject: rawSubject = 'physics',
+      chapter = 'Electric Charges and Fields',
+      language = 'en',
+    } = req.body;
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return res.status(503).json({
+        success: false,
+        error: 'Gemini API key is not configured on the server.',
+      });
+    }
+
+    const prompt = `You are a CBSE Class 12 Master Teacher and NCERT Textbook Author for Session 2026–27.
+Generate high-yield, comprehensive chapter revision notes for:
+Subject: ${rawSubject.toUpperCase()} (CBSE Class 12)
+Chapter: "${chapter}"
+
+Structure the response as structured JSON:
+1. chapterSummary: 2-3 paragraph foundational overview explaining the big picture and exam significance.
+2. keyFormulas: Array of objects with "name", "formula", "variables", and "examTip".
+3. coreTheoremsAndConcepts: Array of objects with "title", "content", and "importance".
+4. commonBoardTraps: Array of classic mistakes students make in Section A/B/C.
+5. quickRevisionChecklist: 6-8 rapid-fire bullet points for the night before the board exam.
+${language === 'hi' ? 'Language Requirement: Provide all explanations in clear Hindi (हिन्दी) using official CBSE NCERT terminology while preserving math notation and equations.' : ''}`;
+
+    const buildNotesPayload = (modelName: string) => ({
+      model: modelName,
+      contents: prompt,
+      config: {
+        systemInstruction: 'You are an author of premier CBSE Class 12 exam revision guides. Provide dense, accurate, highly organized notes.',
+        temperature: 0.25,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            chapter: { type: Type.STRING },
+            subject: { type: Type.STRING },
+            chapterSummary: { type: Type.STRING },
+            keyFormulas: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  name: { type: Type.STRING },
+                  formula: { type: Type.STRING },
+                  variables: { type: Type.STRING },
+                  examTip: { type: Type.STRING },
+                },
+                required: ['name', 'formula', 'variables', 'examTip'],
+              },
+            },
+            coreTheoremsAndConcepts: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  title: { type: Type.STRING },
+                  content: { type: Type.STRING },
+                  importance: { type: Type.STRING },
+                },
+                required: ['title', 'content', 'importance'],
+              },
+            },
+            commonBoardTraps: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            quickRevisionChecklist: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+          },
+          required: [
+            'chapter',
+            'subject',
+            'chapterSummary',
+            'keyFormulas',
+            'coreTheoremsAndConcepts',
+            'commonBoardTraps',
+            'quickRevisionChecklist',
+          ],
+        },
+      },
+    });
+
+    const response = await callGeminiWithModelFallback(ai, buildNotesPayload);
+    let rawText = (response.text || '').trim();
+    if (rawText.startsWith('```json')) rawText = rawText.slice(7);
+    if (rawText.startsWith('```')) rawText = rawText.slice(3);
+    if (rawText.endsWith('```')) rawText = rawText.slice(0, -3);
+
+    const notes = JSON.parse(rawText.trim());
+    return res.json({
+      success: true,
+      notes,
+    });
+  } catch (error: any) {
+    console.error('Notes Generation Error:', error);
+    const friendlyError = formatErrorMessage(error);
+    return res.status(500).json({
+      success: false,
+      error: friendlyError,
+    });
+  }
+});
+
+// Endpoint 4: AI Question Paper Generator
+app.post('/api/generate-question-paper', async (req: Request, res: Response) => {
+  try {
+    const {
+      subject: rawSubject = 'physics',
+      chapters = ['all'],
+      difficulty = 'mixed',
+      paperFormat = 'standard', // 'standard' = 35 marks mini board, 'full' = 70 marks full board
+      language = 'en',
+    } = req.body;
+
+    const ai = getGeminiClient();
+    if (!ai) {
+      return res.status(503).json({
+        success: false,
+        error: 'Gemini API key is not configured on the server.',
+      });
+    }
+
+    const totalMarks = paperFormat === 'full' ? 70 : 35;
+    const timeMinutes = paperFormat === 'full' ? 180 : 90;
+
+    const prompt = `You are the Chief Question Paper Setter for the Central Board of Secondary Education (CBSE) Class 12 Board Examination (Session 2026–27).
+Construct an authentic, balanced board practice examination paper.
+
+Subject: ${rawSubject.toUpperCase()} (CBSE Code: ${rawSubject === 'mathematics' ? '041' : rawSubject === 'physics' ? '042' : '043'})
+Target Marks: ${totalMarks} Marks (${timeMinutes} Minutes)
+Difficulty: ${difficulty}
+Selected Chapters: ${JSON.stringify(chapters)}
+
+Blueprint Requirements:
+- Section A: MCQs and Assertion-Reason (1 mark each)
+- Section B: Short Answer Type I (2 marks each)
+- Section C: Short Answer Type II (3 marks each)
+- Section D: Long Answer Type / Derivations (5 marks each)
+- Section E: Case-Based Integrated Study (4 marks)
+
+For every question across all sections, provide:
+1. questionNumber: Integer
+2. section: "A" | "B" | "C" | "D" | "E"
+3. marks: Integer
+4. questionText: String
+5. options: Array of 4 strings (for Section A MCQs) or empty array
+6. answerKeyAndMarkingScheme: Step-by-step point allocation detailing how marks are distributed (e.g., "Formula: 1 mark, Substitution: 1 mark, Final answer with unit: 1 mark").
+7. topic: Subtopic name
+${language === 'hi' ? 'Language Requirement: Generate question paper, instructions, and marking scheme in clear Hindi (हिन्दी) using standard NCERT terminology while keeping math notation and equations intact.' : ''}`;
+
+    const buildPaperPayload = (modelName: string) => ({
+      model: modelName,
+      contents: prompt,
+      config: {
+        systemInstruction: 'You are the official CBSE Chief Moderator. Generate a flawless, curriculum-accurate, mathematically sound board examination paper.',
+        temperature: 0.25,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING },
+            subject: { type: Type.STRING },
+            totalMarks: { type: Type.NUMBER },
+            timeAllowedMinutes: { type: Type.NUMBER },
+            generalInstructions: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING },
+            },
+            questions: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  questionNumber: { type: Type.NUMBER },
+                  section: { type: Type.STRING },
+                  marks: { type: Type.NUMBER },
+                  questionText: { type: Type.STRING },
+                  options: {
+                    type: Type.ARRAY,
+                    items: { type: Type.STRING },
+                  },
+                  answerKeyAndMarkingScheme: { type: Type.STRING },
+                  topic: { type: Type.STRING },
+                },
+                required: ['questionNumber', 'section', 'marks', 'questionText', 'answerKeyAndMarkingScheme'],
+              },
+            },
+          },
+          required: ['title', 'subject', 'totalMarks', 'timeAllowedMinutes', 'generalInstructions', 'questions'],
+        },
+      },
+    });
+
+    const response = await callGeminiWithModelFallback(ai, buildPaperPayload);
+    let rawText = (response.text || '').trim();
+    if (rawText.startsWith('```json')) rawText = rawText.slice(7);
+    if (rawText.startsWith('```')) rawText = rawText.slice(3);
+    if (rawText.endsWith('```')) rawText = rawText.slice(0, -3);
+
+    const paper = JSON.parse(rawText.trim());
+    return res.json({
+      success: true,
+      paper: {
+        ...paper,
+        disclaimer: 'Unofficial Board Practice Material created by BoardAce AI for student preparation. Not an official CBSE leaked paper.',
+      },
+    });
+  } catch (error: any) {
+    console.error('Question Paper Error:', error);
+    const friendlyError = formatErrorMessage(error);
+    return res.status(500).json({
+      success: false,
+      error: friendlyError,
+    });
+  }
+});
+
 // Setup Vite or static serving
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {

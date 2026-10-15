@@ -75,6 +75,10 @@ export function toggleBookmark(question: Question): boolean {
   }
 }
 
+export function saveBookmark(question: Question): boolean {
+  return toggleBookmark(question);
+}
+
 export function isQuestionBookmarked(questionId: string): boolean {
   try {
     const bookmarks = getBookmarks();
@@ -82,6 +86,10 @@ export function isQuestionBookmarked(questionId: string): boolean {
   } catch (e) {
     return false;
   }
+}
+
+export function isBookmarked(questionId: string): boolean {
+  return isQuestionBookmarked(questionId);
 }
 
 export function removeBookmark(questionId: string): void {

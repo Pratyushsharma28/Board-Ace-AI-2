@@ -291,6 +291,18 @@ export function removeRevisionItem(questionId: string): void {
 }
 
 /**
+ * Updates personal student notes on a specific revision/mistake item.
+ */
+export function updateRevisionItemNotes(questionId: string, notes: string): RevisionItem | null {
+  const items = getRevisionItems();
+  const idx = items.findIndex(item => item.id === questionId);
+  if (idx === -1) return null;
+  items[idx] = { ...items[idx], notes };
+  saveRevisionItemsList(items);
+  return items[idx];
+}
+
+/**
  * Clears all mastered revision items.
  */
 export function clearMasteredItems(): void {

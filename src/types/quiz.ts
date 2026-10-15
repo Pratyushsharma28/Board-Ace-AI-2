@@ -28,6 +28,7 @@ export interface Question {
   formula?: string;
   solutionSteps?: string[];
   source?: 'curated' | 'ai';
+  sourceSection?: string;
   questionHi?: string;
   optionsHi?: string[];
   correctAnswerHi?: string;
