@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
+import { StreamSelector } from '../components/StreamSelector';
 import {
   calculateAnalytics,
   getSavedAttempts,
@@ -9,7 +11,6 @@ import {
   ActiveExamState,
 } from '../utils/storage';
 import { getRevisionSummary } from '../utils/revisionEngine';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
 import { SubjectId, QuizAttempt } from '../types/quiz';
 import {
   Sparkles,
@@ -32,6 +33,7 @@ import {
 
 export const DashboardPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass10, isClass12, gradeLabel, streamLabel } = useClass();
   const navigate = useNavigate();
 
   const analytics = useMemo(() => calculateAnalytics(), []);
@@ -41,9 +43,9 @@ export const DashboardPage: React.FC = () => {
 
   const hasData = attempts.length > 0;
 
-  // Real Subject breakdown
+  // Real Subject breakdown for the currently selected class & stream
   const subjectStats = useMemo(() => {
-    return CBSE_CLASS_12_SUBJECTS.map((sub) => {
+    return subjects.map((sub) => {
       const subAttempts = attempts.filter((a) => a.quizConfig.subject === sub.id);
       const totalQ = subAttempts.reduce((acc, a) => acc + a.totalQuestions, 0);
       const correctQ = subAttempts.reduce((acc, a) => acc + a.score, 0);
@@ -58,7 +60,7 @@ export const DashboardPage: React.FC = () => {
         accuracy,
       };
     });
-  }, [attempts, translateSubject]);
+  }, [subjects, attempts, translateSubject]);
 
   // Real weak topics / recommendations
   const recommendations = useMemo(() => {
@@ -124,8 +126,8 @@ export const DashboardPage: React.FC = () => {
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             {language === 'hi'
-              ? 'सीबीएसई कक्षा 12 (सत्र 2026–27) · व्यक्तिगत छात्र कार्यक्षेत्र'
-              : 'CBSE Class 12 (Session 2026–27) · Your personalized preparation workstation'}
+              ? `${gradeLabel} ${isClass12 ? `(${stream === 'commerce' ? 'कॉमर्स वर्ग' : 'साइंस वर्ग'})` : ''} · सत्र 2026–27 · व्यक्तिगत छात्र कार्यक्षेत्र`
+              : `${gradeLabel} ${isClass12 ? `(${streamLabel} Stream)` : ''} · Academic Session 2026–27 · Your personalized preparation workstation`}
           </p>
         </div>
 
@@ -146,6 +148,13 @@ export const DashboardPage: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      {/* STREAM SELECTOR (Only shown for Class 12) */}
+      {isClass12 && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-50 to-indigo-50/30 dark:from-slate-900 dark:to-indigo-950/20 border border-slate-200/80 dark:border-slate-800">
+          <StreamSelector showTitle={true} />
+        </div>
+      )}
 
       {/* Active Exam Resume Alert (if user closed exam prematurely) */}
       {activeExam && (

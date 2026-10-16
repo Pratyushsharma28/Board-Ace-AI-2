@@ -16,14 +16,14 @@ import {
 
 export const FormulasPage: React.FC = () => {
   const { language, t } = useLanguage();
-  const { grade, subjects, gradeLabel } = useClass();
+  const { grade, subjects, gradeLabel, stream, setStream, isClass12 } = useClass();
 
   const [selectedSubject, setSelectedSubject] = useState<'all' | SubjectId>('all');
   const [selectedChapter, setSelectedChapter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const gradeFormulas = useMemo(() => getFormulasForGrade(grade), [grade]);
+  const gradeFormulas = useMemo(() => getFormulasForGrade(grade, stream), [grade, stream]);
 
   const handleCopy = (formula: string, id: string) => {
     navigator.clipboard.writeText(formula);

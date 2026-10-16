@@ -16,6 +16,9 @@ import {
   RotateCcw,
   GraduationCap,
   Sparkles,
+  Atom,
+  Briefcase,
+  Layers,
 } from 'lucide-react';
 import { clearAllStorage, getSavedAttempts, getBookmarks } from '../utils/storage';
 import { getRevisionItems } from '../utils/revisionEngine';
@@ -23,7 +26,7 @@ import { getRevisionItems } from '../utils/revisionEngine';
 export const SettingsPage: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { grade, setGrade, gradeLabel, subjects } = useClass();
+  const { grade, setGrade, gradeLabel, subjects, stream, setStream, isClass12 } = useClass();
 
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const [clearedToast, setClearedToast] = useState(false);
@@ -173,11 +176,116 @@ export const SettingsPage: React.FC = () => {
                 <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Mathematics (041)</span>
                 <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Physics (042)</span>
                 <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Chemistry (043)</span>
+                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Commerce Stream</span>
               </div>
             </div>
           </button>
         </div>
       </div>
+
+      {/* Class 12 Stream Selection (Shown when Class 12 is active) */}
+      {grade === '12' && (
+        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <Layers className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>{language === 'hi' ? 'सीबीएसई कक्षा 12 स्ट्रीम चयन' : 'CBSE Class 12 Stream Selection'}</span>
+            </div>
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800">
+              {stream === 'commerce'
+                ? (language === 'hi' ? 'कॉमर्स स्ट्रीम सक्रिय' : 'Commerce Stream Active')
+                : (language === 'hi' ? 'साइंस स्ट्रीम सक्रिय' : 'Science Stream Active')}
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {language === 'hi'
+              ? 'अपनी शैक्षणिक स्ट्रीम चुनें। अध्ययन सामग्री, अध्याय, सूत्र और मॉक पेपर आपकी स्ट्रीम के अनुसार अनुकूलित होंगे।'
+              : 'Choose your academic stream. Study modules, chapter banks, formula sheets, and practice drills adapt automatically.'}
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Science Stream Card */}
+            <button
+              type="button"
+              onClick={() => setStream('science')}
+              className={`p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between group ${
+                stream === 'science'
+                  ? 'border-blue-600 dark:border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 ring-2 ring-blue-600/20'
+                  : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3 group-hover:scale-105 transition-transform">
+                    <Atom className="w-5 h-5" />
+                  </div>
+                  <div className="text-base font-extrabold text-slate-900 dark:text-white">
+                    {language === 'hi' ? 'साइंस (Science)' : 'Science'}
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    {language === 'hi'
+                      ? 'गणित, भौतिकी, रसायन विज्ञान और वैज्ञानिक अवधारणाओं का अभ्यास करें।'
+                      : 'Explore Mathematics, Physics, Chemistry and scientific concepts.'}
+                  </div>
+                </div>
+                {stream === 'science' && <CheckCircle2 className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-1" />}
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800/80">
+                <div className="text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                  {language === 'hi' ? 'शामिल विषय:' : 'Core Subjects:'}
+                </div>
+                <div className="flex flex-wrap gap-1.5 text-[11px]">
+                  <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Mathematics (041)</span>
+                  <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Physics (042)</span>
+                  <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Chemistry (043)</span>
+                </div>
+              </div>
+            </button>
+
+            {/* Commerce Stream Card */}
+            <button
+              type="button"
+              onClick={() => setStream('commerce')}
+              className={`p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between group ${
+                stream === 'commerce'
+                  ? 'border-amber-600 dark:border-amber-500 bg-amber-50/50 dark:bg-amber-950/40 ring-2 ring-amber-600/20'
+                  : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+              }`}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3 group-hover:scale-105 transition-transform">
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <div className="text-base font-extrabold text-slate-900 dark:text-white">
+                    {language === 'hi' ? 'कॉमर्स (Commerce)' : 'Commerce'}
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    {language === 'hi'
+                      ? 'लेखाशास्त्र, व्यावसायिक अध्ययन, अर्थशास्त्र और अंग्रेजी में महारत हासिल करें।'
+                      : 'Master Accountancy, Business Studies, Economics and English.'}
+                  </div>
+                </div>
+                {stream === 'commerce' && <CheckCircle2 className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-1" />}
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800/80">
+                <div className="text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">
+                  {language === 'hi' ? 'शामिल विषय:' : 'Core Subjects:'}
+                </div>
+                <div className="flex flex-wrap gap-1.5 text-[11px]">
+                  <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Accountancy (055)</span>
+                  <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Business Studies (054)</span>
+                  <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">Economics (030)</span>
+                  <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 font-medium">English Core (301)</span>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 1. Theme Configuration */}
       <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">

@@ -7,9 +7,7 @@ export const AITutorPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const querySubject = (searchParams.get('subject') as SubjectId) || 'physics';
-  const initialSubject = ['mathematics', 'physics', 'chemistry'].includes(querySubject)
-    ? querySubject
-    : 'physics';
+  const initialSubject = querySubject || 'accountancy';
 
   return (
     <div className="animate-fadeIn">

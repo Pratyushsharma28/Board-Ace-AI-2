@@ -1,7 +1,18 @@
 export type EducationBoard = 'CBSE' | 'CISCE' | 'STATE';
 export type GradeClass = '10' | '12';
+export type StreamType = 'science' | 'commerce';
 
-export type SubjectId = 'mathematics' | 'physics' | 'chemistry' | 'science' | 'social_science' | 'english';
+export type SubjectId =
+  | 'mathematics'
+  | 'physics'
+  | 'chemistry'
+  | 'science'
+  | 'social_science'
+  | 'english'
+  | 'accountancy'
+  | 'business_studies'
+  | 'economics'
+  | 'english_core';
 
 export type DifficultyLevel = 'easy' | 'medium' | 'hard' | 'mixed';
 
@@ -142,11 +153,7 @@ export interface RevisionSummary {
   masteredCount: number;
   incorrectSavedCount: number;
   bookmarkedCount: number;
-  subjectCounts: {
-    mathematics: number;
-    physics: number;
-    chemistry: number;
-  };
+  subjectCounts: Partial<Record<SubjectId, number>>;
 }
 
 export interface SmartPracticeRecommendation {

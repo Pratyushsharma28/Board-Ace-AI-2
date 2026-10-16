@@ -49,7 +49,7 @@ interface CompetencyQuestion {
 
 export const CompetencyPracticePage: React.FC = () => {
   const { language, t, translateSubject, translateChapter } = useLanguage();
-  const { grade, gradeLabel, subjects } = useClass();
+  const { grade, gradeLabel, subjects, stream, setStream, isClass12 } = useClass();
 
   // Generator Setup State
   const [selectedSubject, setSelectedSubject] = useState<SubjectId>(subjects[0]?.id || 'physics');
@@ -114,10 +114,28 @@ export const CompetencyPracticePage: React.FC = () => {
       });
     }
 
-    if (['social_science', 'english'].includes(selectedSubject)) {
+    if (selectedSubject === 'accountancy') {
+      list.push({
+        id: 'numerical',
+        label: language === 'hi' ? 'लेखांकन गणना एवं अनुपात (Accounting Computations)' : 'Accounting Computations & Ratios',
+      });
+    }
+
+    if (selectedSubject === 'economics') {
+      list.push({
+        id: 'numerical',
+        label: language === 'hi' ? 'समष्टि अर्थशास्त्र आंकिक प्रश्न (Macro Numericals)' : 'Macroeconomic Numericals',
+      });
       list.push({
         id: 'source_based',
-        label: language === 'hi' ? 'स्रोत/अनुच्छेद विश्लेषण (Source-Based Analysis)' : 'Source Document Analysis',
+        label: language === 'hi' ? 'आर्थिक डेटा/ग्राफ विश्लेषण (Economic Data Analysis)' : 'Economic Data & Graph Analysis',
+      });
+    }
+
+    if (['social_science', 'english', 'english_core'].includes(selectedSubject)) {
+      list.push({
+        id: 'source_based',
+        label: language === 'hi' ? 'स्रोत/अनुच्छेद विश्लेषण (Source/Extract RTC Analysis)' : 'Source Document & RTC Extract Analysis',
       });
     }
 
@@ -268,14 +286,42 @@ export const CompetencyPracticePage: React.FC = () => {
 
       {/* Competency Practice Setup Panel */}
       <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-4">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             <Target className="w-4 h-4 text-indigo-600" />
             <span>{language === 'hi' ? 'अभ्यास सत्र सेटअप' : 'Competency Drill Configuration'}</span>
           </div>
-          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-            CBSE {gradeLabel} (2026–27)
-          </span>
+          <div className="flex items-center gap-2">
+            {isClass12 && (
+              <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                <button
+                  type="button"
+                  onClick={() => setStream('science')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    stream === 'science'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  }`}
+                >
+                  {language === 'hi' ? 'साइंस' : 'Science'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStream('commerce')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    stream === 'commerce'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  }`}
+                >
+                  {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+                </button>
+              </div>
+            )}
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              CBSE {gradeLabel} (2026–27)
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 text-xs">

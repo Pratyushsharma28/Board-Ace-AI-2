@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SubjectId, TutorMessage, SavedDoubt } from '../types/quiz';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import {
   getSavedDoubts,
   saveDoubt,
@@ -35,11 +36,25 @@ interface AITutorViewProps {
 }
 
 export const AITutorView: React.FC<AITutorViewProps> = ({
-  initialSubject = 'physics',
+  initialSubject,
 }) => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass12 } = useClass();
 
-  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(initialSubject);
+  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(() => {
+    if (initialSubject && subjects.some((s) => s.id === initialSubject)) {
+      return initialSubject;
+    }
+    return subjects[0]?.id || 'accountancy';
+  });
+
+  // Sync selectedSubject when stream or grade changes
+  useEffect(() => {
+    if (!subjects.some((s) => s.id === selectedSubject)) {
+      setSelectedSubject(subjects[0]?.id || 'accountancy');
+    }
+  }, [grade, stream, subjects]);
+
   const [messages, setMessages] = useState<TutorMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -282,6 +297,22 @@ export const AITutorView: React.FC<AITutorViewProps> = ({
     english: [
       language === 'hi' ? 'संपादक को पत्र लिखने का सही प्रारूप क्या है?' : 'What is the format for writing a formal Letter to the Editor?',
       language === 'hi' ? '"A Letter to God" कहानी का मुख्य संदेश क्या है?' : 'Discuss the themes of faith and irony in "A Letter to God".',
+    ],
+    accountancy: [
+      language === 'hi' ? 'साझेदारी में ख्याति के अधिलाभ विधि (Super Profit Method) की गणना कैसे करें?' : 'How do you calculate goodwill using the Super Profit Method in partnership?',
+      language === 'hi' ? 'अंशों के हरण एवं पुनर्निर्गमन पर पूंजी संचय (Capital Reserve) निकालने का तरीका समझाइए।' : 'Explain the step-by-step journal entries for forfeiture and reissue of shares with pro-rata allotment.',
+    ],
+    business_studies: [
+      language === 'hi' ? 'फेयोल के "आदेश की एकता" और "निर्देश की एकता" के बीच क्या मुख्य अंतर है?' : 'What is the key difference between Fayol’s Unity of Command and Unity of Direction?',
+      language === 'hi' ? 'वित्तीय प्रबंधन में समता पर व्यापार (Trading on Equity) और वित्तीय उत्तोलन का सिद्धांत समझाइए।' : 'Explain Trading on Equity and when financial leverage is favourable for equity shareholders.',
+    ],
+    economics: [
+      language === 'hi' ? 'व्यय विधि और आय विधि से राष्ट्रीय आय (NNP_fc) की गणना का चरणबद्ध तरीका क्या है?' : 'Explain step-by-step how to compute National Income (NNP_fc) using the Expenditure & Income methods.',
+      language === 'hi' ? 'कीन्स के निवेश गुणक (Investment Multiplier) की कार्यप्रणाली को एक संख्यात्मक उदाहरण से समझाइए।' : 'Explain the working mechanism of the Keynesian Investment Multiplier (k = 1/MPS) with a numerical example.',
+    ],
+    english_core: [
+      language === 'hi' ? '"The Last Lesson" में भाषा के महत्व और भाषाई अहंकार का विश्लेषण करें।' : 'Analyze the theme of linguistic chauvinism and patriotism in Alphonse Daudet’s "The Last Lesson".',
+      language === 'hi' ? 'कमला दास की कविता "My Mother at Sixty-Six" में प्रयुक्त काव्य उपकरणों की व्याख्या करें।' : 'Discuss the use of poetic devices, imagery, and contrast in Kamala Das’s "My Mother at Sixty-Six".',
     ],
   };
   const suggestedDoubts = doubtMap[selectedSubject] || doubtMap.mathematics;

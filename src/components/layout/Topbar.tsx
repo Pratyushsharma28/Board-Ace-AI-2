@@ -29,7 +29,7 @@ export const Topbar: React.FC<TopbarProps> = ({
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { grade, setGrade, gradeLabel } = useClass();
+  const { grade, setGrade, gradeLabel, stream, setStream, isClass12, streamLabel } = useClass();
 
   // Page title mapping based on route
   const getPageInfo = () => {
@@ -147,6 +147,36 @@ export const Topbar: React.FC<TopbarProps> = ({
               <span className="text-[11px] font-bold">Class 12</span>
             </button>
           </div>
+
+          {/* Stream Switcher Pill (Shown only when Class 12 is selected) */}
+          {isClass12 && (
+            <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700 text-xs font-bold transition-all">
+              <button
+                onClick={() => setStream('science')}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                  stream === 'science'
+                    ? 'bg-blue-600 text-white shadow-xs font-black'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                }`}
+                title="Class 12 Science Stream (Maths, Physics, Chemistry)"
+                aria-label="Switch to Science Stream"
+              >
+                <span className="text-[11px] font-bold">{language === 'hi' ? 'विज्ञान' : 'Science'}</span>
+              </button>
+              <button
+                onClick={() => setStream('commerce')}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                  stream === 'commerce'
+                    ? 'bg-amber-600 text-white shadow-xs font-black'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                }`}
+                title="Class 12 Commerce Stream (Accountancy, Business Studies, Economics, English)"
+                aria-label="Switch to Commerce Stream"
+              >
+                <span className="text-[11px] font-bold">{language === 'hi' ? 'कॉमर्स' : 'Commerce'}</span>
+              </button>
+            </div>
+          )}
 
           {/* Language Toggle */}
           <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700 text-xs font-bold">

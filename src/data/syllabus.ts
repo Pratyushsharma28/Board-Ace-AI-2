@@ -1,4 +1,4 @@
-import { SubjectInfo, GradeClass } from '../types/quiz';
+import { SubjectInfo, GradeClass, StreamType } from '../types/quiz';
 
 /**
  * CBSE Class 12 Official Syllabus for Academic Session 2026–27
@@ -812,21 +812,772 @@ export const CBSE_CLASS_10_SUBJECTS: SubjectInfo[] = [
 ];
 
 /**
- * Helper to fetch subjects for the designated academic grade
+ * CBSE Class 12 Science Stream Subjects alias
  */
-export function getSubjectsForGrade(grade: GradeClass = '12'): SubjectInfo[] {
-  return grade === '10' ? CBSE_CLASS_10_SUBJECTS : CBSE_CLASS_12_SUBJECTS;
+export const CBSE_CLASS_12_SCIENCE_SUBJECTS: SubjectInfo[] = CBSE_CLASS_12_SUBJECTS;
+
+/**
+ * CBSE Class 12 Commerce Stream Official Syllabus (Session 2026–27)
+ * Supported Core Subjects:
+ * 1. Accountancy (Subject Code 055) - 12 Chapters
+ * 2. Business Studies (Subject Code 054) - 12 Chapters
+ * 3. Economics (Subject Code 030) - 11 Chapters
+ * 4. English Core (Subject Code 301) - 19 Chapters
+ */
+export const CBSE_CLASS_12_COMMERCE_SUBJECTS: SubjectInfo[] = [
+  {
+    id: 'accountancy',
+    name: 'Accountancy',
+    code: '055',
+    totalChapters: 12,
+    description: 'Partnership Accounts, Company Accounts, Ratios & Cash Flow Statement (CBSE 2026–27)',
+    iconName: 'Calculator',
+    chapters: [
+      {
+        id: 'acc-1',
+        name: 'Accounting for Partnership Firms - Fundamentals',
+        unit: 'Part A - Unit 1: Accounting for Partnership Firms',
+        weightageEstimate: '6-8 marks',
+        topics: [
+          'Provisions of Indian Partnership Act 1932 in the Absence of Partnership Deed',
+          'Fixed vs Fluctuating Capital Accounts',
+          'Preparation of Profit and Loss Appropriation Account and Division of Profit',
+          'Past Adjustments for Omission of Interest on Capital/Drawings and Salary',
+          'Guarantee of Minimum Profit to a Partner'
+        ]
+      },
+      {
+        id: 'acc-2',
+        name: 'Goodwill: Nature and Valuation',
+        unit: 'Part A - Unit 1: Accounting for Partnership Firms',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Meaning, Nature and Factors Affecting Value of Goodwill',
+          'Valuation by Average Profit Method and Weighted Average Method',
+          'Super Profit Method and Capitalisation of Super Profit / Average Profit',
+          'Accounting Treatment and Distinction between Purchased and Self-Generated Goodwill'
+        ]
+      },
+      {
+        id: 'acc-3',
+        name: 'Change in Profit Sharing Ratio',
+        unit: 'Part A - Unit 1: Accounting for Partnership Firms',
+        weightageEstimate: '4-5 marks',
+        topics: [
+          'Calculation of Sacrificing Ratio and Gaining Ratio',
+          'Accounting Treatment of Existing Goodwill and Revaluation of Assets/Liabilities',
+          'Treatment of Reserves, Accumulated Profits and Losses',
+          'Preparation of Revaluation Account and Partners’ Capital Accounts'
+        ]
+      },
+      {
+        id: 'acc-4',
+        name: 'Admission of a Partner',
+        unit: 'Part A - Unit 1: Accounting for Partnership Firms',
+        weightageEstimate: '8-10 marks',
+        topics: [
+          'Calculation of New Profit Sharing Ratio and Sacrificing Ratio',
+          'Accounting for Premium for Goodwill (brought in cash, partially, or unpaid)',
+          'Revaluation Account, Accumulated Reserves and Workmen Compensation / Investment Fluctuation Reserve',
+          'Adjustment of Partners’ Capital Accounts on the Basis of New Partner’s Capital or Old Partners’ Capital'
+        ]
+      },
+      {
+        id: 'acc-5',
+        name: 'Retirement and Death of a Partner',
+        unit: 'Part A - Unit 1: Accounting for Partnership Firms',
+        weightageEstimate: '8-10 marks',
+        topics: [
+          'Calculation of New Ratio and Gaining Ratio on Retirement',
+          'Treatment of Goodwill and Revaluation of Assets & Liabilities',
+          'Settlement of Retiring Partner’s Dues and Loan Account',
+          'Death of a Partner: Computation of Deceased Partner’s Share of Profit till Date of Death (Turnover / Time Basis)',
+          'Preparation of Deceased Partner’s Capital Account and Executor’s Account'
+        ]
+      },
+      {
+        id: 'acc-6',
+        name: 'Dissolution of a Partnership Firm',
+        unit: 'Part A - Unit 1: Accounting for Partnership Firms',
+        weightageEstimate: '6-8 marks',
+        topics: [
+          'Difference between Dissolution of Partnership and Dissolution of Firm',
+          'Order of Settlement of Accounts under Section 48 of Partnership Act',
+          'Preparation of Realisation Account, Partners’ Loan Accounts, Partners’ Capital Accounts, and Cash/Bank Account',
+          'Comprehensive Journal Entries on Dissolution and Unrecorded Assets/Liabilities'
+        ]
+      },
+      {
+        id: 'acc-7',
+        name: 'Accounting for Share Capital',
+        unit: 'Part A - Unit 2: Accounting for Companies',
+        weightageEstimate: '10-12 marks',
+        topics: [
+          'Issue of Shares at Par and at Premium',
+          'Public Subscription: Pro-Rata Allotment and Treatment of Excess Application Money',
+          'Calls in Arrears and Calls in Advance',
+          'Forfeiture of Shares Issued at Par and at Premium',
+          'Reissue of Forfeited Shares and Transfer of Balance to Capital Reserve',
+          'Disclosure of Share Capital in Company Balance Sheet as per Schedule III Division I'
+        ]
+      },
+      {
+        id: 'acc-8',
+        name: 'Accounting for Debentures',
+        unit: 'Part A - Unit 2: Accounting for Companies',
+        weightageEstimate: '6-8 marks',
+        topics: [
+          'Issue of Debentures at Par, Premium and Discount',
+          'Issue of Debentures with Terms of Redemption (At Par, At Premium)',
+          'Issue of Debentures for Consideration other than Cash',
+          'Issue of Debentures as Collateral Security (Method 1 and Method 2)',
+          'Writing off Discount or Loss on Issue of Debentures from Securities Premium / Statement of P&L'
+        ]
+      },
+      {
+        id: 'acc-9',
+        name: 'Financial Statements of a Company',
+        unit: 'Part B - Unit 3: Analysis of Financial Statements',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Format and Major Heads / Sub-heads of Balance Sheet (Schedule III, Division I, Companies Act 2013)',
+          'Major Heads of Statement of Profit and Loss',
+          'Identification of Items under Equity & Liabilities and Assets',
+          'Significance and Limitations of Financial Statements'
+        ]
+      },
+      {
+        id: 'acc-10',
+        name: 'Financial Statement Analysis',
+        unit: 'Part B - Unit 3: Analysis of Financial Statements',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Meaning, Objectives, Importance and Limitations of Financial Analysis',
+          'Tools of Analysis: Comparative Balance Sheet and Comparative Statement of Profit & Loss',
+          'Common Size Balance Sheet and Common Size Statement of Profit & Loss (Percentages Calculation)'
+        ]
+      },
+      {
+        id: 'acc-11',
+        name: 'Accounting Ratios',
+        unit: 'Part B - Unit 3: Analysis of Financial Statements',
+        weightageEstimate: '8 marks',
+        topics: [
+          'Liquidity Ratios: Current Ratio and Quick / Acid Test Ratio',
+          'Solvency Ratios: Debt to Equity, Total Assets to Debt, Proprietary Ratio, Interest Coverage Ratio',
+          'Activity / Turnover Ratios: Inventory Turnover, Trade Receivables Turnover, Trade Payables Turnover, Working Capital Turnover',
+          'Profitability Ratios: Gross Profit Ratio, Operating Ratio, Operating Profit Ratio, Net Profit Ratio, Return on Investment (ROCE)'
+        ]
+      },
+      {
+        id: 'acc-12',
+        name: 'Cash Flow Statement',
+        unit: 'Part B - Unit 4: Cash Flow Statement',
+        weightageEstimate: '8 marks',
+        topics: [
+          'Meaning, Objectives, Benefits and Limitations as per AS-3 (Revised)',
+          'Classification into Operating, Investing and Financing Activities',
+          'Calculation of Cash Flows from Operating Activities using Indirect Method (Non-cash / Non-operating adjustments)',
+          'Calculation of Cash Flows from Investing Activities (Purchase/Sale of Fixed Assets and Investments with Depreciation Provision)',
+          'Calculation of Cash Flows from Financing Activities (Issue of shares/debentures, dividend paid, interest paid, bank loan repayments)'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'business_studies',
+    name: 'Business Studies',
+    code: '054',
+    totalChapters: 12,
+    description: 'Principles of Management, Business Environment, Financial Markets & Marketing (CBSE 2026–27)',
+    iconName: 'Briefcase',
+    chapters: [
+      {
+        id: 'bst-1',
+        name: 'Nature and Significance of Management',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '5-6 marks',
+        topics: [
+          'Concept, Objectives (Organisational, Social, Personal) and Importance of Management',
+          'Management as an Art, a Science, and a Profession',
+          'Levels of Management: Top, Middle, and Supervisory/Operational Management',
+          'Coordination: Concept, Characteristics and Importance as the Essence of Management'
+        ]
+      },
+      {
+        id: 'bst-2',
+        name: 'Principles of Management',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '6-7 marks',
+        topics: [
+          'Concept, Nature and Significance of Principles of Management',
+          'Henri Fayol’s 14 Principles of Management (Division of Work, Authority & Responsibility, Unity of Command, Unity of Direction, etc.)',
+          'F.W. Taylor’s Scientific Management: Principles and Scientific Techniques (Functional Foremanship, Time Study, Motion Study, Fatigue Study, Method Study, Differential Piece Wage System)',
+          'Comparison between Fayol and Taylor'
+        ]
+      },
+      {
+        id: 'bst-3',
+        name: 'Business Environment',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '4-5 marks',
+        topics: [
+          'Concept and Importance of Business Environment',
+          'Dimensions of Business Environment: Economic, Social, Technological, Political, and Legal',
+          'Economic Environment in India and Impact of Economic Reforms (Liberalisation, Privatisation, Globalisation)',
+          'Demonetization: Concept and Features'
+        ]
+      },
+      {
+        id: 'bst-4',
+        name: 'Planning',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '5-6 marks',
+        topics: [
+          'Concept, Importance and Limitations of Planning',
+          'Planning Process: Setting Objectives, Developing Premises, Identifying Alternatives, Evaluating, Selecting, Implementing and Follow-up',
+          'Single-use and Standing Plans: Objectives, Strategy, Policy, Procedure, Method, Rule, Budget, and Programme'
+        ]
+      },
+      {
+        id: 'bst-5',
+        name: 'Organising',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '7-8 marks',
+        topics: [
+          'Concept and Importance of Organising',
+          'Organising Process: Identification & Division of Work, Departmentalisation, Assignment of Duties, Establishing Reporting Relationships',
+          'Organisational Structure: Functional Structure vs Divisional Structure (Advantages and Disadvantages)',
+          'Formal and Informal Organisation',
+          'Delegation: Concept, Elements (Authority, Responsibility, Accountability) and Importance',
+          'Decentralisation: Concept, Importance and Difference with Delegation'
+        ]
+      },
+      {
+        id: 'bst-6',
+        name: 'Staffing',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '6-7 marks',
+        topics: [
+          'Concept, Importance and Staffing as part of Human Resource Management',
+          'Staffing Process: Estimating Manpower Requirements, Recruitment, Selection, Placement, Training, Performance Appraisal, Promotion, Compensation',
+          'Recruitment: Internal Sources (Transfers, Promotions) vs External Sources (Campus, Placement Agencies, Direct, Advertisement)',
+          'Selection Process and Employment Tests (Intelligence, Aptitude, Personality, Trade, Interest)',
+          'Training and Development: Concept, Importance, On-the-job methods (Apprenticeship, Internship) vs Off-the-job methods (Vestibule Training)'
+        ]
+      },
+      {
+        id: 'bst-7',
+        name: 'Directing',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '7-8 marks',
+        topics: [
+          'Concept, Importance and Principles of Directing',
+          'Elements of Directing: Supervision, Motivation, Leadership, Communication',
+          'Motivation: Maslow’s Need Hierarchy Theory, Financial and Non-Financial Incentives',
+          'Leadership: Styles of Leadership (Autocratic, Democratic, Laissez-faire / Free-rein)',
+          'Communication: Formal and Informal (Grapevine), Barriers to Effective Communication (Semantic, Psychological, Organisational, Personal) and Measures to Overcome Barriers'
+        ]
+      },
+      {
+        id: 'bst-8',
+        name: 'Controlling',
+        unit: 'Part A: Principles and Functions of Management',
+        weightageEstimate: '5-6 marks',
+        topics: [
+          'Concept and Importance of Controlling',
+          'Relationship between Planning and Controlling ("Planning is looking ahead, controlling is looking back")',
+          'Controlling Process: Setting Standards, Measurement of Performance, Comparison, Analysing Deviations (Critical Point Control & Management by Exception), Taking Corrective Action'
+        ]
+      },
+      {
+        id: 'bst-9',
+        name: 'Financial Management',
+        unit: 'Part B: Business Finance and Marketing',
+        weightageEstimate: '8-9 marks',
+        topics: [
+          'Concept, Role and Primary Objective of Financial Management (Wealth Maximisation)',
+          'Financial Decisions: Investment Decision (Capital Budgeting), Financing Decision, and Dividend Decision (Factors Affecting Each)',
+          'Financial Planning: Concept, Objectives and Importance',
+          'Capital Structure: Concept, Financial Leverage / Trading on Equity, Factors Affecting Capital Structure Choice',
+          'Fixed Capital and Working Capital: Concepts and Factors Affecting Fixed/Working Capital Requirements'
+        ]
+      },
+      {
+        id: 'bst-10',
+        name: 'Financial Markets',
+        unit: 'Part B: Business Finance and Marketing',
+        weightageEstimate: '7-8 marks',
+        topics: [
+          'Concept, Functions and Types of Financial Markets',
+          'Money Market and its Instruments: Treasury Bills, Commercial Paper, Call Money, Certificate of Deposit, Commercial Bill',
+          'Capital Market: Primary Market (Methods of Floatation) and Secondary Market (Stock Exchange Functions)',
+          'Trading Procedure on a Stock Exchange: Demat Account, Depository Participants (NSDL, CDSL), Settlement Cycle',
+          'Securities and Exchange Board of India (SEBI): Objectives and Functions (Regulatory, Developmental, and Protective)'
+        ]
+      },
+      {
+        id: 'bst-11',
+        name: 'Marketing Management',
+        unit: 'Part B: Business Finance and Marketing',
+        weightageEstimate: '10-11 marks',
+        topics: [
+          'Marketing Concept, Functions and Marketing Philosophies (Production, Product, Selling, Marketing, and Societal Marketing Concepts)',
+          'Marketing Mix: The 4 Ps (Product, Price, Place, Promotion)',
+          'Product: Branding (Characteristics of a Good Brand Name), Labelling (Functions), Packaging (Levels and Importance)',
+          'Price: Factors Determining Price of a Product',
+          'Place: Physical Distribution and Channels of Distribution',
+          'Promotion: Promotion Mix (Advertising, Personal Selling, Sales Promotion, Public Relations)'
+        ]
+      },
+      {
+        id: 'bst-12',
+        name: 'Consumer Protection',
+        unit: 'Part B: Business Finance and Marketing',
+        weightageEstimate: '5-6 marks',
+        topics: [
+          'Concept and Importance of Consumer Protection (From Consumer and Business Perspectives)',
+          'Consumer Protection Act 2019: Definition of Consumer, Rights of Consumers (Safety, Information, Choice, Heard, Redressal, Consumer Education)',
+          'Consumer Responsibilities',
+          'Three-Tier Quasi-Judicial Redressal Machinery: District Commission, State Commission, National Commission (Pecuniary Jurisdiction and Appeals)',
+          'Remedies Available to Consumers and Role of Consumer NGOs / Voluntary Organisations'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'economics',
+    name: 'Economics',
+    code: '030',
+    totalChapters: 11,
+    description: 'Introductory Macroeconomics and Indian Economic Development (CBSE 2026–27)',
+    iconName: 'TrendingUp',
+    chapters: [
+      {
+        id: 'eco-1',
+        name: 'National Income and Related Aggregates',
+        unit: 'Part A: Introductory Macroeconomics',
+        weightageEstimate: '10 marks',
+        topics: [
+          'Basic Concepts: Consumption Goods, Capital Goods, Final Goods, Intermediate Goods, Stock and Flow, Gross/Net Investment, Depreciation',
+          'Circular Flow of Income in a Simple Two-Sector Economy',
+          'Aggregates: GDP, GNP, NDP, NNP at Market Price and Factor Cost; Real vs Nominal GDP, GDP Deflator, GDP and Welfare',
+          'Measurement of National Income: Value Added (Product) Method, Income Method, and Expenditure Method',
+          'Treatment of Items in National Income Estimation'
+        ]
+      },
+      {
+        id: 'eco-2',
+        name: 'Money and Banking',
+        unit: 'Part A: Introductory Macroeconomics',
+        weightageEstimate: '6 marks',
+        topics: [
+          'Money: Meaning and Functions; Supply of Money (Currency held by Public + Demand Deposits = M1)',
+          'Money Creation / Credit Creation by Commercial Banking System (Money Multiplier = 1/LRR)',
+          'Central Bank: Functions of Reserve Bank of India (Bank of Issue, Banker to the Government, Banker’s Bank and Supervisor)',
+          'Monetary Policy and Credit Control: Quantitative Instruments (Repo Rate, Reverse Repo Rate, Bank Rate, CRR, SLR, Open Market Operations) and Qualitative Instruments (Margin Requirements)'
+        ]
+      },
+      {
+        id: 'eco-3',
+        name: 'Determination of Income and Employment',
+        unit: 'Part A: Introductory Macroeconomics',
+        weightageEstimate: '12 marks',
+        topics: [
+          'Aggregate Demand (AD = C + I) and its Components; Aggregate Supply (AS = C + S)',
+          'Propensities: Average and Marginal Propensity to Consume (APC, MPC) and Save (APS, MPS); Algebraic Relationships',
+          'Short-run Equilibrium Output: AD-AS Approach and Saving-Investment (S-I) Approach',
+          'Investment Multiplier (k = ΔY/ΔI = 1/(1-MPC) = 1/MPS) and its Step-by-Step Working Mechanism',
+          'Problems of Deficient Demand (Deflationary Gap) and Excess Demand (Inflationary Gap)',
+          'Fiscal Policy (Taxes, Public Expenditure) and Monetary Policy Measures to Correct Excess and Deficient Demand'
+        ]
+      },
+      {
+        id: 'eco-4',
+        name: 'Government Budget and the Economy',
+        unit: 'Part A: Introductory Macroeconomics',
+        weightageEstimate: '6 marks',
+        topics: [
+          'Government Budget: Meaning, Objectives (Reallocation of Resources, Reducing Inequalities, Economic Stability, Management of Public Enterprises)',
+          'Classification of Receipts: Revenue Receipts (Tax vs Non-Tax Revenue) and Capital Receipts (Debt Creating vs Non-Debt Creating)',
+          'Classification of Expenditure: Revenue Expenditure and Capital Expenditure; Development vs Non-Development',
+          'Measures of Government Deficit: Revenue Deficit, Fiscal Deficit, and Primary Deficit (Meanings, Formulas and Implications)'
+        ]
+      },
+      {
+        id: 'eco-5',
+        name: 'Balance of Payments & Foreign Exchange Rate',
+        unit: 'Part A: Introductory Macroeconomics',
+        weightageEstimate: '6 marks',
+        topics: [
+          'Foreign Exchange Rate: Fixed, Flexible, and Managed Floating Systems; Determination of Flexible Exchange Rate in Foreign Exchange Market',
+          'Merits and Demerits; Appreciation vs Depreciation; Devaluation vs Revaluation',
+          'Balance of Payments (BOP) Account: Meaning and Structure',
+          'Current Account (Visible Trade, Invisible Trade, Unilateral Transfers) and Capital Account (FDI, FII, External Borrowings, NRI Deposits)',
+          'Autonomous Items ("Above the Line") vs Accommodating Items ("Below the Line") in BOP'
+        ]
+      },
+      {
+        id: 'eco-6',
+        name: 'Development Experience (1947-90) & Economic Reforms since 1991',
+        unit: 'Part B: Indian Economic Development',
+        weightageEstimate: '12 marks',
+        topics: [
+          'State of Indian Economy on the Eve of Independence (Agriculture, Industry, Foreign Trade, Demographic Indicators)',
+          'Five Year Plans: Common Goals (Growth, Modernisation, Self-Reliance, Equity)',
+          'Agriculture: Land Reforms and Green Revolution; Industry: Industrial Policy Resolution 1956 and Small Scale Industries (Karve Committee)',
+          'Trade Policy: Import Substitution (Inward-looking Trade Strategy)',
+          'Economic Reforms 1991: Crisis of 1991, NEP Policies of Liberalisation (Deregulation, Financial, Tax, Foreign Exchange), Privatisation (Disinvestment, Navratnas), and Globalisation (Outsourcing, WTO)',
+          'Demonetization and Goods and Services Tax (GST) Overview'
+        ]
+      },
+      {
+        id: 'eco-7',
+        name: 'Human Capital Formation in India',
+        unit: 'Part B: Indian Economic Development',
+        weightageEstimate: '6 marks',
+        topics: [
+          'Concept of Human Capital and Sources (Expenditure on Education, Health, On-the-job Training, Migration, Information)',
+          'Human Capital vs Human Development; Economic Growth and Human Capital Linkage',
+          'State of Education Sector in India, Government Expenditure on Education, Right to Education (RTE), and National Education Policy'
+        ]
+      },
+      {
+        id: 'eco-8',
+        name: 'Rural Development',
+        unit: 'Part B: Indian Economic Development',
+        weightageEstimate: '6 marks',
+        topics: [
+          'Key Issues in Rural Development: Rural Credit (Institutional Sources: Cooperatives, Commercial Banks, RRBs, NABARD, Self-Help Groups/Microfinance)',
+          'Agricultural Marketing System: Defects, Measures to Improve (Regulated Markets, Cooperative Marketing, Storage, MSP, PDS)',
+          'Diversification into Productive Activities: Animal Husbandry, Dairying (Operation Flood), Fisheries, Horticulture (Golden Revolution), Information Technology',
+          'Organic Farming: Benefits, Limitations and Environmental Sustainability'
+        ]
+      },
+      {
+        id: 'eco-9',
+        name: 'Employment: Growth, Informalisation and Other Issues',
+        unit: 'Part B: Indian Economic Development',
+        weightageEstimate: '6 marks',
+        topics: [
+          'Basic Concepts: Worker, Work Force, Labour Force, Worker-Population Ratio, Labour Force Participation Rate',
+          'Participation of People in Employment (Rural vs Urban, Male vs Female)',
+          'Self-Employed, Regular Salaried Employees, and Casual Wage Labourers',
+          'Informalisation of Indian Workforce (Formal vs Informal Sector)',
+          'Types of Unemployment: Disguised, Seasonal, Open, Educated; Government Employment Generation Schemes (MGNREGA)'
+        ]
+      },
+      {
+        id: 'eco-10',
+        name: 'Sustainable Economic Development',
+        unit: 'Part B: Indian Economic Development',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Meaning of Sustainable Development (Brundtland Commission Definition)',
+          'Functions and Carrying Capacity / Absorptive Capacity of the Environment',
+          'State of India’s Environment: Land Degradation, Biodiversity Loss, Air Pollution, Global Warming, Ozone Depletion',
+          'Strategies for Sustainable Development: Non-conventional Sources of Energy (Solar, Wind, Mini-hydel), LPG/Gobar Gas in rural areas, CNG in urban areas, Traditional Knowledge, Bio-pest control, Organic Farming'
+        ]
+      },
+      {
+        id: 'eco-11',
+        name: 'Development Experience of India: A Comparison with Neighbours',
+        unit: 'Part B: Indian Economic Development',
+        weightageEstimate: '6 marks',
+        topics: [
+          'Historical Context: India, Pakistan and China Starting their Development Path around Same Time',
+          'Development Strategies: China (Great Leap Forward 1958, Commune System, Great Proletarian Cultural Revolution, Economic Reforms 1978, One-Child Policy), Pakistan (Green Revolution, Nationalisation, Denationalisation, Reforms 1988)',
+          'Comparative Analysis on Demographic Indicators (Population, Growth Rate, Sex Ratio, Urbanisation)',
+          'Gross Domestic Product and Sectoral Contribution (Agriculture, Industry, Services)',
+          'Human Development Indicators: HDI Rank, Life Expectancy, Adult Literacy Rate, Infant Mortality Rate, Maternal Mortality'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'english_core',
+    name: 'English Core',
+    code: '301',
+    totalChapters: 19,
+    description: 'Flamingo (Prose & Poetry) and Vistas Supplementary Literature (CBSE 2026–27)',
+    iconName: 'BookMarked',
+    chapters: [
+      {
+        id: 'eng-flam-1',
+        name: 'The Last Lesson',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Franz’s Hesitation and the Prussian Occupation of Alsace and Lorraine',
+          'M. Hamel’s Final French Lesson and Linguistic Chauvinism',
+          'Importance of Mother Tongue as the Key to Prison',
+          'M. Hamel’s Writing "Vive La France!" on the Blackboard and Patriotism'
+        ]
+      },
+      {
+        id: 'eng-flam-2',
+        name: 'Lost Spring: Stories of Stolen Childhood',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '4-5 marks',
+        topics: [
+          'Part I: "Sometimes I find a Rupee in the garbage" - Saheb-e-Alam, Ragpickers of Seemapuri, Plight of Migrants, and Loss of Freedom at the Tea Stall',
+          'Part II: "I want to drive a car" - Mukesh, Bangle Makers of Firozabad, Hazardous Glass Furnaces, Glass Industry Health Hazards',
+          'Vicious Circle of Sahukars, Middlemen, Policemen, Bureaucrats and Politicians; Mukesh’s Daring Ambition to be a Motor Mechanic'
+        ]
+      },
+      {
+        id: 'eng-flam-3',
+        name: 'Deep Water',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '4-5 marks',
+        topics: [
+          'William Douglas’s Childhood Fear of Water: California Beach Incident and YMCA Pool Misadventure with the Big Bruiser',
+          'The Terror of Drowning, Suffocation, Stark Terror and Blackness',
+          'Determination to Overcome Fear: Rigorous Training with Swimming Instructor Piece by Piece',
+          'Testing at Lake Wentworth and Warm Lake; Roosevelt’s Quote: "All we have to fear is fear itself"'
+        ]
+      },
+      {
+        id: 'eng-flam-4',
+        name: 'The Rattrap',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '4-5 marks',
+        topics: [
+          'The Peddler’s Philosophical View: The Entire World as a Giant Rattrap with Baits of Riches, Joy, Shelter and Food',
+          'The Old Crofter’s Generosity and the Theft of 30 Kronor',
+          'Getting Lost in Ramsjö Ironworks Forest and Mistaken Identity by the Ironmaster',
+          'Edla Willmansson’s Compassion, Unconditional Kindness, and Invitation to Christmas Eve',
+          'Reformation of the Peddler: Leaving the Stolen 30 Kronor with a Letter Signed as "Captain von Stahle"'
+        ]
+      },
+      {
+        id: 'eng-flam-5',
+        name: 'Indigo',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '4-5 marks',
+        topics: [
+          'Rajkumar Shukla’s Resolute Persuasion of Mahatma Gandhi to Visit Champaran',
+          'The Exploitative Tinkathia System: British Landlords Compelling 15% Indigo Cultivation and Demanding Compensation for Synthetic Indigo',
+          'Gandhi’s Civil Disobedience at Motihari Court: Defying Commissioner’s Order and First Triumph of Civil Disobedience in Modern India',
+          'Settlement of 25% Refund and Breaking the Prestige of Landlords',
+          'Social, Medical and Cultural Upliftment of Champaran Villagers; Self-Reliance and C.F. Andrews'
+        ]
+      },
+      {
+        id: 'eng-flam-6',
+        name: 'Poets and Pancakes',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Gemini Studios of Madras and Pancake Brand Make-up Material',
+          'Hierarchy and Frustration of the Office Boy in the Make-up Department',
+          'Kothamangalam Subbu: Number Two at Gemini Studios, Creativity, Loyalty, and Literary Talents',
+          'The Legal Advisor (The Lawyer) and the Tragic Ruin of the Brilliant Actress',
+          'Moral Re-Armament Army (MRA) Visit and Presentation of Plays (Jotham Valley and The Forgotten Factor)',
+          'Visit of English Poet Stephen Spender, Mutual Incomprehension, and Discovery of "The God That Failed"'
+        ]
+      },
+      {
+        id: 'eng-flam-7',
+        name: 'The Interview',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Part I: Diverse Opinions on Interviews by Celebrities (H.G. Wells, Rudyard Kipling, Lewis Carroll, V.S. Naipaul, Saul Bellow)',
+          'Part II: Mukund Padmanabhan’s Interview with Professor Umberto Eco of University of Bologna',
+          'Umberto Eco’s Philosophical Concept of "Interstices" (Empty Spaces in Time)',
+          'Success of Academic Novel "The Name of the Rose" Combining Semiotics, Medieval History and Detective Mystery'
+        ]
+      },
+      {
+        id: 'eng-flam-8',
+        name: 'Going Places',
+        unit: 'Flamingo: Prose',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Sophie’s Adolescent Daydreaming, Escapism, and Unrealistic Aspirations (Boutique, Actress, Fashion Designer)',
+          'Contrast with Jansie’s Pragmatism and Reality of Working in Biscuit Factory',
+          'Sophie’s Family Dynamics: Hardworking Father, Burdened Mother, Taciturn Brother Geoff',
+          'Fabricated Encounter with Irish Football Prodigy Danny Casey at Royce’s Arcade',
+          'The Painful Solitude and Disillusionment by the Canal Waiting for Someone Who Never Comes'
+        ]
+      },
+      {
+        id: 'eng-flam-9',
+        name: 'My Mother at Sixty-Six',
+        unit: 'Flamingo: Poetry',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Kamala Das’s Drive to Cochin Airport Beside her Sleeping Mother',
+          'Imagery of Old Age: "Ashen like that of a corpse", "Late winter’s moon"',
+          'Contrast with Vitality: "Young trees sprinting", "Merry children spilling out of their homes"',
+          'Childhood Fear of Loss, Separation Anxiety, and Parting Smile: "See you soon, Amma; smile and smile and smile"'
+        ]
+      },
+      {
+        id: 'eng-flam-10',
+        name: 'Keeping Quiet',
+        unit: 'Flamingo: Poetry',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Pablo Neruda’s Appeal for Twelve Seconds of Universal Stillness and Silence',
+          'Cessation of Destructive Human Actions: Fishermen Not Hurting Whales, Salt Gatherers Looking at Hurt Hands',
+          'Condemnation of "Wars with gas, wars with fire" with No Survivors',
+          'Distinction between Quiet Introspection and Total Inactivity/Death; Earth as Teacher of Renewal'
+        ]
+      },
+      {
+        id: 'eng-flam-11',
+        name: 'A Thing of Beauty',
+        unit: 'Flamingo: Poetry',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'John Keats’s Romantic Theme: "A thing of beauty is a joy forever; its loveliness increases, it will never pass into nothingness"',
+          'Bower of Quiet, Sound Sleep, and Wreathing a Flowery Band to Bind Us to the Earth',
+          'Overcoming Despondence, Inhuman Dearth of Noble Natures, Gloomy Days, and Unhealthy Ways',
+          'Catalogue of Beautiful Things: Sun, Moon, Trees Old and Young, Daffodils, Clear Rills, Musk-Rose Blooms, Mighty Dead Legends',
+          'An Endless Fountain of Immortal Drink Pouring from Heaven’s Brink'
+        ]
+      },
+      {
+        id: 'eng-flam-12',
+        name: 'A Roadside Stand',
+        unit: 'Flamingo: Poetry',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Robert Frost’s Critique of Economic Disparity: Rural Folk Setting Up a Roadside Stand Pleading for City Money',
+          'Selfish Speeding City Drivers Complaining about Marred Landscape and Signs Turned Wrong',
+          'City Folk Stopping Only to Ask Directions, Inquire Gas, or Reverse Vehicles',
+          'Critique of "Greedy Good-Doers" and "Beneficent Beasts of Prey" Enforcing Destructive Welfare',
+          'The Poet’s Agony at the Unbearable Plight of Poor Rustics and Longing for their Relief'
+        ]
+      },
+      {
+        id: 'eng-flam-13',
+        name: 'Aunt Jennifer’s Tigers',
+        unit: 'Flamingo: Poetry',
+        weightageEstimate: '3-4 marks',
+        topics: [
+          'Adrienne Rich’s Feminist Critique: Bright Topaz Tigers Prancing across Screen, Fearless and Chivalric',
+          'Contrast with Aunt Jennifer’s Fluttering, Fragile Hands Unable to Pull the Ivory Needle',
+          'Symbolism of "The Massive Weight of Uncle’s Wedding Band" (Patriarchal Oppression and Subjugation)',
+          'Immortality of Art: Aunt Jennifer Dead but Hand Ringed with Ordeals, while her Created Tigers Prance Proud and Unafraid'
+        ]
+      },
+      {
+        id: 'eng-vist-1',
+        name: 'The Third Level',
+        unit: 'Vistas: Supplementary Reader',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Charley’s Accidental Discovery of the Non-Existent Third Level of Grand Central Station (New York)',
+          '1894 Atmosphere: Brass Spittoons, Gas Lights, Derby Hats, Pocket Watches, Locomotive with Funnel-Shaped Stack',
+          'Psychiatrist Friend Sam Weiner’s Diagnosis: "A waking dream wish fulfillment" and Escapism from Modern Insecurity, War, and Worry',
+          'The Search for Galesburg, Illinois of 1894; The Letter from Sam Found inside a First-Day Cover Confirming the Third Level'
+        ]
+      },
+      {
+        id: 'eng-vist-2',
+        name: 'The Tiger King',
+        unit: 'Vistas: Supplementary Reader',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Maharaja of Pratibandapuram (Sir Jilani Jung Jung Bahadur) and Chief Astrologer’s Prophecy of Death from the Hundredth Tiger',
+          'The King’s Vow and Ruthless Campaign: Killing 99 Tigers across Pratibandapuram and Father-in-Law’s Forests',
+          'The Dilemma of the Missing 100th Tiger: Dewan Arranging Old Tiger from Madras People’s Park',
+          'The Irony of Fate: The 100th Tiger Surviving the King’s Shot, Killed Later by Hunters; The Fatal Wound Inflicted by a Crude Wooden Toy Tiger’s Sliver Causing Gangrene'
+        ]
+      },
+      {
+        id: 'eng-vist-3',
+        name: 'Journey to the End of the Earth',
+        unit: 'Vistas: Supplementary Reader',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Tishani Doshi’s Expedition to Antarctica Aboard the Russian Research Vessel Akademik Shokalskiy',
+          'Gondwana Supercontinent 650 Million Years Ago and Continental Drift Creating Himalayas and Drake Passage',
+          'Antarctica’s Pristine Ecosystem without Human Trees, Billboards, or Buildings: Window to Earth’s Past, Present, and Future',
+          'Geoff Green’s "Students on Ice" Programme: Educating Future Policy Makers on Climate Change, Ice Shelf Collapses, and Microscopic Phytoplankton'
+        ]
+      },
+      {
+        id: 'eng-vist-4',
+        name: 'The Enemy',
+        unit: 'Vistas: Supplementary Reader',
+        weightageEstimate: '4-5 marks',
+        topics: [
+          'Dr. Sadao Hoki and Hana in World War II Japan: Discovery of Wounded American POW (Tom) Washed Ashore on Beach',
+          'Moral Conflict between National Loyalty/Patriotism and Medical Ethics/Humanitarian Hippocratic Oath',
+          'Defiance of Domestic Servants’ Superstitions and Departure; Hana’s Unflinching Support in the Operation Room',
+          'General Takima’s Self-Absorbed Complicity with Sadao; Secret Assassins Plan Forgotten due to General’s Own Illness',
+          'Sadao Arranging Tom’s Escape to the Solitary Island with Food, Water, Quilts, and Flashlight Signals; "I wonder why I could not kill him"'
+        ]
+      },
+      {
+        id: 'eng-vist-5',
+        name: 'On the Face of It',
+        unit: 'Vistas: Supplementary Reader',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Derry: A 14-Year-Old Boy with Acid-Burned Half-Face, Withdrawn, Bitter, Defiant and Scared of Rejection',
+          'Mr. Lamb: An Elderly Man with Tin Leg Living in a House without Curtains and an Open Apple Orchard',
+          'Philosophical Conversation on Loneliness, Weeds vs Flowers, Bees Humming Songs, and Beauty and the Beast',
+          'Mr. Lamb Inspiring Derry to Transcend Physical Disability: "You’ve got two arms, two legs, eyes, ears, a tongue and a brain. You’ll get on the way you want"',
+          'Derry’s Transformation and Defying Mother to Return to Mr. Lamb; The Tragic Climax of Mr. Lamb Falling from the Ladder'
+        ]
+      },
+      {
+        id: 'eng-vist-6',
+        name: 'Memories of Childhood',
+        unit: 'Vistas: Supplementary Reader',
+        weightageEstimate: '4 marks',
+        topics: [
+          'Part I: "The Cutting of My Long Hair" (Zitkala-Sa / Gertrude Simmons Bonnin): Cultural Imperialism and Humiliation at Carlisle Indian School, The Dining Room Eating by Formula, Judewin’s Warning, Hiding under Bed, and the Violent Shingling of Hair like a Coward',
+          'Part II: "We Too are Human Beings" (Bama): Caste Discrimination and Untouchability in Tamil Nadu Village; The Novel Scene of an Elder Carrying Vadai by String; Annan’s Explanation of Caste Stigma and Guiding Advice: "Because we are born into this community, we are never given any honour or dignity... But if we study and make progress, we can throw away these indignities"'
+        ]
+      }
+    ]
+  }
+];
+
+/**
+ * Helper to fetch subjects for the designated academic grade and stream
+ */
+export function getSubjectsForGrade(grade: GradeClass = '12', stream: StreamType = 'science'): SubjectInfo[] {
+  if (grade === '10') {
+    return CBSE_CLASS_10_SUBJECTS;
+  }
+  return stream === 'commerce' ? CBSE_CLASS_12_COMMERCE_SUBJECTS : CBSE_CLASS_12_SCIENCE_SUBJECTS;
 }
 
 /**
- * Helper to find a subject by ID across a specific grade or both grades
+ * Returns all unique subjects across Class 12 (Science + Commerce)
  */
-export function findSubject(subjectId: string, grade: GradeClass = '12'): SubjectInfo | undefined {
+export function getAllClass12Subjects(): SubjectInfo[] {
+  return [...CBSE_CLASS_12_SCIENCE_SUBJECTS, ...CBSE_CLASS_12_COMMERCE_SUBJECTS];
+}
+
+/**
+ * Helper to find a subject by ID across a specific grade, stream or globally
+ */
+export function findSubject(subjectId: string, grade: GradeClass = '12', stream?: StreamType): SubjectInfo | undefined {
+  // If stream specified, try that first
+  if (stream) {
+    const streamSubjects = getSubjectsForGrade(grade, stream);
+    const found = streamSubjects.find(s => s.id === subjectId);
+    if (found) return found;
+  }
+  // Try current grade default
   const subjects = getSubjectsForGrade(grade);
   const found = subjects.find(s => s.id === subjectId);
   if (found) return found;
-  // Fallback check across other grade if needed
-  const otherSubjects = grade === '12' ? CBSE_CLASS_10_SUBJECTS : CBSE_CLASS_12_SUBJECTS;
-  return otherSubjects.find(s => s.id === subjectId);
+
+  // Search across all possible subjects (Class 10 + Class 12 Science + Class 12 Commerce)
+  const allMasterSubjects = [
+    ...CBSE_CLASS_10_SUBJECTS,
+    ...CBSE_CLASS_12_SCIENCE_SUBJECTS,
+    ...CBSE_CLASS_12_COMMERCE_SUBJECTS,
+  ];
+  return allMasterSubjects.find(s => s.id === subjectId);
 }
 

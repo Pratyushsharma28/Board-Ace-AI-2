@@ -42,7 +42,7 @@ import {
 
 export const PyqHubPage: React.FC = () => {
   const { language, t, translateSubject, translateChapter } = useLanguage();
-  const { grade, setGrade, gradeLabel, subjects } = useClass();
+  const { grade, setGrade, gradeLabel, subjects, stream, setStream, isClass12 } = useClass();
 
   // Mode: 'chapter' | 'year' | 'mixed' | 'timed'
   const [practiceMode, setPracticeMode] = useState<'chapter' | 'year' | 'mixed' | 'timed'>('chapter');
@@ -420,14 +420,41 @@ export const PyqHubPage: React.FC = () => {
 
       {/* Filter Bar */}
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             <Filter className="w-4 h-4 text-emerald-600" />
             <span>{language === 'hi' ? 'PYQ फ़िल्टर एवं चयन' : 'PYQ Filters & Configuration'}</span>
           </div>
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-            {questionPool.length} {language === 'hi' ? 'सत्यापित प्रश्न उपलब्ध' : 'Verified Questions Found'}
-          </span>
+
+          <div className="flex items-center gap-2">
+            {isClass12 && (
+              <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                <button
+                  onClick={() => setStream('science')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    stream === 'science'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  }`}
+                >
+                  {language === 'hi' ? 'साइंस' : 'Science'}
+                </button>
+                <button
+                  onClick={() => setStream('commerce')}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    stream === 'commerce'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  }`}
+                >
+                  {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+                </button>
+              </div>
+            )}
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              {questionPool.length} {language === 'hi' ? 'सत्यापित प्रश्न' : 'Verified Questions'}
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">

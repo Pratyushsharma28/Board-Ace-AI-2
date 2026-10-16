@@ -1,4 +1,4 @@
-import { SubjectId, GradeClass } from '../types/quiz';
+import { SubjectId, GradeClass, StreamType } from '../types/quiz';
 
 export interface FormulaItem {
   id: string;
@@ -345,13 +345,231 @@ export const CBSE_FORMULAS: FormulaItem[] = [
     explanationHi: 'लेंस सूत्र तथा डायोप्टर (D) में लेंस की क्षमता की गणना।',
     variables: 'f = focal length (m); P = power in Dioptres (D); m = magnification',
     examTip: 'Notice the sign difference: Mirror formula has + (1/v + 1/u) with - (v/u) magnification; Lens formula has - (1/v - 1/u) with + (v/u) magnification!'
+  },
+
+  // =========================================================================
+  // CLASS 12 COMMERCE: ACCOUNTANCY (055)
+  // =========================================================================
+  {
+    id: 'f-12-acc-1',
+    subject: 'accountancy',
+    grade: '12',
+    chapter: 'Accounting Ratios',
+    name: 'Liquidity Ratios: Current & Quick Ratio',
+    nameHi: 'तरलता अनुपात: चालू एवं त्वरित अनुपात',
+    formula: 'Current Ratio = Current Assets / Current Liabilities (Ideal: 2:1)\nQuick Ratio = Quick Assets / Current Liabilities (Ideal: 1:1)\nQuick Assets = Current Assets - (Inventories + Prepaid Expenses)',
+    explanation: 'Measures the firm’s ability to meet short-term maturing obligations.',
+    explanationHi: 'फर्म की अल्पकालीन देनदारियों को चुकाने की क्षमता का मापन करता है।',
+    variables: 'CA = Current Assets; CL = Current Liabilities; QA = Liquid/Quick Assets',
+    examTip: 'CBSE Trap: Loose tools, stores and spares are EXCLUDED from Inventories when calculating Current Assets and Quick Assets!'
+  },
+  {
+    id: 'f-12-acc-2',
+    subject: 'accountancy',
+    grade: '12',
+    chapter: 'Accounting Ratios',
+    name: 'Solvency Ratios: Debt-Equity & Interest Coverage',
+    nameHi: 'शोधन क्षमता अनुपात: ऋण-समता एवं ब्याज व्याप्ति अनुपात',
+    formula: 'Debt to Equity Ratio = Long-Term Debt / Shareholders’ Funds (Ideal: 2:1)\nInterest Coverage Ratio = Net Profit before Interest and Tax / Fixed Interest Charges (times)',
+    explanation: 'Measures enterprise long-term financial solvency and cushion against debt default.',
+    explanationHi: 'दीर्घकालीन वित्तीय शोधन क्षमता और स्थिर ब्याज भार वहन क्षमता का मापन।',
+    variables: 'Long-term Debt = Debentures + Bonds + Bank Loans; Shareholders’ Funds = Share Capital + Reserves & Surplus',
+    examTip: 'A high Interest Coverage Ratio implies safety for lenders. Expressed in "times".'
+  },
+  {
+    id: 'f-12-acc-3',
+    subject: 'accountancy',
+    grade: '12',
+    chapter: 'Accounting Ratios',
+    name: 'Activity Ratios: Inventory & Working Capital Turnover',
+    nameHi: 'क्रियाशीलता अनुपात: स्टॉक एवं कार्यशील पूंजी आवर्त',
+    formula: 'Inventory Turnover = Cost of Revenue from Operations (COGS) / Average Inventory\nWorking Capital Turnover = Revenue from Operations / Net Working Capital\nTrade Receivables Turnover = Net Credit Revenue / Average Trade Receivables',
+    explanation: 'Indicates the velocity and efficiency with which enterprise resources are converted into cash.',
+    explanationHi: 'व्यावसायिक संसाधनों के उपयोग की दक्षता और आवर्त गति का मापन।',
+    variables: 'COGS = Opening Inv + Net Purchases + Direct Exp - Closing Inv; Working Capital = CA - CL',
+    examTip: 'Always express turnover ratios in "times". If Revenue from Operations cannot be bifurcated, use Total Revenue.'
+  },
+  {
+    id: 'f-12-acc-4',
+    subject: 'accountancy',
+    grade: '12',
+    chapter: 'Goodwill: Nature and Valuation',
+    name: 'Methods of Valuation of Goodwill',
+    nameHi: 'ख्याति के मूल्यांकन की विधियां',
+    formula: 'Average Profit = (Adjusted Total Profits / No. of Years) × No. of Years’ Purchase\nSuper Profit = (Actual Average Profit - Normal Profit) × No. of Years’ Purchase\nNormal Profit = Capital Employed × (Normal Rate of Return / 100)\nCapitalisation of Super Profit = (Super Profit / Normal Rate) × 100',
+    explanation: 'Standard techniques to compute monetary value of commercial reputation and super earning power.',
+    explanationHi: 'औसत लाभ, अधिलाभ तथा अधिलाभ के पूंजीकरण द्वारा ख्याति का मूल्यांकन।',
+    variables: 'Capital Employed = Total Assets (excl. goodwill/fictitious) - Outside Liabilities',
+    examTip: 'Deduct abnormal gains (e.g. profit on sale of machinery, insurance claim) and add back abnormal losses (e.g. fire loss) before averaging!'
+  },
+  {
+    id: 'f-12-acc-5',
+    subject: 'accountancy',
+    grade: '12',
+    chapter: 'Admission of a Partner',
+    name: 'Sacrificing Ratio & Capital Adjustments',
+    nameHi: 'त्याग अनुपात एवं पूंजी समायोजन',
+    formula: 'Sacrificing Ratio = Old Share - New Share\nGaining Ratio = New Share - Old Share\nTotal Capital based on New Partner = New Partner’s Capital × (1 / New Partner’s Share)',
+    explanation: 'Determines the proportion in which old partners surrender profit share to admit a new partner.',
+    explanationHi: 'पुराने साझेदारों द्वारा नए साझेदार के पक्ष में लाभ के समर्पण का अनुपात।',
+    variables: 'SR = Sacrificing Ratio; GR = Gaining Ratio',
+    examTip: 'Premium for Goodwill brought in by the incoming partner is ALWAYS credited to Sacrificing Partners in their SACRIFICING RATIO!'
+  },
+  {
+    id: 'f-12-acc-6',
+    subject: 'accountancy',
+    grade: '12',
+    chapter: 'Accounting for Share Capital',
+    name: 'Share Forfeiture & Capital Reserve Formula',
+    nameHi: 'अंशों का हरण एवं पूंजी संचय हस्तांतरण',
+    formula: 'Maximum Reissue Discount = Amount Forfeited on those specific reissued shares\nCapital Reserve = (Amount forfeited on reissued shares) - (Discount allowed on reissue)',
+    explanation: 'Surplus gain realized on reissuing forfeited shares is a capital profit transferred to Capital Reserve.',
+    explanationHi: 'पुनर्निर्गमित अंशों पर अर्जित लाभ पूंजीगत संचय (Capital Reserve) में अंतरित होता है।',
+    variables: 'Called up amount credited to Share Capital; Unpaid calls to Calls in Arrears',
+    examTip: 'CBSE 6-mark cornerstone: If only a part of forfeited shares are reissued, calculate forfeited amount strictly proportional to reissued shares!'
+  },
+  {
+    id: 'f-12-acc-7',
+    subject: 'accountancy',
+    grade: '12',
+    chapter: 'Cash Flow Statement',
+    name: 'Operating Cash Flow (Indirect Method as per AS-3)',
+    nameHi: 'रोकड़ प्रवाह विवरण: परिचालन क्रियाएं',
+    formula: 'Cash from Operations = Net Profit before Tax & Extra. Items\n+ Non-cash/Non-operating Expenses (Depreciation, Goodwill w/off, Loss on Asset Sale)\n- Non-operating Incomes (Dividend/Interest Recd, Profit on Asset Sale)\n± Operating Profit before Working Capital Changes\n- Increase in CA + Decrease in CA + Increase in CL - Decrease in CL - Tax Paid',
+    explanation: 'Standard indirect computation deriving net cash flows generated by core business operations.',
+    explanationHi: 'एएस-3 के अनुसार गैर-रोकड़ मदों तथा कार्यशील पूंजी परिवर्तनों का समायोजन।',
+    variables: 'CA = Current Assets (excl. Cash & Cash Equivalents); CL = Current Liabilities (excl. Bank Overdraft/Short-term loans)',
+    examTip: 'Bank Overdraft and Cash Credit are FINANCING activities, not working capital changes!'
+  },
+
+  // =========================================================================
+  // CLASS 12 COMMERCE: ECONOMICS (030)
+  // =========================================================================
+  {
+    id: 'f-12-eco-1',
+    subject: 'economics',
+    grade: '12',
+    chapter: 'National Income and Related Aggregates',
+    name: 'National Income Aggregates & Value Added',
+    nameHi: 'राष्ट्रीय आय समुच्चय एवं मूल्य संवर्धन सूत्र',
+    formula: 'Gross Value Added (GVA_mp) = Value of Output - Intermediate Consumption\nValue of Output = Sales + Change in Stock (Closing - Opening)\nNNP_fc (National Income) = GDP_mp - Depreciation + NFIA - Net Indirect Taxes (NIT)\nReal GDP = (Nominal GDP / Price Index) × 100\nGDP Deflator = (Nominal GDP / Real GDP) × 100',
+    explanation: 'Core macroeconomic formulas for computing national income and eliminating inflationary distortions.',
+    explanationHi: 'उत्पादन, आय एवं व्यय विधियों द्वारा राष्ट्रीय आय (NNP_fc) की गणना।',
+    variables: 'NFIA = Net Factor Income from Abroad; NIT = Indirect Taxes - Subsidies',
+    examTip: 'Intermediate consumption does NOT include purchases of fixed capital assets (which are gross investment)!'
+  },
+  {
+    id: 'f-12-eco-2',
+    subject: 'economics',
+    grade: '12',
+    chapter: 'Money and Banking',
+    name: 'Money Multiplier & Commercial Bank Credit Creation',
+    nameHi: 'मुद्रा गुणक एवं साख निर्माण',
+    formula: 'Money Multiplier = 1 / LRR\nTotal Credit Creation = Initial Primary Deposit × (1 / LRR)',
+    explanation: 'Formula determining maximum secondary deposits created by commercial banks through fractional reserves.',
+    explanationHi: 'वैधानिक आरक्षित अनुपात (LRR) के आधार पर वाणिज्यिक बैंकों द्वारा साख निर्माण।',
+    variables: 'LRR = Legal Reserve Ratio = Cash Reserve Ratio (CRR) + Statutory Liquidity Ratio (SLR)',
+    examTip: 'If LRR is 20% (0.2), money multiplier = 1/0.2 = 5. A deposit of ₹1,000 generates total credit of ₹5,000.'
+  },
+  {
+    id: 'f-12-eco-3',
+    subject: 'economics',
+    grade: '12',
+    chapter: 'Determination of Income and Employment',
+    name: 'Propensity to Consume/Save & Investment Multiplier',
+    nameHi: 'उपभोग एवं बचत प्रवृत्ति तथा निवेश गुणक',
+    formula: 'APC = C / Y,  MPC = ΔC / ΔY\nAPS = S / Y,  MPS = ΔS / ΔY\nAPC + APS = 1,  MPC + MPS = 1\nInvestment Multiplier (k) = ΔY / ΔI = 1 / (1 - MPC) = 1 / MPS',
+    explanation: 'Keynesian equilibrium relationships linking income, consumption, savings, and output expansion.',
+    explanationHi: 'कीन्स का निवेश गुणक सिद्धांत: गुणक का मान 1 से अनंत (∞) के बीच होता है।',
+    variables: 'Y = Income; C = Consumption; S = Savings; I = Investment; k = Multiplier',
+    examTip: 'The value of multiplier k ranges from 1 (when MPC=0) to ∞ (when MPC=1). It varies directly with MPC and inversely with MPS!'
+  },
+  {
+    id: 'f-12-eco-4',
+    subject: 'economics',
+    grade: '12',
+    chapter: 'Government Budget and the Economy',
+    name: 'Government Budget Deficits',
+    nameHi: 'सरकारी बजट घाटे के माप',
+    formula: 'Revenue Deficit = Revenue Expenditure - Revenue Receipts\nFiscal Deficit = Total Expenditure - Total Receipts excluding Borrowings = Total Borrowings\nPrimary Deficit = Fiscal Deficit - Interest Payments',
+    explanation: 'Measures budgetary shortfall and government borrowing requirements in a financial year.',
+    explanationHi: 'राजस्व घाटा, राजकोषीय घाटा (कुल उधार) एवं प्राथमिक घाटा की गणना।',
+    variables: 'Borrowings constitute the fiscal deficit directly. Zero primary deficit implies borrowings are purely for past interest commitments.',
+    examTip: 'Primary Deficit = 0 means the government is borrowing solely to pay past interest liabilities!'
+  },
+
+  // =========================================================================
+  // CLASS 12 COMMERCE: BUSINESS STUDIES (054)
+  // =========================================================================
+  {
+    id: 'f-12-bst-1',
+    subject: 'business_studies',
+    grade: '12',
+    chapter: 'Financial Management',
+    name: 'Trading on Equity & Financial Leverage (ROI vs Cost of Debt)',
+    nameHi: 'समता पर व्यापार एवं वित्तीय उत्तोलन',
+    formula: 'ROI = (EBIT / Total Capital Employed) × 100\nEBT = EBIT - Interest on Debt\nEAT = EBT - Tax\nEPS = EAT / Total Number of Equity Shares',
+    explanation: 'Favourable financial leverage occurs when ROI > Rate of Interest on Debt, which amplifies EPS for shareholders.',
+    explanationHi: 'जब निवेश पर प्रत्यय (ROI) ऋण की ब्याज दर से अधिक होता है, तो प्रति अंश आय (EPS) बढ़ती है।',
+    variables: 'EBIT = Operating Profit; EAT = Earnings after Tax; EPS = Earnings per share',
+    examTip: 'CBSE 6-mark case study question: Always show numerical table comparing Situation I (all equity) vs Situation II (debt + equity) to prove Trading on Equity!'
+  },
+  {
+    id: 'f-12-bst-2',
+    subject: 'business_studies',
+    grade: '12',
+    chapter: 'Principles of Management',
+    name: 'Fayol’s 14 Principles & Taylor’s Scientific Techniques Framework',
+    nameHi: 'फेयोल के 14 सिद्धांत एवं टेलर की वैज्ञानिक तकनीकें',
+    formula: 'Fayol: Division of Work, Authority & Responsibility, Discipline, Unity of Command, Unity of Direction, Subordination of Individual Interest, Remuneration, Centralisation, Scalar Chain, Order, Equity, Stability of Personnel, Initiative, Espirit de Corps.\nTaylor: Functional Foremanship (8 Bosses), Time Study, Motion Study, Fatigue Study, Method Study, Differential Piece Wage System.',
+    explanation: 'Foundational managerial frameworks for operational efficiency and universal administration.',
+    explanationHi: 'हेनरी फेयोल के प्रशासनिक सिद्धांत तथा एफ.डब्ल्यू. टेलर का वैज्ञानिक प्रबंध ढांचा।',
+    variables: 'Unity of command prevents dual subordination (1 employee = 1 boss). Unity of direction mandates 1 plan = 1 head.',
+    examTip: 'Contrast: Unity of Command prevents confusion in instructions; Unity of Direction prevents overlapping and duplicate activities.'
+  },
+  {
+    id: 'f-12-bst-3',
+    subject: 'business_studies',
+    grade: '12',
+    chapter: 'Consumer Protection',
+    name: 'Consumer Protection Act 2019 Pecuniary Jurisdictions',
+    nameHi: 'उपभोक्ता संरक्षण अधिनियम 2019: आर्थिक क्षेत्राधिकार',
+    formula: 'District Commission: Value of goods/services paid up to ₹50 Lakh\nState Commission: Value exceeding ₹50 Lakh up to ₹2 Crore\nNational Commission: Value exceeding ₹2 Crore',
+    explanation: 'Three-tier quasi-judicial consumer disputes redressal machinery established by CPA 2019.',
+    explanationHi: 'जिला आयोग (50 लाख तक), राज्य आयोग (50 लाख से 2 करोड़), राष्ट्रीय आयोग (2 करोड़ से अधिक)।',
+    variables: 'Appeals: From District Commission to State Commission (within 45 days); From State to National (within 30 days).',
+    examTip: 'Under CPA 2019, jurisdiction is determined solely by "Consideration Paid" (not compensation claimed as in 1986 Act)!'
+  },
+
+  // =========================================================================
+  // CLASS 12: ENGLISH CORE (301)
+  // =========================================================================
+  {
+    id: 'f-12-eng-1',
+    subject: 'english_core',
+    grade: '12',
+    chapter: 'My Mother at Sixty-Six',
+    name: 'Literary & Poetic Devices Master Framework',
+    nameHi: 'साहित्यिक एवं काव्य उपकरणों का ढांचा',
+    formula: 'Simile: Direct comparison with "like/as" ("Ashen like that of a corpse", "As a late winter’s moon")\nMetaphor: Implicit identification ("Endless fountain of immortal drink", "Pad of velvet quiet")\nPersonification: Human attributes to non-living ("Young trees sprinting", "Earth can teach us")\nParadox / Irony: Contradiction revealing deeper truth ("Quiet stillness alive", "Tiger King slain by a toy tiger")',
+    explanation: 'Comprehensive guide to rhetorical devices tested in CBSE Class 12 Section C poetry extract questions.',
+    explanationHi: 'काव्य सौंदर्य एवं साहित्यिक उपकरणों (उपमा, रूपक, मानवीकरण, विडंबना) की त्वरित मार्गदर्शिका।',
+    variables: 'Extract questions carry 6 marks: 1 mark for poetic device identification and 1 mark for explanation.',
+    examTip: 'In "My Mother at Sixty-Six", "Young trees sprinting" is Personification AND a contrast between youth/vitality and decaying old age.'
   }
 ];
 
-export function getFormulasForGrade(grade: GradeClass = '12'): FormulaItem[] {
+export function getFormulasForGrade(grade: GradeClass = '12', stream?: StreamType): FormulaItem[] {
   if (grade === '10') {
     return CBSE_FORMULAS.filter(f => f.grade === '10');
   }
-  return CBSE_FORMULAS.filter(f => !f.grade || f.grade === '12');
+  const class12 = CBSE_FORMULAS.filter(f => !f.grade || f.grade === '12');
+  if (stream === 'commerce') {
+    return class12.filter(f => ['accountancy', 'business_studies', 'economics', 'english_core'].includes(f.subject));
+  }
+  if (stream === 'science') {
+    return class12.filter(f => ['mathematics', 'physics', 'chemistry'].includes(f.subject));
+  }
+  return class12;
 }
 

@@ -205,5 +205,154 @@ export const CBSE_FLASHCARDS: Flashcard[] = [
     back: '• Aldol Condensation requires aldehydes/ketones having at least ONE α-hydrogen (in presence of dil. NaOH).\n• Cannizzaro Reaction occurs in aldehydes having NO α-hydrogen (e.g. HCHO, PhCHO) in conc. KOH (disproportionation into alcohol + carboxylate).',
     backHi: '• ऐल्डोल संघनन: कम से कम एक α-हाइड्रोजन आवश्यक (तनु NaOH)।\n• कैनिजारो अभिक्रिया: कोई α-हाइड्रोजन नहीं (जैसे HCHO, C₆H₅CHO) (सांद्र KOH)।',
     keyPoint: 'HCHO and C₆H₅CHO undergo Cannizzaro; CH₃CHO undergoes Aldol.'
+  },
+
+  // =========================================================================
+  // CLASS 12 COMMERCE: ACCOUNTANCY (055)
+  // =========================================================================
+  {
+    id: 'fc-acc-1',
+    subject: 'accountancy',
+    chapter: 'Accounting for Partnership Firms - Fundamentals',
+    topic: 'Rules Applicable in Absence of Partnership Deed',
+    front: 'What statutory accounting provisions apply if partners have NO written Partnership Deed?',
+    frontHi: 'साझेदारी संलेख (Partnership Deed) के अभाव में कौन से लेखांकन नियम लागू होते हैं?',
+    back: '1. Profit/Loss Sharing: Strictly EQUAL (1 : 1).\n2. Interest on Capital: NOT allowed.\n3. Interest on Drawings: NOT charged.\n4. Salary / Commission to Partner: NOT payable.\n5. Interest on Partner’s Loan to Firm: Allowed @ 6% p.a.',
+    backHi: '1. लाभ-हानि विभाजन: बराबर (1:1)।\n2. पूंजी पर ब्याज: नहीं दिया जाएगा।\n3. आहरण पर ब्याज: नहीं लिया जाएगा।\n4. पारिश्रमिक/कमीशन: नहीं देय।\n5. साझेदार के ऋण पर ब्याज: 6% प्रतिवर्ष की दर से अनिवार्य।',
+    keyPoint: 'Interest on partner loan is a CHARGE against profit (debited to P&L A/c, not P&L Appropriation A/c).'
+  },
+  {
+    id: 'fc-acc-2',
+    subject: 'accountancy',
+    chapter: 'Goodwill: Nature and Valuation',
+    topic: 'Goodwill Valuation: Capitalisation & Super Profit Methods',
+    front: 'State the formulas for Goodwill under (a) Super Profit Method and (b) Capitalisation of Average Profit.',
+    frontHi: 'ख्याति के मूल्यांकन के सूत्र बताएं: (क) अधिलाभ विधि (Super Profit) और (ख) औसत लाभ का पूंजीकरण।',
+    back: '• Super Profit = Average Maintainable Profit - Normal Profit (where Normal Profit = Capital Employed × Normal Rate / 100).\nGoodwill = Super Profit × Number of Years’ Purchase.\n• Capitalisation of Average Profit: Goodwill = Capitalised Value of Business - Net Assets (Capital Employed), where Capitalised Value = (Average Profit / Normal Rate) × 100.',
+    backHi: '• अधिलाभ = औसत लाभ - सामान्य लाभ (सामान्य लाभ = विनियोजित पूंजी × सामान्य दर / 100)।\nख्याति = अधिलाभ × क्रय वर्षों की संख्या।\n• पूंजीकरण विधि: ख्याति = व्यवसाय का पूंजीकृत मूल्य - शुद्ध संपत्तियां।',
+    formula: 'Goodwill = Super Profit × No. of Years’ Purchase'
+  },
+  {
+    id: 'fc-acc-3',
+    subject: 'accountancy',
+    chapter: 'Accounting for Share Capital',
+    topic: 'Forfeiture & Reissue of Shares',
+    front: 'When shares are forfeited, which account is debited and how is Capital Reserve calculated upon reissue?',
+    frontHi: 'अंशों के हरण पर कौन सा खाता डेबिट किया जाता है और पुनर्निर्गमन पर पूंजी संचय (Capital Reserve) की गणना कैसे होती है?',
+    back: '1. Share Capital A/c is DEBITED with Called-up value on forfeited shares.\n2. Shares Forfeited A/c is CREDITED with amount actually received towards face value.\n3. Unpaid calls are credited to Calls-in-Arrears A/c.\n4. On Reissue: Profit on reissue transferred to Capital Reserve = (Forfeited amount per share - Discount on reissue per share) × Reissued shares.',
+    backHi: '1. अंश पूंजी खाता (Share Capital A/c) याचित राशि (Called-up) से डेबिट होता है।\n2. शेयर जब्ती खाता (Forfeited Shares A/c) प्राप्त राशि से क्रेडिट होता है।\n3. पुनर्निर्गमन पर लाभ पूंजी संचय (Capital Reserve) में स्थानांतरित किया जाता है।',
+    keyPoint: 'Maximum permissible discount on reissue cannot exceed the amount already forfeited on those specific shares.'
+  },
+  {
+    id: 'fc-acc-4',
+    subject: 'accountancy',
+    chapter: 'Cash Flow Statement',
+    topic: 'Classification of Cash Flow Activities (AS-3)',
+    front: 'How are (1) Interest paid on debentures and (2) Dividend received on investment classified in Cash Flow Statement?',
+    frontHi: 'रोकड़ प्रवाह विवरण (AS-3) में (1) ऋणपत्रों पर प्रदत्त ब्याज और (2) निवेशों पर प्राप्त लाभांश का वर्गीकरण कैसे होता है?',
+    back: 'For a non-financial enterprise:\n1. Interest paid on debentures / bank loans: FINANCING ACTIVITY (cash outflow).\n2. Dividend received / Interest received on non-current investments: INVESTING ACTIVITY (cash inflow).\n(Note: In financial enterprises like banks, both are Operating Activities).',
+    backHi: 'गैर-वित्तीय उद्यम हेतु:\n1. ऋणपत्रों पर प्रदत्त ब्याज: वित्तीय क्रिया (Financing Outflow)।\n2. निवेश पर प्राप्त लाभांश/ब्याज: निवेश क्रिया (Investing Inflow)।',
+    keyPoint: 'Always distinguish financial enterprises vs non-financial commercial firms in Section A MCQs.'
+  },
+
+  // =========================================================================
+  // CLASS 12 COMMERCE: BUSINESS STUDIES (054)
+  // =========================================================================
+  {
+    id: 'fc-bst-1',
+    subject: 'business_studies',
+    chapter: 'Principles of Management',
+    topic: 'Henri Fayol’s Principles vs F.W. Taylor’s Scientific Management',
+    front: 'Contrast Henri Fayol’s Administrative Principles with F.W. Taylor’s Scientific Management.',
+    frontHi: 'हेनरी फेयोल के प्रशासनिक सिद्धांतों तथा एफ.डब्ल्यू. टेलर के वैज्ञानिक प्रबंध में मुख्य अंतर बताएं।',
+    back: '• Fayol: Top-level management perspective; focuses on overall administrative functions and human relations; universal applicability; unity of command strictly followed.\n• Taylor: Shop-floor (factory/operational) level perspective; focuses on worker productivity and technical standardization; Functional Foremanship intentionally violates Unity of Command (worker supervised by 8 specialists).',
+    backHi: '• फेयोल: शीर्ष स्तरीय प्रबंध दृष्टिकोण; प्रशासनिक दक्षता और आदेश की एकता पर बल।\n• टेलर: कार्यशाला (फैक्ट्री) स्तर; कार्यक्षमता, मानकीकरण और कार्यात्मक फोरमैनशिप (8 विशेषज्ञ)।',
+    keyPoint: 'Fayol’s system is based on personal experience; Taylor’s on scientific observations and time-motion studies.'
+  },
+  {
+    id: 'fc-bst-2',
+    subject: 'business_studies',
+    chapter: 'Organising',
+    topic: 'Delegation of Authority vs Decentralisation',
+    front: 'What are the three elements of Delegation, and how does Delegation differ from Decentralisation?',
+    frontHi: 'अधिकार अंतरण (Delegation) के तीन तत्व क्या हैं और यह विकेंद्रीकरण (Decentralisation) से कैसे भिन्न है?',
+    back: 'Three Elements of Delegation:\n1. Authority (right to command and utilize resources - flows downward).\n2. Responsibility (obligation to perform duty - flows upward).\n3. Accountability (answerability for final outcome - cannot be delegated! Flows upward).\nDifference: Delegation is a routine downward assignment between superior and subordinate; Decentralisation is an organization-wide policy decision to disperse authority across all levels.',
+    backHi: 'अंतरण के 3 तत्व: 1. अधिकार (ऊपर से नीचे), 2. उत्तरदायित्व (नीचे से ऊपर), 3. जवाबदेही (अनिवार्य, नीचे से ऊपर, इसका अंतरण नहीं हो सकता)।\nविकेंद्रीकरण संपूर्ण संगठन की नीतिगत व्यवस्था है।',
+    keyPoint: 'Accountability is absolute and cannot be delegated under any circumstances.'
+  },
+  {
+    id: 'fc-bst-3',
+    subject: 'business_studies',
+    chapter: 'Financial Management',
+    topic: 'Trading on Equity (Financial Leverage)',
+    front: 'What is "Trading on Equity", and under what condition does it benefit equity shareholders?',
+    frontHi: 'समता पर व्यापार (Trading on Equity) क्या है और यह किस परिस्थिति में समता अंशधारकों को लाभ पहुंचाता है?',
+    back: 'Trading on Equity refers to the use of fixed-cost debt capital to magnify Return on Equity (ROE) and Earning Per Share (EPS).\nFavourable Condition: Return on Investment (ROI) must be GREATER than Cost of Debt (Interest Rate) [ROI > Rate of Interest].\nIf ROI < Interest Rate, financial leverage becomes unfavourable and EPS drops.',
+    backHi: 'ऋण पूंजी का उपयोग करके समता अंशधारकों के प्रति अंश अर्जन (EPS) को बढ़ाना।\nअनुकूल शर्त: निवेश पर प्रतिफल (ROI) ऋण की ब्याज दर से अधिक होना चाहिए (ROI > Interest Rate)।',
+    keyPoint: 'High debt with low ROI leads to financial distress and negative financial leverage.'
+  },
+
+  // =========================================================================
+  // CLASS 12 COMMERCE: ECONOMICS (030)
+  // =========================================================================
+  {
+    id: 'fc-eco-1',
+    subject: 'economics',
+    chapter: 'National Income and Related Aggregates',
+    topic: 'Inclusions & Exclusions in National Income Estimation',
+    front: 'Which of these are included in National Income: (a) Transfer payments, (b) Brokerage on shares, (c) Windfall gains?',
+    frontHi: 'राष्ट्रीय आय में क्या शामिल होगा: (क) हस्तांतरण भुगतान, (ख) शेयरों पर दलाली, (ग) आकस्मिक लाभ (लॉटरी)?',
+    back: '• (a) Transfer payments (pensions, scholarships, gifts): EXCLUDED (no corresponding factor service rendered).\n• (b) Brokerage on purchase/sale of second-hand shares/property: INCLUDED (reward for productive intermediary factor service).\n• (c) Windfall gains (lotteries, gambling): EXCLUDED (unproductive capital transfer).',
+    backHi: '• (क) हस्तांतरण भुगतान (वृद्धावस्था पेंशन, छात्रवृत्ति): शामिल नहीं।\n• (ख) शेयरों पर दलाली (Brokerage): शामिल (उत्पादक सेवा का पारिश्रमिक)।\n• (ग) आकस्मिक लाभ (लॉटरी): शामिल नहीं।',
+    keyPoint: 'Only factor payments (Rent, Wages, Interest, Profit) earned for productive services in the current period are included.'
+  },
+  {
+    id: 'fc-eco-2',
+    subject: 'economics',
+    chapter: 'Money and Banking',
+    topic: 'Credit Creation by Commercial Banks & Money Multiplier',
+    front: 'How do Commercial Banks create credit, and what is the formula for the Credit Multiplier?',
+    frontHi: 'व्यावसायिक बैंक साख सृजन कैसे करते हैं और साख गुणक (Credit Multiplier) का सूत्र क्या है?',
+    back: 'Banks create credit out of initial primary cash deposits because depositors withdraw only a fraction of their money daily.\nFormula: Credit Multiplier (k) = 1 / LRR (where LRR = CRR + SLR).\nTotal Credit / Deposit Creation = Initial Primary Deposit × (1 / LRR).\nExample: If LRR = 20%, Multiplier = 1 / 0.20 = 5. A ₹1,000 deposit expands to ₹5,000.',
+    backHi: 'साख गुणक = 1 / वैधानिक तरलता अनुपात (LRR)।\nकुल साख सृजन = प्रारंभिक जमा × (1 / LRR)।\nयदि LRR = 20% है, तो गुणक 5 होगा और 1,000 की जमा 5,000 के बराबर साख उत्पन्न करेगी।',
+    formula: 'Total Deposits = Primary Deposit × (1 / LRR)'
+  },
+  {
+    id: 'fc-eco-3',
+    subject: 'economics',
+    chapter: 'Determination of Income and Employment',
+    topic: 'Keynesian Investment Multiplier (k) & MPC/MPS Relations',
+    front: 'State the relationship between Investment Multiplier (k), MPC, and MPS, and the range of k.',
+    frontHi: 'निवेश गुणक (k), सीमांत उपभोग प्रवृत्ति (MPC) और सीमांत बचत प्रवृत्ति (MPS) में संबंध बताएं।',
+    back: '• k = ΔY / ΔI = 1 / (1 - MPC) = 1 / MPS.\n• Direct relationship with MPC: Higher the MPC, higher the Multiplier.\n• Inverse relationship with MPS: Higher the MPS, lower the Multiplier.\n• Numerical Range: 1 ≤ k ≤ ∞ (since 0 ≤ MPC ≤ 1). If MPC = 0, k = 1; if MPC = 1, k = ∞.',
+    backHi: '• k = 1 / (1 - MPC) = 1 / MPS।\n• MPC से प्रत्यक्ष संबंध (अधिक MPC = अधिक गुणक)।\n• MPS से व्युत्क्रम संबंध।\n• संख्यात्मक सीमा: 1 से अनंत (∞)।',
+    formula: 'k = 1 / (1 - MPC) = 1 / MPS'
+  },
+
+  // =========================================================================
+  // CLASS 12: ENGLISH CORE (301)
+  // =========================================================================
+  {
+    id: 'fc-eng-1',
+    subject: 'english_core',
+    chapter: 'The Last Lesson',
+    topic: 'Themes of Linguistic Chauvinism & Patriotism',
+    front: 'What is "Linguistic Chauvinism", and what metaphor does M. Hamel use for language in "The Last Lesson"?',
+    frontHi: '"भाषाई अंधराष्ट्रवाद" (Linguistic Chauvinism) क्या है और एम. हेमेल भाषा के लिए क्या उपमा देते हैं?',
+    back: '• Linguistic Chauvinism: Aggressive, unreasonable belief that one\'s own language is superior and imposing it on conquered populations (Prussia imposing German on Alsace and Lorraine).\n• M. Hamel\'s Metaphor: "When a people are enslaved, as long as they hold fast to their language it is as if they had the key to their prison."\n• Final Action: He writes "Vive La France!" (Long Live France!) on the board.',
+    backHi: '• भाषाई अंधराष्ट्रवाद: अपनी भाषा को दूसरों पर थोपना (जर्मन थोपी गई)।\n• उपमा: भाषा बंदीगृह की वह चाबी है जो जब तक आपके पास है, आप पूरी तरह गुलाम नहीं हो सकते।',
+    keyPoint: 'Key phrase for board answers: "Key to their prison" and defense against linguistic cultural annihilation.'
+  },
+  {
+    id: 'fc-eng-2',
+    subject: 'english_core',
+    chapter: 'Deep Water',
+    topic: 'Roosevelt’s Philosophy on Fear and Terror',
+    front: 'Explain William Douglas’s realization in "Deep Water": "In death there is peace, there is terror only in the fear of death."',
+    frontHi: 'विलियम डगलस के विचार की व्याख्या करें: "मृत्यु में शांति है, आतंक केवल मृत्यु के भय में है।"?',
+    back: 'When Douglas was drowning at the YMCA pool, as he lost consciousness, he felt absolute peace, release, and oblivion—no pain, no panic.\nThe terrifying horror had only existed during his struggle and anticipation of death.\nHe corroborates this with President Roosevelt’s aphorism: "All we have to fear is fear itself." Conquering fear through disciplined swimming with an instructor transformed his will to live into a fearless triumph.',
+    backHi: 'डगलस ने डूबते समय अनुभव किया कि बेहोशी और मृत्यु शांत है; सारा आतंक केवल मृत्यु के मनोवैज्ञानिक भय में है। रूजवेल्ट का उद्धरण: "हमे केवल भय से ही डरना है।"',
+    keyPoint: 'Quote to memorize verbatim: "All we have to fear is fear itself."'
   }
 ];
+

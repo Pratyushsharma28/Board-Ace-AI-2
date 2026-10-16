@@ -110,6 +110,22 @@ import {
   getVerifiedChapters,
 } from './src/utils/questionValidator.ts';
 
+// Master List of Valid Official CBSE Subjects across Class 10 and Class 12 (Science & Commerce)
+const ALL_VALID_SUBJECTS = [
+  // Class 12 Science
+  'mathematics',
+  'physics',
+  'chemistry',
+  // Class 12 Commerce
+  'accountancy',
+  'business_studies',
+  'economics',
+  'english_core',
+  // Class 10
+  'science',
+  'social_science',
+  'english',
+];
 
 // Endpoint: Generate Quiz
 app.post('/api/generate-quiz', async (req: Request, res: Response) => {
@@ -125,8 +141,8 @@ app.post('/api/generate-quiz', async (req: Request, res: Response) => {
       language = 'en',
     } = req.body;
 
-    // Strict validation: Supports Class 10 and Class 12 official subjects
-    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+    // Strict validation: Supports Class 10 and Class 12 official subjects (Science & Commerce)
+    const validSubjects = ALL_VALID_SUBJECTS;
     const subject = validSubjects.includes(String(rawSubject).toLowerCase())
       ? String(rawSubject).toLowerCase()
       : 'mathematics';
@@ -161,7 +177,7 @@ app.post('/api/generate-quiz', async (req: Request, res: Response) => {
 
     let typeGuidance = `Generate standard CBSE Class ${grade} Multiple Choice Questions (Section A board format) with 4 distinct options.`;
     if (questionType === 'numerical') {
-      typeGuidance = `Generate numerical calculation problems requiring students to compute values. For Mathematics, provide mathematical evaluations; for Physics and Science, include formulas, substitutions, and explicit SI units in the options; for Chemistry, include electrochemical, kinetic, or solution calculations with units. All questions must have 4 distinct numerical options.`;
+      typeGuidance = `Generate numerical calculation problems requiring students to compute values. For Mathematics, provide mathematical evaluations; for Physics and Science, include formulas, substitutions, and explicit SI units in the options; for Chemistry, include electrochemical, kinetic, or solution calculations with units; for Accountancy, include journal entry amounts, ratio percentages, share forfeiture balances, or cash flow values with ₹ symbols; for Economics, include national income aggregates, investment multiplier k, and propensity values. All questions must have 4 distinct numerical options.`;
     } else if (questionType === 'conceptual') {
       typeGuidance = `Generate conceptual and theoretical problems testing definitions, laws, properties, theorems, and mechanisms. Every question must have 4 distinct options.`;
     } else if (questionType === 'mixed') {
@@ -173,7 +189,7 @@ app.post('/api/generate-quiz', async (req: Request, res: Response) => {
          3. (A) is true but (R) is false
          4. (A) is false but (R) is true.`;
     } else if (questionType === 'case_based') {
-      typeGuidance = `Generate Case-Based MCQs with a short authentic scientific or mathematical passage/scenario in casePassage, followed by a conceptual application MCQ with 4 distinct options.`;
+      typeGuidance = `Generate Case-Based MCQs with a short authentic scientific, business, economic, or literary passage/scenario in casePassage, followed by a conceptual application MCQ with 4 distinct options.`;
     }
 
     let subjectSpecificInstructions = '';
@@ -195,6 +211,33 @@ Subject Requirements for Chemistry (CBSE Code 043, Session 2026–27):
 - Questions MUST support conceptual questions, balanced chemical equations, reaction conditions/reagents, and numerical problems where appropriate (e.g., Nernst equation, colligative properties, rate laws).
 - Options with chemical formulas or IUPAC names MUST be chemically consistent and accurate.
 - In "explanation", explain chemical principles, mechanisms (e.g., SN1, SN2, aldol, Cannizzaro), or numerical calculation steps with units.`;
+    } else if (subject === 'accountancy') {
+      subjectSpecificInstructions = `
+Subject Requirements for Class 12 Accountancy (CBSE Code 055, Session 2026–27):
+- Strict adherence to official CBSE 2026–27 syllabus, Indian Partnership Act 1932, Companies Act 2013 (Schedule III Division I), and AS-3 (Revised).
+- For Partnership: test P&L Appropriation, guarantee, past adjustments, sacrificing/gaining ratio, goodwill valuation methods, revaluation, and dissolution realisation.
+- For Company Accounts: test share capital pro-rata allotment, forfeiture, reissue, capital reserve, and debentures issued at par/premium/discount and as collateral security.
+- For Financial Ratios & Cash Flow: test exact standard ratio formulas and cash flows classified into Operating, Investing, and Financing.
+- In numerical problems, display calculations clearly with currency symbols (₹) and clear debits/credits.`;
+    } else if (subject === 'business_studies') {
+      subjectSpecificInstructions = `
+Subject Requirements for Class 12 Business Studies (CBSE Code 054, Session 2026–27):
+- Strict alignment with NCERT Class 12 Business Studies curriculum.
+- Test Fayol's 14 principles of management and Taylor's scientific techniques (functional foremanship, time/motion/fatigue/method studies).
+- Feature realistic corporate, managerial, and startup case scenarios testing planning, organising, staffing, directing, and controlling.
+- Test financial management (investment, financing, dividend decisions; trading on equity), financial markets (money market instruments, SEBI functions), marketing 4 Ps mix, and Consumer Protection Act 2019.`;
+    } else if (subject === 'economics') {
+      subjectSpecificInstructions = `
+Subject Requirements for Class 12 Economics (CBSE Code 030, Session 2026–27):
+- Strict alignment with NCERT Class 12 Introductory Macroeconomics and Indian Economic Development.
+- Macroeconomics: National Income aggregates (GDP, NNP at MP/FC, Value Added, Income, Expenditure methods), Money & Banking (credit creation multiplier = 1/LRR, RBI monetary policy), Income & Employment (AD = C + I, AS = C + S, multiplier k = 1/(1-MPC), inflationary/deflationary gap), Government Budget (Revenue, Fiscal, Primary Deficits), and BOP.
+- Indian Economic Development: 1947-90 policies, 1991 LPG reforms, Human capital formation, Rural development (SHGs, NABARD, agricultural marketing), Employment (informalisation), Sustainable development, and comparative study with China and Pakistan.`;
+    } else if (subject === 'english_core') {
+      subjectSpecificInstructions = `
+Subject Requirements for Class 12 English Core (CBSE Code 301, Session 2026–27):
+- Ground strictly in official NCERT Flamingo (Prose & Poetry) and Vistas texts.
+- Test textual comprehension, central themes, character motivations, nuances, irony, symbolism, and poetic devices.
+- Include Reference to Context (RTC) analytical questions testing subtext and authorial perspective.`;
     } else if (subject === 'science') {
       subjectSpecificInstructions = `
 Subject Requirements for Class 10 Science (CBSE Code 086, Session 2026–27):
@@ -361,7 +404,7 @@ app.post('/api/generate-similar-question', async (req: Request, res: Response) =
     } = req.body;
 
     const normalizedSubject = String(subject || 'physics').toLowerCase();
-    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+    const validSubjects = ALL_VALID_SUBJECTS;
     if (!validSubjects.includes(normalizedSubject)) {
       return res.status(400).json({
         success: false,
@@ -633,7 +676,7 @@ app.post('/api/tutor', async (req: Request, res: Response) => {
       image,
     } = req.body;
 
-    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+    const validSubjects = ALL_VALID_SUBJECTS;
     const subject = validSubjects.includes(String(rawSubject).toLowerCase())
       ? String(rawSubject).toLowerCase()
       : 'physics';
@@ -664,9 +707,13 @@ You specialize strictly in:
 1. Mathematics (CBSE Subject Code: 041)
 2. Physics (CBSE Subject Code: 042)
 3. Chemistry (CBSE Subject Code: 043)
-4. Science (Class 10 CBSE Subject Code: 086)
-5. Social Science (Class 10 CBSE Subject Code: 087)
-6. English Language & Literature (Class 10 CBSE Subject Code: 184)
+4. Accountancy (Class 12 Commerce CBSE Subject Code: 055)
+5. Business Studies (Class 12 Commerce CBSE Subject Code: 054)
+6. Economics (Class 12 Commerce CBSE Subject Code: 030)
+7. English Core (Class 12 CBSE Subject Code: 301)
+8. Science (Class 10 CBSE Subject Code: 086)
+9. Social Science (Class 10 CBSE Subject Code: 087)
+10. English Language & Literature (Class 10 CBSE Subject Code: 184)
 
 Pedagogical Rules:
 - Deliver clear, well-structured step-by-step explanations directly aligned with the official NCERT CBSE Class ${grade} curriculum.
@@ -681,14 +728,22 @@ Pedagogical Rules:
 - For Chemistry (043) and Chemical Reactions in Science:
   * Write balanced chemical equations with state symbols and reaction conditions.
   * Clearly explain reaction mechanisms, observations (color changes, precipitates, gases).
-- For Social Science (087):
-  * Ground answers in NCERT History, Geography, Democratic Politics, and Economics facts and dates.
-- For English (184):
-  * Analyze textual themes, character sketches, poetic devices, and standard grammar rules.
+- For Accountancy (055):
+  * State relevant accounting provisions (Partnership Act 1932, Companies Act 2013 Schedule III, AS-3).
+  * Present journal entries in clean tabular form with Dr. and Cr. amounts and concise narrations.
+  * Show working notes clearly for goodwill, sacrificing ratio, revaluation, and pro-rata allotments.
+- For Business Studies (054):
+  * Ground answers in Fayol's 14 principles, Taylor's scientific techniques, the 5 management functions, and Consumer Protection Act 2019.
+  * Provide structured headings: Concept, Key Features, Real-world Corporate Application, and Board Exam Tip.
+- For Economics (030):
+  * For Macroeconomics: Show formulas (National Income, Multiplier k = 1/(1-MPC), credit creation = 1/LRR), show step-by-step calculations, and explain economic implications.
+  * For Indian Economic Development: Ground answers in historical milestones, five-year plan goals, 1991 reforms, and comparative data with China/Pakistan.
+- For English Core (301) and English (184):
+  * Analyze textual themes, character sketches, poetic devices, and standard CBSE marking rubrics.
 - Format with clean Markdown:
-  * Use bold headers for structure (e.g., ### Concept Overview, ### Step-by-Step Solution, ### Key Formula & Units, ### Common Board Trap, ### CBSE 2026–27 Examiner Tip).
-  * Use clear numbered steps for derivations or numericals.
-${language === 'hi' ? `- Language Requirement: Provide the entire response in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Hindi-medium terminology, while keeping mathematical formulas, chemical equations, and SI units intact.` : '- Language Requirement: Provide the response in clear, student-friendly English.'}
+  * Use bold headers for structure (e.g., ### Concept Overview, ### Step-by-Step Solution / Journal Entries, ### Key Principles & Formulas, ### Common Board Trap, ### CBSE 2026–27 Examiner Tip).
+  * Use clear numbered steps for derivations, numericals, or accounting entries.
+${language === 'hi' ? `- Language Requirement: Provide the entire response in clear, student-friendly Hindi (हिन्दी) using standard CBSE NCERT Hindi-medium terminology, while keeping mathematical formulas, chemical equations, accounting terms, and SI units intact.` : '- Language Requirement: Provide the response in clear, student-friendly English.'}
 - Keep explanations encouraging and academically authoritative.`;
 
     let actionPrompt = '';
@@ -812,7 +867,7 @@ app.post('/api/pdf-to-quiz', async (req: Request, res: Response) => {
       });
     }
 
-    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+    const validSubjects = ALL_VALID_SUBJECTS;
     const subject = validSubjects.includes(String(rawSubject).toLowerCase())
       ? String(rawSubject).toLowerCase()
       : 'physics';
@@ -1296,7 +1351,7 @@ app.post('/api/generate-competency', async (req: Request, res: Response) => {
       language = 'en',
     } = req.body;
 
-    const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+    const validSubjects = ALL_VALID_SUBJECTS;
     const subject = validSubjects.includes(String(rawSubject).toLowerCase())
       ? String(rawSubject).toLowerCase()
       : 'physics';

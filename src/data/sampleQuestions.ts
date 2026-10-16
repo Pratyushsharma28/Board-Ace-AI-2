@@ -1192,8 +1192,285 @@ export const CURATED_CLASS_10_QUESTIONS: Question[] = [
   }
 ];
 
+export const CURATED_CLASS_12_COMMERCE_QUESTIONS: Question[] = [
+  // ==========================================
+  // ACCOUNTANCY (055)
+  // ==========================================
+  {
+    id: 'acc-12-01',
+    subject: 'accountancy',
+    chapter: 'Accounting for Partnership Firms - Fundamentals',
+    topic: 'Interest on Partner Drawings (Average Period Method)',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'A partner in a firm withdraws ₹5,000 at the beginning of each month throughout the year. If the partnership agreement provides for interest on drawings @ 10% per annum, what is the total interest on drawings for the year?',
+    questionHi: 'एक फर्म का एक साझेदार वर्ष भर प्रत्येक माह के प्रारंभ में ₹5,000 का आहरण करता है। यदि साझेदारी विलेख में आहरण पर 10% प्रतिवर्ष की दर से ब्याज का प्रावधान है, तो वर्ष के लिए कुल आहरण पर ब्याज कितना होगा?',
+    options: ['₹3,000', '₹3,250', '₹3,500', '₹6,000'],
+    optionsHi: ['₹3,000', '₹3,250', '₹3,500', '₹6,000'],
+    correctAnswer: '₹3,250',
+    correctAnswerHi: '₹3,250',
+    explanation: 'Step-by-step calculation:\n1. Total drawings for the year = ₹5,000 × 12 = ₹60,000.\n2. When equal amounts are withdrawn at the beginning of each month, the Average Period is: (Time left after 1st drawing [12 months] + Time left after last drawing [1 month]) / 2 = 13 / 2 = 6.5 months.\n3. Interest on Drawings = Total Drawings × Rate × (Average Period / 12)\n   = ₹60,000 × (10 / 100) × (6.5 / 12) = ₹6,000 × (6.5 / 12) = ₹3,250.',
+    explanationHi: 'चरण-दर-चरण गणना:\n1. वर्ष का कुल आहरण = ₹5,000 × 12 = ₹60,000।\n2. माह के प्रारंभ में आहरण हेतु औसत अवधि = (12 + 1) / 2 = 6.5 माह।\n3. ब्याज = 60,000 × (10/100) × (6.5/12) = ₹3,250।',
+    pitfall: 'Using 6 months (which applies to the middle of the month) instead of 6.5 months for the beginning of each month.',
+    pitfallHi: 'प्रारंभ के लिए 6.5 माह के बजाय 6 माह का उपयोग करना जो कि माह के मध्य के लिए होता है।',
+    boardTip: 'Average Period Table: Beginning of each month = 6.5 months; Middle of each month = 6.0 months; End of each month = 5.5 months.',
+    boardTipHi: 'औसत अवधि: माह का प्रारंभ = 6.5 माह; मध्य = 6 माह; अंत = 5.5 माह।',
+    source: 'curated'
+  },
+  {
+    id: 'acc-12-02',
+    subject: 'accountancy',
+    chapter: 'Accounting for Share Capital',
+    topic: 'Forfeiture & Maximum Permissible Discount on Reissue',
+    grade: '12',
+    difficulty: 'hard',
+    questionType: 'mcq',
+    question: 'A company forfeited 1,000 equity shares of ₹10 each, fully called up, on which application and allotment money of ₹6 per share was received, but first and final call of ₹4 per share was unpaid. What is the MAXIMUM discount per share the company can allow on the reissue of these forfeited shares?',
+    questionHi: 'एक कंपनी ने ₹10 वाले 1,000 पूर्ण याचित समता अंशों का हरण कर लिया, जिन पर ₹6 प्रति अंश प्राप्त हो चुका था किंतु ₹4 की अंतिम मांग अप्राप्त थी। कंपनी इन जब्त अंशों के पुनर्निर्गमन पर अधिकतम कितनी छूट (Discount) प्रति अंश दे सकती है?',
+    options: ['₹4 per share', '₹6 per share', '₹10 per share', 'No discount is permitted'],
+    optionsHi: ['₹4 प्रति अंश', '₹6 प्रति अंश', '₹10 प्रति अंश', 'कोई छूट अनुमत नहीं है'],
+    correctAnswer: '₹6 per share',
+    correctAnswerHi: '₹6 प्रति अंश',
+    explanation: 'Legal & Accounting Rule (Companies Act, 2013):\nUnder corporate law and CBSE accounting principles, the maximum permissible discount on the reissue of forfeited shares CANNOT exceed the amount actually received and credited to the "Shares Forfeited Account" on those specific shares.\nHere, the amount received per share is ₹6. Therefore, the maximum allowable discount on reissue is strictly ₹6 per share (minimum reissue price = Face Value ₹10 - Maximum Discount ₹6 = ₹4 per share).',
+    explanationHi: 'कंपनियों के लेखांकन नियमानुसार, जब्त अंशों के पुनर्निर्गमन पर दी जाने वाली अधिकतम छूट उस राशि से अधिक नहीं हो सकती जो उन अंशों पर पहले ही प्राप्त हो चुकी है और शेयर जब्ती खाते में जमा है (अर्थात ₹6 प्रति अंश)।',
+    pitfall: 'Selecting ₹4 (unpaid call amount) instead of ₹6 (forfeited amount received).',
+    pitfallHi: 'अप्राप्त राशि ₹4 का चयन करना, जबकि अधिकतम छूट प्राप्त जब्त राशि ₹6 होती है।',
+    boardTip: 'Maximum Discount on Reissue = Amount already forfeited. Profit on reissue transferred to Capital Reserve = Forfeited Amount - Discount allowed on reissue.',
+    boardTipHi: 'पुनर्निर्गमन पर अधिकतम छूट = शेयर जब्ती खाते में जमा राशि।',
+    source: 'curated'
+  },
+  {
+    id: 'acc-12-03',
+    subject: 'accountancy',
+    chapter: 'Cash Flow Statement',
+    topic: 'Classification of Activities under AS-3',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Under AS-3 (Revised), which of the following is classified as a "Cash Flow from Financing Activities" for a manufacturing company?',
+    questionHi: 'AS-3 (संशोधित) के अनुसार, एक विनिर्माण कंपनी के लिए निम्नलिखित में से किसे "वित्तीय क्रियाओं से रोकड़ प्रवाह" के रूप में वर्गीकृत किया जाता है?',
+    options: [
+      'Cash payment of interim dividend on equity shares',
+      'Purchase of plant and machinery for cash',
+      'Cash receipts from sale of finished goods to customers',
+      'Interest received on fixed deposits from bank'
+    ],
+    optionsHi: [
+      'समता अंशों पर अंतरिम लाभांश का नकद भुगतान',
+      'नकद में संयंत्र और मशीनरी का क्रय',
+      'ग्राहकों को तैयार माल के विक्रय से नकद प्राप्ति',
+      'बैंक से सावधि जमा पर प्राप्त ब्याज'
+    ],
+    correctAnswer: 'Cash payment of interim dividend on equity shares',
+    correctAnswerHi: 'समता अंशों पर अंतरिम लाभांश का नकद भुगतान',
+    explanation: 'Classification under AS-3 (Revised):\n• Payment of dividend (interim or proposed) is a cost of servicing equity capital and is categorized under FINANCING ACTIVITIES.\n• Purchase of plant & machinery is an INVESTING ACTIVITY.\n• Cash received from customers is an OPERATING ACTIVITY.\n• Interest received on deposits is an INVESTING ACTIVITY for a non-financial enterprise.',
+    explanationHi: 'लाभांश का भुगतान अंश पूंजी पर प्रतिफल है अतः यह वित्तीय क्रिया (Financing Activity) का बहिर्वाह है। मशीनरी खरीदना निवेश क्रिया है तथा ग्राहकों से प्राप्ति परिचालन क्रिया है।',
+    pitfall: 'Thinking dividend paid is an operating outflow because it goes through annual accounts.',
+    pitfallHi: 'लाभांश भुगतान को परिचालन क्रिया मानना क्योंकि यह वार्षिक खातों में होता है।',
+    boardTip: 'Always remember: Dividend paid is ALWAYS a Financing Activity for all enterprises (both financial and non-financial).',
+    boardTipHi: 'लाभांश का भुगतान सदैव वित्तीय क्रिया होता है।',
+    source: 'curated'
+  },
+
+  // ==========================================
+  // BUSINESS STUDIES (054)
+  // ==========================================
+  {
+    id: 'bst-12-01',
+    subject: 'business_studies',
+    chapter: 'Principles of Management',
+    topic: 'Unity of Command vs Unity of Direction',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Henri Fayol stated that dual subordination must be avoided at all costs to prevent confusion, indiscipline, and overlapping loyalties. Which principle of management embodies this directive?',
+    questionHi: 'हेनरी फेयोल ने कहा था कि भ्रम, अनुशासनहीनता और कार्य में बाधा से बचने के लिए दोहरी अधीनता (Dual Subordination) से हर कीमत पर बचना चाहिए। कौन सा प्रबंध सिद्धांत इस नियम को प्रतिपादित करता है?',
+    options: [
+      'Unity of Command',
+      'Unity of Direction',
+      'Scalar Chain',
+      'Subordination of Individual Interest'
+    ],
+    optionsHi: [
+      'आदेश की एकता (Unity of Command)',
+      'निर्देश की एकता (Unity of Direction)',
+      'सोपान श्रृंखला (Scalar Chain)',
+      'व्यक्तिगत हित का सामान्य हित के अधीन होना'
+    ],
+    correctAnswer: 'Unity of Command',
+    correctAnswerHi: 'आदेश की एकता (Unity of Command)',
+    explanation: 'According to Henri Fayol:\n• Unity of Command states that each individual employee must receive orders from and be accountable to ONLY ONE superior boss (One Subordinate = One Superior).\n• Unity of Direction states that each group of activities having the same objective must have "One Head and One Plan".',
+    explanationHi: 'फेयोल के अनुसार आदेश की एकता का सिद्धांत यह कहता है कि एक कर्मचारी को एक समय में केवल एक ही अधिकारी से आदेश मिलने चाहिए ताकि दोहरे नियंत्रण से भ्रम उत्पन्न न हो।',
+    pitfall: 'Confusing Unity of Command (prevents dual subordination of employees) with Unity of Direction (prevents overlapping of organisational activities).',
+    pitfallHi: 'आदेश की एकता (कर्मचारी हेतु एक अधिकारी) और निर्देश की एकता (गतिविधि हेतु एक योजना) में भ्रम होना।',
+    boardTip: 'Key difference: Unity of Command affects an individual employee; Unity of Direction affects the entire organisation.',
+    boardTipHi: 'आदेश की एकता व्यक्तिगत कर्मचारी को प्रभावित करती है, निर्देश की एकता संपूर्ण संगठन को।',
+    source: 'curated'
+  },
+  {
+    id: 'bst-12-02',
+    subject: 'business_studies',
+    chapter: 'Financial Management',
+    topic: 'Trading on Equity & Financial Leverage',
+    grade: '12',
+    difficulty: 'hard',
+    questionType: 'mcq',
+    question: 'A company desires to practice "Trading on Equity" to increase its Earning Per Share (EPS). Under which condition will the use of debt capital successfully enhance EPS?',
+    questionHi: 'एक कंपनी अपने प्रति अंश अर्जन (EPS) को बढ़ाने के लिए "समता पर व्यापार" (Trading on Equity) करना चाहती है। किस परिस्थिति में ऋण पूंजी का उपयोग EPS को सफलतापूर्वक बढ़ाएगा?',
+    options: [
+      'Return on Investment (ROI) is greater than the Cost of Debt (Interest Rate)',
+      'Return on Investment (ROI) is lower than the Cost of Debt (Interest Rate)',
+      'The company has no tax liability (Tax Rate is 0%)',
+      'Debt capital is completely eliminated from the capital structure'
+    ],
+    optionsHi: [
+      'निवेश पर प्रतिफल (ROI) ऋण की लागत (ब्याज दर) से अधिक हो',
+      'निवेश पर प्रतिफल (ROI) ऋण की लागत (ब्याज दर) से कम हो',
+      'कंपनी पर कोई कर दायित्व न हो (कर की दर 0% हो)',
+      'पूंजी संरचना से ऋण को पूरी तरह समाप्त कर दिया जाए'
+    ],
+    correctAnswer: 'Return on Investment (ROI) is greater than the Cost of Debt (Interest Rate)',
+    correctAnswerHi: 'निवेश पर प्रतिफल (ROI) ऋण की लागत (ब्याज दर) से अधिक हो',
+    explanation: 'Trading on equity is advantageous and creates positive financial leverage ONLY when the firm earns more on its invested capital than it pays in interest on borrowed debt: ROI > Rate of Interest.\nIn this situation, the excess return earned on debt funds belongs to the equity shareholders, thereby magnifying the EPS.',
+    explanationHi: 'समता पर व्यापार तभी लाभकारी होता है जब निवेश पर प्रतिफल (ROI) ऋण पर देय ब्याज दर से अधिक हो। इस स्थिति में ऋण से अर्जित अतिरिक्त लाभ समता अंशधारकों को मिलता है जिससे EPS बढ़ जाता है।',
+    pitfall: 'Assuming high debt always increases EPS regardless of project earning performance.',
+    pitfallHi: 'यह मान लेना कि अधिक ऋण हमेशा EPS बढ़ाएगा, भले ही कंपनी की कमाई की दर कम हो।',
+    boardTip: 'Condition to memorize: Favourable Financial Leverage = ROI > Cost of Debt. Unfavourable Financial Leverage = ROI < Cost of Debt.',
+    boardTipHi: 'अनुकूल वित्तीय लीवरेज: ROI > ब्याज दर। प्रतिकूल वित्तीय लीवरेज: ROI < ब्याज दर।',
+    source: 'curated'
+  },
+
+  // ==========================================
+  // ECONOMICS (030)
+  // ==========================================
+  {
+    id: 'eco-12-01',
+    subject: 'economics',
+    chapter: 'National Income and Related Aggregates',
+    topic: 'Factor Income vs Transfer Receipts',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Which of the following transactions is INCLUDED in the estimation of the Domestic Product of India?',
+    questionHi: 'निम्नलिखित में से कौन सा लेनदेन भारत के घरेलू उत्पाद के अनुमान में शामिल किया जाता है?',
+    options: [
+      'Compensation of employees received by Indian residents working in the Russian Embassy in New Delhi',
+      'Brokerage paid by an investor on buying second-hand shares in the stock market',
+      'Financial aid received by flood victims from the Prime Minister’s Relief Fund',
+      'Old-age pension disbursed by the state government to retired senior citizens'
+    ],
+    optionsHi: [
+      'नई दिल्ली स्थित रूसी दूतावास में कार्यरत भारतीय नागरिकों का पारिश्रमिक',
+      'शेयर बाजार में पुराने शेयरों की खरीद पर निवेशक द्वारा दिया गया ब्रोकरेज (दलाली)',
+      'बाढ़ पीड़ितों को प्रधानमंत्री राहत कोष से प्राप्त आर्थिक सहायता',
+      'राज्य सरकार द्वारा वरिष्ठ नागरिकों को दी जाने वाली वृद्धावस्था पेंशन'
+    ],
+    correctAnswer: 'Brokerage paid by an investor on buying second-hand shares in the stock market',
+    correctAnswerHi: 'शेयर बाजार में पुराने शेयरों की खरीद पर निवेशक द्वारा दिया गया ब्रोकरेज (दलाली)',
+    explanation: 'Economic Rationale:\n• Brokerage paid on second-hand shares is remuneration for productive factor services rendered by the stockbroker during the current year, and is therefore included in National and Domestic Income.\n• Old-age pension and flood relief are unrequited transfer payments without output and are excluded.\n• The Russian Embassy in New Delhi is part of the domestic territory of Russia, NOT the domestic territory of India.',
+    explanationHi: 'ब्रोकरेज वर्तमान लेखा वर्ष में ब्रोकर द्वारा दी गई उत्पादक सेवा का प्रतिफल है, अतः इसे शामिल किया जाता है। वृद्धावस्था पेंशन और राहत कोष हस्तांतरण भुगतान हैं तथा रूसी दूतावास रूस का घरेलू क्षेत्र है।',
+    pitfall: 'Assuming the Russian Embassy located in New Delhi is part of India’s domestic territory. Embassies belong to the political territory of the country they represent.',
+    pitfallHi: 'नई दिल्ली स्थित विदेशी दूतावास को भारत का घरेलू क्षेत्र समझना। दूतावास अपने मूल देश का क्षेत्र होते हैं।',
+    boardTip: 'Core Distinction: Transfer Income is unearned (excluded); Factor Income is earned for production (included).',
+    boardTipHi: 'हस्तांतरण आय शामिल नहीं होती; साधन आय शामिल होती है।',
+    source: 'curated'
+  },
+  {
+    id: 'eco-12-02',
+    subject: 'economics',
+    chapter: 'Money and Banking',
+    topic: 'Credit Creation & Legal Reserve Ratio',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'If the Legal Reserve Ratio (LRR) is fixed by the Central Bank at 12.5%, what will be the total money (deposit) creation in the banking system if an initial fresh cash deposit of ₹20,000 is made?',
+    questionHi: 'यदि केंद्रीय बैंक द्वारा वैधानिक तरलता अनुपात (LRR) 12.5% निर्धारित किया जाता है, तो ₹20,000 की प्रारंभिक नकद जमा से बैंकिंग प्रणाली में कुल कितना साख (जमा) सृजन होगा?',
+    options: ['₹1,60,000', '₹2,50,000', '₹80,000', '₹2,00,000'],
+    optionsHi: ['₹1,60,000', '₹2,50,000', '₹80,000', '₹2,00,000'],
+    correctAnswer: '₹1,60,000',
+    correctAnswerHi: '₹1,60,000',
+    explanation: 'Step-by-step formula:\n1. Money Multiplier (k) = 1 / LRR = 1 / 0.125 = 8.\n2. Total Deposit Creation = Initial Primary Deposit × Money Multiplier\n   = ₹20,000 × 8 = ₹1,60,000.\nCommercial banks can safely lend ₹1,40,000 while retaining ₹20,000 (12.5%) as legal reserves.',
+    explanationHi: 'गणना:\n1. साख गुणक = 1 / LRR = 1 / 0.125 = 8।\n2. कुल जमा सृजन = प्रारंभिक जमा × गुणक = 20,000 × 8 = ₹1,60,000।',
+    pitfall: 'Calculating 1 / 12.5 = 0.08 instead of converting percentage 12.5% = 0.125 (1 / 0.125 = 8).',
+    pitfallHi: '12.5% को दशमलव 0.125 में बदलने में चूक करना।',
+    boardTip: 'Money Multiplier formula: k = 1 / LRR. Note that LRR = CRR + SLR.',
+    boardTipHi: 'साख गुणक सूत्र: k = 1 / LRR (जहाँ LRR = CRR + SLR)।',
+    source: 'curated'
+  },
+
+  // ==========================================
+  // ENGLISH CORE (301)
+  // ==========================================
+  {
+    id: 'eng-12-01',
+    subject: 'english_core',
+    chapter: 'The Last Lesson',
+    topic: 'M. Hamel’s Speech on the French Language',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In Alphonse Daudet’s "The Last Lesson", why did M. Hamel implore the villagers to guard the French language among themselves and never forget it?',
+    questionHi: 'अल्फोंस डोडेट की कहानी "द लास्ट लेसन" में, एम. हेमेल ने ग्रामीणों से फ्रांसीसी भाषा को सुरक्षित रखने और इसे कभी न भूलने का आग्रह क्यों किया?',
+    options: [
+      'Because when a people are enslaved, as long as they hold fast to their language it is as if they had the key to their prison',
+      'Because French was the only language permitted for trade in the European Union',
+      'Because the Prussian rulers had promised higher wages to fluent French speakers',
+      'Because he wanted to sell his grammar textbooks before retiring to Paris'
+    ],
+    optionsHi: [
+      'क्योंकि जब कोई राष्ट्र गुलाम बनता है, तो जब तक वे अपनी भाषा को थामे रहते हैं, मानो उनके पास अपने बंदीगृह की चाबी हो',
+      'क्योंकि यूरोपीय संघ में व्यापार के लिए केवल फ्रांसीसी भाषा ही मान्य थी',
+      'क्योंकि प्रशिया के शासकों ने धाराप्रवाह फ्रेंच बोलने वालों को अधिक वेतन देने का वादा किया था',
+      'क्योंकि वह पेरिस जाने से पहले अपनी व्याकरण की किताबें बेचना चाहते थे'
+    ],
+    correctAnswer: 'Because when a people are enslaved, as long as they hold fast to their language it is as if they had the key to their prison',
+    correctAnswerHi: 'क्योंकि जब कोई राष्ट्र गुलाम बनता है, तो जब तक वे अपनी भाषा को थामे रहते हैं, मानो उनके पास अपने बंदीगृह की चाबी हो',
+    explanation: 'M. Hamel called French the most beautiful, clearest, and most logical language in the world. He passionately advised them to guard it, stating: "...when a people are enslaved, as long as they hold fast to their language it is as if they had the key to their prison." He wrote "Vive La France!" in large letters on the blackboard as an enduring symbol of patriotic defiance.',
+    explanationHi: 'एम. हेमेल ने फ्रेंच को दुनिया की सबसे सुंदर और तार्किक भाषा बताया तथा कहा कि जब किसी जाति को गुलाम बनाया जाता है, तो जब तक वे अपनी मातृभाषा से जुड़े रहते हैं, मानो उनके पास अपनी जेल की चाबी होती है।',
+    pitfall: 'Selecting pragmatic economic reasons (trade/wages) instead of the deep political and emotional metaphor of linguistic identity as the key to freedom.',
+    pitfallHi: 'व्यावसायिक कारणों को चुनना जबकि यह मातृभाषा और सांस्कृतिक पहचान का दार्शनिक प्रतीक है।',
+    boardTip: 'Direct quote to memorize for Class 12 English Section C: "key to their prison".',
+    boardTipHi: 'बोर्ड परीक्षा हेतु प्रमुख उद्धरण: "key to their prison" (बंदीगृह की चाबी)।',
+    source: 'curated'
+  },
+  {
+    id: 'eng-12-02',
+    subject: 'english_core',
+    chapter: 'Deep Water',
+    topic: 'Psychological Overcoming of Phobia & Roosevelt’s Quote',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In "Deep Water", William Douglas cites President Franklin D. Roosevelt’s famous words to encapsulate his profound psychological realization. What was the quote?',
+    questionHi: '"डीप वॉटर" में, विलियम डगलस अपने गहन मनोवैज्ञानिक अनुभव को व्यक्त करने के लिए राष्ट्रपति फ्रैंकलिन डी. रूजवेल्ट के किस प्रसिद्ध कथन का उल्लेख करते हैं?',
+    options: [
+      '"All we have to fear is fear itself"',
+      '"The only limit to our realization of tomorrow will be our doubts of today"',
+      '"Courage is resistance to fear, mastery of fear, not absence of fear"',
+      '"Peace is not absence of conflict, it is the ability to handle conflict"'
+    ],
+    optionsHi: [
+      '"हमे केवल भय से ही डरना है (All we have to fear is fear itself)"',
+      '"कल की हमारी उपलब्धि की एकमात्र सीमा आज के हमारे संदेह होंगे"',
+      '"साहस भय का अभाव नहीं, बल्कि भय पर विजय है"',
+      '"शांति संघर्ष का अभाव नहीं, बल्कि संघर्ष को संभालने की क्षमता है"'
+    ],
+    correctAnswer: '"All we have to fear is fear itself"',
+    correctAnswerHi: '"हमे केवल भय से ही डरना है (All we have to fear is fear itself)"',
+    explanation: 'William Douglas states that Roosevelt knew what he was talking about when he said: "All we have to fear is fear itself." Having experienced both the sensation of dying and the terror that the fear of death produces, Douglas realized that death itself is peaceful; the agonizing terror lies only in the anticipation and fear of it.',
+    explanationHi: 'डगलस ने रूजवेल्ट के इस कथन का उल्लेख किया कि "हमे केवल भय से ही डरना है।" मृत्यु में शांति है, सारा आतंक केवल मृत्यु के भय में होता है।',
+    pitfall: 'Confusing Roosevelt’s statement with Mark Twain’s or Nelson Mandela’s quotes on courage.',
+    pitfallHi: 'रूजवेल्ट के कथन को नेल्सन मंडेला के साहस संबंधी कथन से मिला देना।',
+    boardTip: 'CBSE 2-mark question regular: "What did Roosevelt say about fear, and how did Douglas prove it?"',
+    boardTipHi: 'रूजवेल्ट का उद्धरण: "All we have to fear is fear itself।"',
+    source: 'curated'
+  }
+];
+
 export const CURATED_BOARD_QUESTIONS: Question[] = [
   ...CURATED_CLASS_12_QUESTIONS,
+  ...CURATED_CLASS_12_COMMERCE_QUESTIONS,
   ...CURATED_CLASS_10_QUESTIONS,
 ];
 

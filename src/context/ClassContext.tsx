@@ -1,18 +1,24 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GradeClass, SubjectId, SubjectInfo } from '../types/quiz';
-import { getSubjectsForGrade, CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { GradeClass, StreamType, SubjectId, SubjectInfo } from '../types/quiz';
+import { getSubjectsForGrade, CBSE_CLASS_12_SCIENCE_SUBJECTS } from '../data/syllabus';
 
 const SELECTED_GRADE_KEY = 'boardace_selected_grade';
+const SELECTED_STREAM_KEY = 'boardace_selected_stream';
 
 interface ClassContextType {
   grade: GradeClass;
   setGrade: (grade: GradeClass) => void;
+  stream: StreamType;
+  setStream: (stream: StreamType) => void;
   subjects: SubjectInfo[];
   currentSubjectId: SubjectId;
   setCurrentSubjectId: (id: SubjectId) => void;
   isClass10: boolean;
   isClass12: boolean;
+  isScience: boolean;
+  isCommerce: boolean;
   gradeLabel: string;
+  streamLabel: string;
 }
 
 const ClassContext = createContext<ClassContextType | undefined>(undefined);
@@ -28,45 +34,72 @@ export const ClassProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   });
 
-  const subjects = getSubjectsForGrade(grade);
+  const [stream, setStreamState] = useState<StreamType>(() => {
+    try {
+      const stored = localStorage.getItem(SELECTED_STREAM_KEY);
+      if (stored === 'commerce' || stored === 'science') return stored;
+      return 'science';
+    } catch {
+      return 'science';
+    }
+  });
+
+  const subjects = getSubjectsForGrade(grade, stream);
   const [currentSubjectId, setCurrentSubjectId] = useState<SubjectId>(() => {
     return subjects[0]?.id || 'mathematics';
   });
 
-  // Ensure currentSubjectId is valid for the current grade
+  // Ensure currentSubjectId is valid for the current grade & stream
   useEffect(() => {
     const validSubjectIds = subjects.map(s => s.id);
     if (!validSubjectIds.includes(currentSubjectId)) {
       setCurrentSubjectId(subjects[0]?.id || 'mathematics');
     }
-  }, [grade, subjects, currentSubjectId]);
+  }, [grade, stream, subjects, currentSubjectId]);
 
   const setGrade = (newGrade: GradeClass) => {
     setGradeState(newGrade);
     try {
       localStorage.setItem(SELECTED_GRADE_KEY, newGrade);
-      // Dispatch storage event for other components if needed
       window.dispatchEvent(new Event('boardace_grade_change'));
     } catch (e) {
       console.error('Failed to save selected grade to localStorage', e);
     }
   };
 
+  const setStream = (newStream: StreamType) => {
+    setStreamState(newStream);
+    try {
+      localStorage.setItem(SELECTED_STREAM_KEY, newStream);
+      window.dispatchEvent(new Event('boardace_stream_change'));
+    } catch (e) {
+      console.error('Failed to save selected stream to localStorage', e);
+    }
+  };
+
   const isClass10 = grade === '10';
   const isClass12 = grade === '12';
+  const isScience = isClass12 && stream === 'science';
+  const isCommerce = isClass12 && stream === 'commerce';
   const gradeLabel = isClass10 ? 'CBSE Class 10' : 'CBSE Class 12';
+  const streamLabel = stream === 'commerce' ? 'Commerce' : 'Science';
 
   return (
     <ClassContext.Provider
       value={{
         grade,
         setGrade,
+        stream,
+        setStream,
         subjects,
         currentSubjectId,
         setCurrentSubjectId,
         isClass10,
         isClass12,
+        isScience,
+        isCommerce,
         gradeLabel,
+        streamLabel,
       }}
     >
       {children}
@@ -81,13 +114,19 @@ export const useClass = (): ClassContextType => {
     return {
       grade: '12',
       setGrade: () => {},
-      subjects: CBSE_CLASS_12_SUBJECTS,
+      stream: 'science',
+      setStream: () => {},
+      subjects: CBSE_CLASS_12_SCIENCE_SUBJECTS,
       currentSubjectId: 'mathematics',
       setCurrentSubjectId: () => {},
       isClass10: false,
       isClass12: true,
+      isScience: true,
+      isCommerce: false,
       gradeLabel: 'CBSE Class 12',
+      streamLabel: 'Science',
     };
   }
   return context;
 };
+

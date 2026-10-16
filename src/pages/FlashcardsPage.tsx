@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import { CBSE_FLASHCARDS, Flashcard } from '../data/flashcardsData';
 import { SubjectId } from '../types/quiz';
 import {
@@ -18,13 +18,22 @@ import {
 const STORAGE_KEY = 'boardace_flashcards_mastery_v1';
 
 export const FlashcardsPage: React.FC = () => {
-  const { language, t } = useLanguage();
+  const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass12, gradeLabel } = useClass();
 
   const [selectedSubject, setSelectedSubject] = useState<'all' | SubjectId>('all');
   const [selectedChapter, setSelectedChapter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+
+  // Sync selectedSubject if it's no longer in subjects list
+  useEffect(() => {
+    if (selectedSubject !== 'all' && !subjects.some(s => s.id === selectedSubject)) {
+      setSelectedSubject('all');
+      setSelectedChapter('all');
+    }
+  }, [grade, stream, subjects]);
 
   // Mastered card IDs tracked in localStorage
   const [masteredIds, setMasteredIds] = useState<string[]>(() => {
@@ -48,7 +57,11 @@ export const FlashcardsPage: React.FC = () => {
 
   // Filter cards
   const filteredCards = useMemo(() => {
+    const validSubjectIds = subjects.map((s) => s.id);
     return CBSE_FLASHCARDS.filter((card) => {
+      // Must be a subject in the current grade/stream
+      if (!validSubjectIds.includes(card.subject)) return false;
+
       if (selectedSubject !== 'all' && card.subject !== selectedSubject) return false;
       if (selectedChapter !== 'all' && card.chapter !== selectedChapter) return false;
       if (searchQuery.trim()) {
@@ -60,18 +73,20 @@ export const FlashcardsPage: React.FC = () => {
       }
       return true;
     });
-  }, [selectedSubject, selectedChapter, searchQuery]);
+  }, [selectedSubject, selectedChapter, searchQuery, subjects]);
 
-  // Available chapters for the selected subject
+  // Available chapters for the selected subject (within current stream)
   const availableChapters = useMemo(() => {
+    const validSubjectIds = subjects.map((s) => s.id);
     const list = new Set<string>();
     CBSE_FLASHCARDS.forEach((card) => {
+      if (!validSubjectIds.includes(card.subject)) return;
       if (selectedSubject === 'all' || card.subject === selectedSubject) {
         list.add(card.chapter);
       }
     });
     return Array.from(list);
-  }, [selectedSubject]);
+  }, [selectedSubject, subjects]);
 
   // Reset index if out of bounds
   useEffect(() => {
@@ -128,29 +143,66 @@ export const FlashcardsPage: React.FC = () => {
 
       {/* Filter Bar */}
       <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-xs">
-        {/* Subject Segmented Control */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          {[
-            { id: 'all', label: language === 'hi' ? 'सभी विषय' : 'All Subjects' },
-            { id: 'mathematics', label: language === 'hi' ? 'गणित' : 'Mathematics' },
-            { id: 'physics', label: language === 'hi' ? 'भौतिकी' : 'Physics' },
-            { id: 'chemistry', label: language === 'hi' ? 'रसायन विज्ञान' : 'Chemistry' },
-          ].map((sub) => (
-            <button
-              key={sub.id}
-              onClick={() => {
-                setSelectedSubject(sub.id as any);
-                setSelectedChapter('all');
-              }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                selectedSubject === sub.id
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              {sub.label}
-            </button>
-          ))}
+        {/* Stream and Subject Selection */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Subject Segmented Control */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {[
+              { id: 'all', label: language === 'hi' ? 'सभी विषय' : 'All Subjects' },
+              ...subjects.map(s => ({ id: s.id, label: translateSubject(s.id) }))
+            ].map((sub) => (
+              <button
+                key={sub.id}
+                onClick={() => {
+                  setSelectedSubject(sub.id as any);
+                  setSelectedChapter('all');
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedSubject === sub.id
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                {sub.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Stream Switcher for Class 12 */}
+          {isClass12 && (
+            <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setStream('science');
+                  setSelectedSubject('all');
+                  setSelectedChapter('all');
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'science'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'साइंस' : 'Science'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStream('commerce');
+                  setSelectedSubject('all');
+                  setSelectedChapter('all');
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'commerce'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Chapter & Search in 2 columns */}
