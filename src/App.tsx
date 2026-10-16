@@ -40,6 +40,10 @@ import { MistakeNotebookPage } from './pages/MistakeNotebookPage';
 import { FocusModePage } from './pages/FocusModePage';
 import { ChapterTrackerPage } from './pages/ChapterTrackerPage';
 
+// CBSE PYQ Hub and Competency-Based Practice Pages
+import { PyqHubPage } from './pages/PyqHubPage';
+import { CompetencyPracticePage } from './pages/CompetencyPracticePage';
+
 export default function App() {
   return (
     <ThemeProvider>
@@ -84,6 +88,10 @@ export default function App() {
               <Route path="mistake-notebook" element={<MistakeNotebookPage />} />
               <Route path="focus-mode" element={<FocusModePage />} />
               <Route path="chapter-tracker" element={<ChapterTrackerPage />} />
+
+              {/* CBSE PYQ Hub & Competency-Based Practice */}
+              <Route path="pyq-hub" element={<PyqHubPage />} />
+              <Route path="competency-practice" element={<CompetencyPracticePage />} />
 
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

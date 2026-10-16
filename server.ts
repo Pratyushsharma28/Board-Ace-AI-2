@@ -1281,6 +1281,8 @@ ${language === 'hi' ? `Language Requirement: Generate question paper, instructio
       error: friendlyError,
     });
   }
+});
+
 // Endpoint 5: CBSE Competency-Based Practice Generator (NEP 2020 & CBSE 2026-27 Guidelines)
 app.post('/api/generate-competency', async (req: Request, res: Response) => {
   try {
