@@ -1,18 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GradeClass, StreamType, SubjectId, SubjectInfo } from '../types/quiz';
+import { GradeClass, StreamType, SubjectId, SubjectInfo, AcademicTrackId, getAcademicTrackId } from '../types/quiz';
 import { getSubjectsForGrade, CBSE_CLASS_12_SCIENCE_SUBJECTS } from '../data/syllabus';
 
 const SELECTED_GRADE_KEY = 'boardace_selected_grade';
 const SELECTED_STREAM_KEY = 'boardace_selected_stream';
 
-interface ClassContextType {
+export interface ClassContextType {
   grade: GradeClass;
   setGrade: (grade: GradeClass) => void;
   stream: StreamType;
   setStream: (stream: StreamType) => void;
+  academicTrackId: AcademicTrackId;
+  academicSession: string;
   subjects: SubjectInfo[];
   currentSubjectId: SubjectId;
   setCurrentSubjectId: (id: SubjectId) => void;
+  currentChapter: string;
+  setCurrentChapter: (chapter: string) => void;
   isClass10: boolean;
   isClass12: boolean;
   isScience: boolean;
@@ -48,17 +52,20 @@ export const ClassProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentSubjectId, setCurrentSubjectId] = useState<SubjectId>(() => {
     return subjects[0]?.id || 'mathematics';
   });
+  const [currentChapter, setCurrentChapter] = useState<string>('all');
 
   // Ensure currentSubjectId is valid for the current grade & stream
   useEffect(() => {
     const validSubjectIds = subjects.map(s => s.id);
     if (!validSubjectIds.includes(currentSubjectId)) {
       setCurrentSubjectId(subjects[0]?.id || 'mathematics');
+      setCurrentChapter('all');
     }
   }, [grade, stream, subjects, currentSubjectId]);
 
   const setGrade = (newGrade: GradeClass) => {
     setGradeState(newGrade);
+    setCurrentChapter('all');
     try {
       localStorage.setItem(SELECTED_GRADE_KEY, newGrade);
       window.dispatchEvent(new Event('boardace_grade_change'));
@@ -69,6 +76,7 @@ export const ClassProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const setStream = (newStream: StreamType) => {
     setStreamState(newStream);
+    setCurrentChapter('all');
     try {
       localStorage.setItem(SELECTED_STREAM_KEY, newStream);
       window.dispatchEvent(new Event('boardace_stream_change'));
@@ -83,6 +91,8 @@ export const ClassProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const isCommerce = isClass12 && stream === 'commerce';
   const gradeLabel = isClass10 ? 'CBSE Class 10' : 'CBSE Class 12';
   const streamLabel = stream === 'commerce' ? 'Commerce' : 'Science';
+  const academicTrackId = getAcademicTrackId(grade, stream);
+  const academicSession = '2026–27';
 
   return (
     <ClassContext.Provider
@@ -91,9 +101,13 @@ export const ClassProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setGrade,
         stream,
         setStream,
+        academicTrackId,
+        academicSession,
         subjects,
         currentSubjectId,
         setCurrentSubjectId,
+        currentChapter,
+        setCurrentChapter,
         isClass10,
         isClass12,
         isScience,
@@ -116,9 +130,13 @@ export const useClass = (): ClassContextType => {
       setGrade: () => {},
       stream: 'science',
       setStream: () => {},
+      academicTrackId: 'class12_science',
+      academicSession: '2026–27',
       subjects: CBSE_CLASS_12_SCIENCE_SUBJECTS,
       currentSubjectId: 'mathematics',
       setCurrentSubjectId: () => {},
+      currentChapter: 'all',
+      setCurrentChapter: () => {},
       isClass10: false,
       isClass12: true,
       isScience: true,
@@ -129,4 +147,5 @@ export const useClass = (): ClassContextType => {
   }
   return context;
 };
+
 

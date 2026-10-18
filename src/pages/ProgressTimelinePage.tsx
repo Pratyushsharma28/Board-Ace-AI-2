@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import { getSavedAttempts, calculateAnalytics } from '../utils/storage';
 import { getRevisionItems } from '../utils/revisionEngine';
 import { SubjectId, QuizAttempt } from '../types/quiz';
@@ -29,6 +30,7 @@ interface Milestone {
 
 export const ProgressTimelinePage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass12, gradeLabel, streamLabel } = useClass();
 
   const attempts: QuizAttempt[] = useMemo(() => getSavedAttempts(), []);
   const revItems = useMemo(() => getRevisionItems(), []);
@@ -43,13 +45,13 @@ export const ProgressTimelinePage: React.FC = () => {
     );
   }, [attempts]);
 
-  // Real Subject trajectory (Early vs Recent)
+  // Real Subject trajectory for current stream subjects (Early vs Recent)
   const subjectTrajectories = useMemo(() => {
-    return (['mathematics', 'physics', 'chemistry'] as SubjectId[]).map((subj) => {
-      const subjAttempts = attempts.filter((a) => a.quizConfig?.subject === subj);
+    return subjects.map((subj) => {
+      const subjAttempts = attempts.filter((a) => a.quizConfig?.subject === subj.id);
       if (subjAttempts.length === 0) {
         return {
-          subject: subj,
+          subject: subj.id,
           totalAttempts: 0,
           currentAccuracy: 0,
           growthRate: 0,
@@ -73,14 +75,14 @@ export const ProgressTimelinePage: React.FC = () => {
       }
 
       return {
-        subject: subj,
+        subject: subj.id,
         totalAttempts: subjAttempts.length,
         currentAccuracy: overallAcc,
         growthRate: growth,
         status: growth >= 0 ? `+${growth}% trajectory` : `${growth}% trajectory`,
       };
     });
-  }, [attempts]);
+  }, [subjects, attempts]);
 
   // Derived Real Milestones based on actual stored student data
   const milestones = useMemo<Milestone[]>(() => {
@@ -147,13 +149,42 @@ export const ProgressTimelinePage: React.FC = () => {
           </p>
         </div>
 
-        <Link
-          to="/analytics"
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors"
-        >
-          <span>{language === 'hi' ? 'पूर्ण विश्लेषण' : 'Analytics View'}</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        <div className="flex items-center gap-2">
+          {isClass12 && (
+            <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold shrink-0">
+              <button
+                type="button"
+                onClick={() => setStream('science')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'science'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'साइंस' : 'Science'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStream('commerce')}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'commerce'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+              </button>
+            </div>
+          )}
+
+          <Link
+            to="/analytics"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors"
+          >
+            <span>{language === 'hi' ? 'पूर्ण विश्लेषण' : 'Analytics View'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </div>
 
       {!hasData ? (

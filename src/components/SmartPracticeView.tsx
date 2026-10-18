@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { SubjectId, Question, SmartPracticeRecommendation, DifficultyLevel } from '../types/quiz';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import {
   generateSmartRecommendations,
   analyzeStudentPerformance,
@@ -39,6 +40,7 @@ export const SmartPracticeView: React.FC<SmartPracticeViewProps> = ({
   onNavigateHome,
 }) => {
   const { language, t, translateSubject, translateChapter } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass12 } = useClass();
   const attempts = useMemo(() => getSavedAttempts(), []);
 
   // Performance Analysis
@@ -174,19 +176,46 @@ export const SmartPracticeView: React.FC<SmartPracticeViewProps> = ({
           >
             {t.smartPractice.allSubjects}
           </button>
-          {(['mathematics', 'physics', 'chemistry'] as SubjectId[]).map(s => (
+          {subjects.map((s) => (
             <button
-              key={s}
-              onClick={() => handleSubjectChange(s)}
+              key={s.id}
+              onClick={() => handleSubjectChange(s.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                selectedSubject === s
+                selectedSubject === s.id
                   ? 'bg-indigo-600 text-white shadow-xs'
                   : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
               }`}
             >
-              {translateSubject(s)}
+              {translateSubject(s.id)}
             </button>
           ))}
+
+          {isClass12 && (
+            <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-bold ml-1">
+              <button
+                type="button"
+                onClick={() => setStream('science')}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'science'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'साइंस' : 'Science'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setStream('commerce')}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'commerce'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Difficulty Filter & Adaptive Step-Up Toggle */}

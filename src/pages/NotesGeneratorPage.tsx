@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { SubjectId } from '../types/quiz';
 import {
   FileText,
@@ -172,11 +172,22 @@ const PRESET_NOTES: Partial<Record<SubjectId, Record<string, Partial<ChapterNote
 
 export const NotesGeneratorPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass12, gradeLabel } = useClass();
 
-  const [selectedSubject, setSelectedSubject] = useState<SubjectId>('physics');
+  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(() => subjects[0]?.id || 'accountancy');
   const [selectedChapter, setSelectedChapter] = useState<string>(
-    CBSE_CLASS_12_SUBJECTS.find((s) => s.id === 'physics')?.chapters[0].name || 'Electric Charges and Fields'
+    () => subjects[0]?.chapters[0]?.name || 'Accounting for Partnership Firms - Fundamentals'
   );
+
+  // Sync selectedSubject if it's no longer in subjects
+  React.useEffect(() => {
+    if (!subjects.some((s) => s.id === selectedSubject)) {
+      const nextSub = subjects[0]?.id || 'accountancy';
+      setSelectedSubject(nextSub);
+      const subObj = subjects.find((s) => s.id === nextSub);
+      setSelectedChapter(subObj?.chapters[0]?.name || '');
+    }
+  }, [grade, stream, subjects]);
 
   const [activeTab, setActiveTab] = useState<'generate' | 'saved'>('generate');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -195,13 +206,13 @@ export const NotesGeneratorPage: React.FC = () => {
   });
 
   const availableChapters = useMemo(() => {
-    const s = CBSE_CLASS_12_SUBJECTS.find((sub) => sub.id === selectedSubject);
+    const s = subjects.find((sub) => sub.id === selectedSubject);
     return s ? s.chapters.map((c) => c.name) : [];
-  }, [selectedSubject]);
+  }, [subjects, selectedSubject]);
 
   const handleSubjectChange = (sub: SubjectId) => {
     setSelectedSubject(sub);
-    const s = CBSE_CLASS_12_SUBJECTS.find((item) => item.id === sub);
+    const s = subjects.find((item) => item.id === sub);
     if (s && s.chapters.length > 0) {
       setSelectedChapter(s.chapters[0].name);
     }
@@ -443,22 +454,50 @@ export const NotesGeneratorPage: React.FC = () => {
           <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6">
             {/* Subject Selector */}
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                1. {language === 'hi' ? 'विषय चुनें' : 'Select Subject:'}
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                {(['physics', 'chemistry', 'mathematics'] as const).map((sub) => (
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  1. {language === 'hi' ? 'विषय चुनें' : 'Select Subject:'}
+                </label>
+                {isClass12 && (
+                  <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setStream('science')}
+                      className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                        stream === 'science'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                      }`}
+                    >
+                      {language === 'hi' ? 'साइंस' : 'Science'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStream('commerce')}
+                      className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                        stream === 'commerce'
+                          ? 'bg-amber-600 text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                      }`}
+                    >
+                      {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2.5">
+                {subjects.map((sub) => (
                   <button
-                    key={sub}
+                    key={sub.id}
                     type="button"
-                    onClick={() => handleSubjectChange(sub)}
-                    className={`py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
-                      selectedSubject === sub
+                    onClick={() => handleSubjectChange(sub.id)}
+                    className={`py-2.5 px-4 rounded-2xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+                      selectedSubject === sub.id
                         ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 dark:shadow-none'
                         : 'bg-slate-50/70 dark:bg-slate-800/50 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300'
                     }`}
                   >
-                    {translateSubject(sub)}
+                    {translateSubject(sub.id)}
                   </button>
                 ))}
               </div>

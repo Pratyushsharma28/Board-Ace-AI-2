@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { getSavedAttempts, calculateAnalytics } from '../utils/storage';
 import { SubjectId } from '../types/quiz';
 import {

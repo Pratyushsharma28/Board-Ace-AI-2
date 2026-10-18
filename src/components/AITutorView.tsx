@@ -391,41 +391,72 @@ export const AITutorView: React.FC<AITutorViewProps> = ({
           <div className="lg:col-span-8 space-y-4">
             {/* Subject Selector Bar */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/90 dark:border-slate-700 p-3 sm:p-4 shadow-xs flex flex-wrap items-center justify-between gap-3 transition-colors">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
                 <span>{t.tutor.subjectLabel}:</span>
-                <div className="flex items-center gap-1.5">
-                  {(
-                    [
-                      { id: 'mathematics', label: t.tutor.mathsOption, icon: <Calculator className="w-3.5 h-3.5" /> },
-                      { id: 'physics', label: t.tutor.physicsOption, icon: <Atom className="w-3.5 h-3.5" /> },
-                      { id: 'chemistry', label: t.tutor.chemistryOption, icon: <FlaskConical className="w-3.5 h-3.5" /> },
-                    ] as const
-                  ).map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => setSelectedSubject(s.id)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                        selectedSubject === s.id
-                          ? 'bg-indigo-600 text-white shadow-xs'
-                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                      }`}
-                    >
-                      {s.icon}
-                      <span>{s.label}</span>
-                    </button>
-                  ))}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {subjects.map((s) => {
+                    let IconComponent = BookOpen;
+                    if (s.id === 'mathematics' || s.id === 'accountancy') IconComponent = Calculator;
+                    else if (s.id === 'physics') IconComponent = Atom;
+                    else if (s.id === 'chemistry') IconComponent = FlaskConical;
+                    else if (s.id === 'business_studies' || s.id === 'economics') IconComponent = Sparkles;
+
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => setSelectedSubject(s.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                          selectedSubject === s.id
+                            ? 'bg-indigo-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                        }`}
+                      >
+                        <IconComponent className="w-3.5 h-3.5" />
+                        <span>{translateSubject(s.id)}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {messages.length > 0 && (
-                <button
-                  onClick={handleClearConversation}
-                  className="px-2.5 py-1 text-xs font-semibold text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>{t.tutor.clearChatBtn}</span>
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {isClass12 && (
+                  <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setStream('science')}
+                      className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                        stream === 'science'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                      }`}
+                    >
+                      {language === 'hi' ? 'साइंस' : 'Science'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStream('commerce')}
+                      className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                        stream === 'commerce'
+                          ? 'bg-amber-600 text-white shadow-xs'
+                          : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                      }`}
+                    >
+                      {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+                    </button>
+                  </div>
+                )}
+
+                {messages.length > 0 && (
+                  <button
+                    onClick={handleClearConversation}
+                    className="px-2.5 py-1 text-xs font-semibold text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>{t.tutor.clearChatBtn}</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Conversation Messages Container */}

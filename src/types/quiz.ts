@@ -2,6 +2,13 @@ export type EducationBoard = 'CBSE' | 'CISCE' | 'STATE';
 export type GradeClass = '10' | '12';
 export type StreamType = 'science' | 'commerce';
 
+export type AcademicTrackId = 'class10' | 'class12_science' | 'class12_commerce';
+
+export function getAcademicTrackId(grade: GradeClass = '12', stream: StreamType = 'science'): AcademicTrackId {
+  if (grade === '10') return 'class10';
+  return stream === 'commerce' ? 'class12_commerce' : 'class12_science';
+}
+
 export type SubjectId =
   | 'mathematics'
   | 'physics'
@@ -30,6 +37,7 @@ export interface Question {
   chapter: string;
   topic: string;
   grade?: GradeClass;
+  stream?: StreamType;
   difficulty: DifficultyLevel;
   questionType: QuestionType;
   casePassage?: string;
@@ -66,6 +74,7 @@ export type MistakeCategory =
 export interface QuizConfig {
   board: EducationBoard;
   grade: GradeClass;
+  stream?: StreamType;
   subject: SubjectId;
   chapter: string;
   difficulty: DifficultyLevel;
@@ -131,6 +140,8 @@ export interface RevisionItem {
   question: Question;
   savedReason: RevisionSaveReason;
   subject: SubjectId;
+  grade?: GradeClass;
+  stream?: StreamType;
   chapter: string;
   topic: string;
   savedAt: string; // ISO string

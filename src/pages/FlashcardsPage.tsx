@@ -1,3 +1,4 @@
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useClass } from '../context/ClassContext';
 import { CBSE_FLASHCARDS, Flashcard } from '../data/flashcardsData';
@@ -46,8 +47,8 @@ export const FlashcardsPage: React.FC = () => {
   });
 
   const toggleMastered = (id: string) => {
-    setMasteredIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id];
+    setMasteredIds((prev: string[]) => {
+      const next = prev.includes(id) ? prev.filter((i: string) => i !== id) : [...prev, id];
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       } catch {}
@@ -102,13 +103,13 @@ export const FlashcardsPage: React.FC = () => {
   const handleNext = () => {
     if (filteredCards.length === 0) return;
     setIsFlipped(false);
-    setCurrentIndex((prev) => (prev + 1) % filteredCards.length);
+    setCurrentIndex((prev: number) => (prev + 1) % filteredCards.length);
   };
 
   const handlePrev = () => {
     if (filteredCards.length === 0) return;
     setIsFlipped(false);
-    setCurrentIndex((prev) => (prev - 1 + filteredCards.length) % filteredCards.length);
+    setCurrentIndex((prev: number) => (prev - 1 + filteredCards.length) % filteredCards.length);
   };
 
   const handleShuffle = () => {
@@ -215,7 +216,7 @@ export const FlashcardsPage: React.FC = () => {
             <option value="all">
               {language === 'hi' ? 'सभी अध्याय (All Chapters)' : 'All Chapters'}
             </option>
-            {availableChapters.map((ch) => (
+            {availableChapters.map((ch: string) => (
               <option key={ch} value={ch}>
                 {ch}
               </option>

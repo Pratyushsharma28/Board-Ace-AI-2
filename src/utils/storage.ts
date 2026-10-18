@@ -1,10 +1,10 @@
-import { QuizAttempt, Question, GradeClass } from '../types/quiz';
-import { CBSE_CLASS_12_SUBJECTS, CBSE_CLASS_10_SUBJECTS, getSubjectsForGrade } from '../data/syllabus';
+import { QuizAttempt, Question, GradeClass, StreamType } from '../types/quiz';
+import { CBSE_CLASS_12_SUBJECTS, CBSE_CLASS_10_SUBJECTS, CBSE_CLASS_12_COMMERCE_SUBJECTS, getSubjectsForGrade } from '../data/syllabus';
 
 const ATTEMPTS_KEY = 'boardace_attempts_v1';
 const BOOKMARKS_KEY = 'boardace_bookmarks_v1';
 
-export function getSavedAttempts(grade?: GradeClass): QuizAttempt[] {
+export function getSavedAttempts(grade?: GradeClass, stream?: StreamType): QuizAttempt[] {
   try {
     const raw = localStorage.getItem(ATTEMPTS_KEY);
     if (!raw) return [];
@@ -12,7 +12,16 @@ export function getSavedAttempts(grade?: GradeClass): QuizAttempt[] {
     if (!grade) return all;
     return all.filter(att => {
       const attGrade = att.quizConfig?.grade || '12';
-      return attGrade === grade;
+      if (attGrade !== grade) return false;
+      if (grade === '12' && stream) {
+        const attStream = att.quizConfig?.stream || (
+          ['accountancy', 'business_studies', 'economics', 'english_core'].includes(att.quizConfig?.subject || '')
+            ? 'commerce'
+            : 'science'
+        );
+        return attStream === stream;
+      }
+      return true;
     });
   } catch (e) {
     console.error('Failed to read attempts from localStorage', e);
@@ -23,11 +32,15 @@ export function getSavedAttempts(grade?: GradeClass): QuizAttempt[] {
 export function saveAttempt(attempt: QuizAttempt): void {
   try {
     const attempts = getSavedAttempts();
-    // Ensure grade is explicitly tagged
+    // Ensure grade and stream are explicitly tagged
     if (!attempt.quizConfig.grade) {
       attempt.quizConfig.grade = '12';
     }
-    const updated = [attempt, ...attempts].slice(0, 50); // Keep last 50
+    if (attempt.quizConfig.grade === '12' && !attempt.quizConfig.stream) {
+      const isComm = ['accountancy', 'business_studies', 'economics', 'english_core'].includes(attempt.quizConfig.subject || '');
+      attempt.quizConfig.stream = isComm ? 'commerce' : 'science';
+    }
+    const updated = [attempt, ...attempts].slice(0, 100); // Keep last 100
     localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(updated));
   } catch (e) {
     console.error('Failed to save attempt to localStorage', e);
@@ -48,20 +61,32 @@ export function exportAnalyticsJson(): string {
   const attempts = getSavedAttempts();
   const data = {
     exportedAt: new Date().toISOString(),
-    platform: 'BoardAce AI CBSE Class 12',
+    platform: 'BoardAce AI CBSE Learning Platform',
     totalAttempts: attempts.length,
     attempts,
   };
   return JSON.stringify(data, null, 2);
 }
 
-export function getBookmarks(grade?: GradeClass): Question[] {
+export function getBookmarks(grade?: GradeClass, stream?: StreamType): Question[] {
   try {
     const raw = localStorage.getItem(BOOKMARKS_KEY);
     if (!raw) return [];
     const all: Question[] = JSON.parse(raw);
     if (!grade) return all;
-    return all.filter(q => (q.grade || '12') === grade);
+    return all.filter(q => {
+      const qGrade = q.grade || '12';
+      if (qGrade !== grade) return false;
+      if (grade === '12' && stream) {
+        const qStream = q.stream || (
+          ['accountancy', 'business_studies', 'economics', 'english_core'].includes(q.subject || '')
+            ? 'commerce'
+            : 'science'
+        );
+        return qStream === stream;
+      }
+      return true;
+    });
   } catch (e) {
     console.error('Failed to read bookmarks', e);
     return [];
@@ -244,15 +269,15 @@ export interface AnalyticsSummary {
   currentStreakDays: number;
 }
 
-export function getWeakTopicRadarData(grade: GradeClass = '12'): {
+export function getWeakTopicRadarData(grade: GradeClass = '12', stream: StreamType = 'science'): {
   strongTopics: TopicRadarItem[];
   practiseTopics: TopicRadarItem[];
   weakTopics: TopicRadarItem[];
   unattemptedTopics: TopicRadarItem[];
   allTopics: TopicRadarItem[];
 } {
-  const attempts = getSavedAttempts(grade);
-  const subjects = getSubjectsForGrade(grade);
+  const attempts = getSavedAttempts(grade, stream);
+  const subjects = getSubjectsForGrade(grade, stream);
 
   // Aggregate stats from all attempts
   const topicStats: Record<string, { subject: string; attempted: number; correct: number }> = {};
@@ -286,6 +311,12 @@ export function getWeakTopicRadarData(grade: GradeClass = '12'): {
       topicStats['Ohm’s Law (V = IR) and Verification'] = { subject: 'Science', attempted: 4, correct: 2 };
       topicStats['Case Studies of Belgium and Sri Lanka'] = { subject: 'Social Science', attempted: 3, correct: 2 };
       topicStats['Lencho’s Faith in God and the Destruction of Crops by Hailstorm'] = { subject: 'English', attempted: 4, correct: 4 };
+    } else if (stream === 'commerce') {
+      topicStats['Provisions of Indian Partnership Act 1932 in the Absence of Partnership Deed'] = { subject: 'Accountancy', attempted: 4, correct: 2 };
+      topicStats['Super Profit Method and Capitalisation of Super Profit / Average Profit'] = { subject: 'Accountancy', attempted: 5, correct: 5 };
+      topicStats['Principles of Management'] = { subject: 'Business Studies', attempted: 4, correct: 3 };
+      topicStats['National Income by Value Added & Expenditure Methods'] = { subject: 'Economics', attempted: 4, correct: 3 };
+      topicStats['M. Hamel’s Speech on the French Language'] = { subject: 'English Core', attempted: 4, correct: 4 };
     } else {
       topicStats["Gauss's Law & Applications"] = { subject: 'Physics', attempted: 4, correct: 2 };
       topicStats['Crystal Field Theory'] = { subject: 'Chemistry', attempted: 4, correct: 2 };
@@ -354,8 +385,8 @@ export function getWeakTopicRadarData(grade: GradeClass = '12'): {
   };
 }
 
-export function calculateAnalytics(grade: GradeClass = '12'): AnalyticsSummary {
-  const attempts = getSavedAttempts(grade);
+export function calculateAnalytics(grade: GradeClass = '12', stream: StreamType = 'science'): AnalyticsSummary {
+  const attempts = getSavedAttempts(grade, stream);
   if (attempts.length === 0) {
     if (grade === '10') {
       return {
@@ -372,6 +403,25 @@ export function calculateAnalytics(grade: GradeClass = '12'): AnalyticsSummary {
           Science: { total: 10, correct: 8 },
           'Social Science': { total: 5, correct: 4 },
           English: { total: 5, correct: 5 }
+        },
+        currentStreakDays: 3
+      };
+    }
+    if (stream === 'commerce') {
+      return {
+        totalQuizzesTaken: 4,
+        totalQuestionsAnswered: 28,
+        overallAccuracy: 85,
+        weakTopicsAllTime: [
+          { topic: 'Provisions of Indian Partnership Act 1932 in Absence of Deed', subject: 'Accountancy', mistakes: 2, accuracy: 55 },
+          { topic: 'Consumer Protection Act 2019 Pecuniary Limits', subject: 'Business Studies', mistakes: 1, accuracy: 65 },
+          { topic: 'Investment Multiplier (k = 1 / (1 - MPC))', subject: 'Economics', mistakes: 1, accuracy: 70 }
+        ],
+        subjectBreakdown: {
+          Accountancy: { total: 10, correct: 8 },
+          'Business Studies': { total: 8, correct: 7 },
+          Economics: { total: 6, correct: 5 },
+          'English Core': { total: 4, correct: 4 }
         },
         currentStreakDays: 3
       };

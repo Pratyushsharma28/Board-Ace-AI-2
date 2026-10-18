@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { SubjectId } from '../types/quiz';
 import {
   FileText,
@@ -109,8 +109,9 @@ const SAMPLE_PAPER_PHYSICS: QuestionPaperData = {
 
 export const QuestionPaperPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass12, gradeLabel } = useClass();
 
-  const [selectedSubject, setSelectedSubject] = useState<SubjectId>('physics');
+  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(() => subjects[0]?.id || 'accountancy');
   const [selectedChapters, setSelectedChapters] = useState<string[]>(['all']);
   const [difficulty, setDifficulty] = useState<'mixed' | 'medium' | 'hard'>('mixed');
   const [paperFormat, setPaperFormat] = useState<'standard' | 'full'>('standard');
@@ -120,10 +121,19 @@ export const QuestionPaperPage: React.FC = () => {
   const [paper, setPaper] = useState<QuestionPaperData | null>(null);
   const [showMarkingScheme, setShowMarkingScheme] = useState(false);
 
+  // Sync selectedSubject when stream or grade changes
+  React.useEffect(() => {
+    if (!subjects.some((s) => s.id === selectedSubject)) {
+      setSelectedSubject(subjects[0]?.id || 'accountancy');
+      setSelectedChapters(['all']);
+      setPaper(null);
+    }
+  }, [grade, stream, subjects]);
+
   const availableChapters = useMemo(() => {
-    const s = CBSE_CLASS_12_SUBJECTS.find((sub) => sub.id === selectedSubject);
+    const s = subjects.find((sub) => sub.id === selectedSubject);
     return s ? s.chapters.map((c) => c.name) : [];
-  }, [selectedSubject]);
+  }, [subjects, selectedSubject]);
 
   const handleToggleChapter = (chapterName: string) => {
     if (chapterName === 'all') {
@@ -220,26 +230,62 @@ export const QuestionPaperPage: React.FC = () => {
       <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6">
         {/* Subject Selector */}
         <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-            1. {language === 'hi' ? 'विषय चुनें' : 'Select Subject:'}
-          </label>
-          <div className="grid grid-cols-3 gap-3">
-            {(['physics', 'chemistry', 'mathematics'] as const).map((sub) => (
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              1. {language === 'hi' ? 'विषय चुनें' : 'Select Subject:'}
+            </label>
+            {isClass12 && (
+              <div className="inline-flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStream('science');
+                    setSelectedChapters(['all']);
+                    setPaper(null);
+                  }}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    stream === 'science'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  }`}
+                >
+                  {language === 'hi' ? 'साइंस' : 'Science'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStream('commerce');
+                    setSelectedChapters(['all']);
+                    setPaper(null);
+                  }}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    stream === 'commerce'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                  }`}
+                >
+                  {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2.5">
+            {subjects.map((sub) => (
               <button
-                key={sub}
+                key={sub.id}
                 type="button"
                 onClick={() => {
-                  setSelectedSubject(sub);
+                  setSelectedSubject(sub.id);
                   setSelectedChapters(['all']);
                   setPaper(null);
                 }}
-                className={`py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
-                  selectedSubject === sub
+                className={`py-2.5 px-4 rounded-2xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+                  selectedSubject === sub.id
                     ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 dark:shadow-none'
                     : 'bg-slate-50/70 dark:bg-slate-800/50 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300'
                 }`}
               >
-                {translateSubject(sub)}
+                {translateSubject(sub.id)}
               </button>
             ))}
           </div>

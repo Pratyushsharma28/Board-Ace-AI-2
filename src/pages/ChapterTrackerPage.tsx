@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { getSavedAttempts } from '../utils/storage';
 import { getRevisionItems } from '../utils/revisionEngine';
 import { SubjectId } from '../types/quiz';
@@ -41,6 +41,7 @@ interface ChapterTrackerItem {
 
 export const ChapterTrackerPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, setStream, subjects, isClass12, gradeLabel, streamLabel } = useClass();
   const navigate = useNavigate();
 
   const [activeSubject, setActiveSubject] = useState<'all' | SubjectId>('all');
@@ -54,7 +55,7 @@ export const ChapterTrackerPage: React.FC = () => {
   const trackerItems = useMemo<ChapterTrackerItem[]>(() => {
     const list: ChapterTrackerItem[] = [];
 
-    CBSE_CLASS_12_SUBJECTS.forEach((subj) => {
+    subjects.forEach((subj) => {
       subj.chapters.forEach((ch) => {
         let total = 0;
         let correct = 0;
@@ -149,7 +150,7 @@ export const ChapterTrackerPage: React.FC = () => {
     });
 
     return list;
-  }, [attempts, revItems, language]);
+  }, [subjects, attempts, revItems, language]);
 
   // High-level completion stats
   const stats = useMemo(() => {
@@ -183,15 +184,15 @@ export const ChapterTrackerPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">
             <Layers className="w-4 h-4" />
-            <span>CBSE CLASS 12 CURRICULUM SYLLABUS TRACKER</span>
+            <span>{gradeLabel.toUpperCase()} {isClass12 ? `(${streamLabel.toUpperCase()} STREAM)` : ''} CURRICULUM SYLLABUS TRACKER</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
             {language === 'hi' ? 'अध्याय ट्रैकर' : 'Chapter Tracker'}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
             {language === 'hi'
-              ? 'आधिकारिक 37 अध्यायों की विस्तृत प्रगति। अभ्यास स्थिति, सटीकता, दोहराव देयता और प्रत्येक अध्याय के लिए सुझाई गई अगली गतिविधि।'
-              : 'Track progress across all 37 official CBSE Class 12 chapters with verified syllabus weightages, accuracy metrics, and direct tool actions.'}
+              ? `आधिकारिक ${stats.total} अध्यायों की विस्तृत प्रगति। अभ्यास स्थिति, सटीकता, दोहराव देयता और प्रत्येक अध्याय के लिए सुझाई गई अगली गतिविधि।`
+              : `Track progress across all ${stats.total} official ${gradeLabel} chapters with verified syllabus weightages, accuracy metrics, and direct tool actions.`}
           </p>
         </div>
 
@@ -261,23 +262,55 @@ export const ChapterTrackerPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
         {/* Subject Filter Tabs */}
         <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl overflow-x-auto custom-scrollbar">
-          {(['all', 'mathematics', 'physics', 'chemistry'] as const).map((sub) => (
+          {[
+            { id: 'all', label: language === 'hi' ? `सभी विषय (${stats.total})` : `All Subjects (${stats.total})` },
+            ...subjects.map(s => ({ id: s.id, label: `${translateSubject(s.id)} (${s.chapters.length})` }))
+          ].map((sub) => (
             <button
-              key={sub}
-              onClick={() => setActiveSubject(sub)}
+              key={sub.id}
+              onClick={() => setActiveSubject(sub.id as any)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                activeSubject === sub
+                activeSubject === sub.id
                   ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              {sub === 'all'
-                ? language === 'hi'
-                  ? 'सभी विषय (All 37)'
-                  : 'All Subjects (37 Chapters)'
-                : translateSubject(sub)}
+              {sub.label}
             </button>
           ))}
+
+          {isClass12 && (
+            <div className="inline-flex items-center p-0.5 bg-slate-200 dark:bg-slate-700 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-bold ml-1 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setStream('science');
+                  setActiveSubject('all');
+                }}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'science'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'साइंस' : 'Science'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStream('commerce');
+                  setActiveSubject('all');
+                }}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'commerce'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Search & Status Filter */}

@@ -37,7 +37,7 @@ interface ChapterMasteryStats {
 
 export const MasteryMapPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
-  const { grade, subjects, gradeLabel } = useClass();
+  const { grade, stream, setStream, subjects, isClass12, gradeLabel } = useClass();
   const navigate = useNavigate();
 
   const [activeSubject, setActiveSubject] = useState<'all' | SubjectId>('all');
@@ -298,6 +298,39 @@ export const MasteryMapPage: React.FC = () => {
               {sub.label}
             </button>
           ))}
+
+          {isClass12 && (
+            <div className="inline-flex items-center p-0.5 bg-slate-200 dark:bg-slate-700 rounded-xl border border-slate-300 dark:border-slate-600 text-xs font-bold ml-1 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setStream('science');
+                  setActiveSubject('all');
+                }}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'science'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'साइंस' : 'Science'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStream('commerce');
+                  setActiveSubject('all');
+                }}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  stream === 'commerce'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                {language === 'hi' ? 'कॉमर्स' : 'Commerce'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Search & Status Filters */}

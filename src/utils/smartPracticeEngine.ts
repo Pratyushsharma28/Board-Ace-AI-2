@@ -1,5 +1,5 @@
-import { QuizAttempt, Question, SubjectId, DifficultyLevel, SmartPracticeRecommendation } from '../types/quiz';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { QuizAttempt, Question, SubjectId, DifficultyLevel, SmartPracticeRecommendation, GradeClass, StreamType } from '../types/quiz';
+import { getSubjectsForGrade } from '../data/syllabus';
 import { CURATED_BOARD_QUESTIONS } from '../data/sampleQuestions';
 import { getSavedAttempts } from './storage';
 
@@ -56,7 +56,11 @@ export function saveSmartPracticePreferences(prefs: SmartPracticePreferences): v
  * Analyzes real quiz attempts, incorrect answers, accuracy, and chapter-wise performance.
  * Does not fabricate data.
  */
-export function analyzeStudentPerformance(attempts: QuizAttempt[] = getSavedAttempts()): {
+export function analyzeStudentPerformance(
+  attempts: QuizAttempt[] = getSavedAttempts(),
+  grade: GradeClass = '12',
+  stream: StreamType = 'science'
+): {
   topicPerformances: Record<string, StudentTopicPerformance>;
   chapterAccuracy: Record<string, { subject: SubjectId; total: number; correct: number; accuracy: number }>;
   overallAccuracy: number;
@@ -69,8 +73,9 @@ export function analyzeStudentPerformance(attempts: QuizAttempt[] = getSavedAtte
   let totalCorrect = 0;
   let repeatedMistakesCount = 0;
 
-  // Build lookup index from CBSE Class 12 Syllabus
-  CBSE_CLASS_12_SUBJECTS.forEach(sub => {
+  // Build lookup index from active CBSE Grade/Stream Syllabus
+  const activeSubjects = getSubjectsForGrade(grade, stream);
+  activeSubjects.forEach(sub => {
     sub.chapters.forEach(chap => {
       chap.topics.forEach(t => {
         topicMap[t] = {
