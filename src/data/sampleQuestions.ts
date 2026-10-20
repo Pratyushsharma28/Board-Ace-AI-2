@@ -1,4 +1,4 @@
-import { Question, GradeClass } from '../types/quiz';
+import { Question, GradeClass, StreamType } from '../types/quiz';
 
 /**
  * Authentic Curated CBSE Class 12 Board Exam Questions (Session 2026–27)
@@ -1465,6 +1465,300 @@ export const CURATED_CLASS_12_COMMERCE_QUESTIONS: Question[] = [
     boardTip: 'CBSE 2-mark question regular: "What did Roosevelt say about fear, and how did Douglas prove it?"',
     boardTipHi: 'रूजवेल्ट का उद्धरण: "All we have to fear is fear itself।"',
     source: 'curated'
+  },
+  {
+    id: 'acc-12-04',
+    subject: 'accountancy',
+    chapter: 'Accounting Ratios',
+    topic: 'Current Ratio & Liquid Ratio computation',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Current assets of a company are ₹5,00,000, current liabilities are ₹2,50,000, and inventory is ₹1,00,000. What is the Liquid (Quick) Ratio of the company?',
+    questionHi: 'एक कंपनी की चालू परिसंपत्तियां ₹5,00,000, चालू दायित्व ₹2,50,000 तथा रहतिया (इन्वेंट्री) ₹1,00,000 है। कंपनी का तरल अनुपात (Quick Ratio) क्या होगा?',
+    options: ['1.6 : 1', '2.0 : 1', '1.4 : 1', '1.2 : 1'],
+    optionsHi: ['1.6 : 1', '2.0 : 1', '1.4 : 1', '1.2 : 1'],
+    correctAnswer: '1.6 : 1',
+    correctAnswerHi: '1.6 : 1',
+    explanation: 'Step-by-step formula:\n1. Liquid Assets = Current Assets - Inventory - Prepaid Expenses\n   = ₹5,00,000 - ₹1,00,000 = ₹4,00,000.\n2. Liquid Ratio = Liquid Assets / Current Liabilities\n   = ₹4,00,000 / ₹2,50,000 = 1.6 : 1.\nIdeal Quick Ratio benchmark is 1:1.',
+    explanationHi: 'गणना:\n1. तरल परिसंपत्तियां = चालू परिसंपत्तियां - रहतिया = ₹5,00,000 - ₹1,00,000 = ₹4,00,000।\n2. तरल अनुपात = तरल परिसंपत्तियां / चालू दायित्व = ₹4,00,000 / ₹2,50,000 = 1.6 : 1।',
+    pitfall: 'Calculating Current Ratio (5,00,000 / 2,50,000 = 2:1) instead of Liquid Ratio which excludes inventory.',
+    pitfallHi: 'इन्वेंट्री घटाए बिना चालू अनुपात (2:1) की गणना कर लेना।',
+    boardTip: 'Quick Assets = Current Assets - (Inventory + Prepaid Expenses).',
+    boardTipHi: 'त्वरित संपत्तियां = चालू संपत्तियां - (रहतिया + पूर्वदत्त व्यय)।',
+    source: 'curated'
+  },
+  {
+    id: 'acc-12-05',
+    subject: 'accountancy',
+    chapter: 'Admission of a Partner',
+    topic: 'Sacrificing Ratio on Admission of New Partner',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'A and B are partners sharing profits in the ratio of 3:2. C is admitted for a 1/5th share in the profits which he acquires entirely from A. What is the new profit sharing ratio of A, B, and C?',
+    questionHi: 'A और B 3:2 के अनुपात में लाभ बांटते हुए साझेदार हैं। C को लाभ में 1/5 भाग के लिए प्रवेश दिया जाता है जिसे वह पूर्णतः A से प्राप्त करता है। A, B और C का नया लाभ-हानि विभाजन अनुपात क्या होगा?',
+    options: ['2 : 2 : 1', '7 : 8 : 5', '12 : 8 : 5', '3 : 2 : 1'],
+    optionsHi: ['2 : 2 : 1', '7 : 8 : 5', '12 : 8 : 5', '3 : 2 : 1'],
+    correctAnswer: '2 : 2 : 1',
+    correctAnswerHi: '2 : 2 : 1',
+    explanation: 'Calculation of New Ratio:\n1. A’s old share = 3/5.\n2. Share surrendered by A to C = 1/5.\n3. A’s new share = 3/5 - 1/5 = 2/5.\n4. B’s new share = 2/5 (unaltered).\n5. C’s incoming share = 1/5.\nNew Profit Sharing Ratio (A:B:C) = 2/5 : 2/5 : 1/5 = 2 : 2 : 1.',
+    explanationHi: 'गणना:\n1. A का पुराना भाग = 3/5।\n2. A द्वारा त्याग = 1/5।\n3. A का नया भाग = 3/5 - 1/5 = 2/5।\n4. B का भाग = 2/5।\n5. C का भाग = 1/5।\nनया अनुपात = 2 : 2 : 1।',
+    pitfall: 'Deducting C’s share proportionately from both A and B when the question explicitly states "acquired entirely from A".',
+    pitfallHi: 'जब प्रश्न में स्पष्ट लिखा हो कि केवल A से प्राप्त किया, तब दोनों से अनुपात में घटाने की गलती करना।',
+    boardTip: 'Check wording: "acquired entirely from" vs "acquired in equal proportions".',
+    boardTipHi: 'वाक्य ध्यान से पढ़ें: "पूर्णतः एक से प्राप्त" अथवा "दोनों से समानुपात में"।',
+    source: 'curated'
+  },
+  {
+    id: 'bst-12-03',
+    subject: 'business_studies',
+    chapter: 'Marketing Management',
+    topic: 'Marketing Mix 4Ps & Product Concept',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Which marketing management philosophy asserts that consumers will favor products that offer the most in quality, performance, and innovative features, and therefore business efforts should focus on continuous product improvements?',
+    questionHi: 'कौन सा विपणन प्रबंध दर्शन यह मानता है कि उपभोक्ता उन उत्पादों को प्राथमिकता देंगे जो गुणवत्ता, प्रदर्शन और नवीन विशेषताओं में सर्वोत्तम हों, अतः व्यवसाय को उत्पाद में निरंतर सुधार पर ध्यान केंद्रित करना चाहिए?',
+    options: ['Product Concept', 'Production Concept', 'Selling Concept', 'Societal Marketing Concept'],
+    optionsHi: ['उत्पाद अवधारणा (Product Concept)', 'उत्पादन अवधारणा (Production Concept)', 'विक्रय अवधारणा (Selling Concept)', 'सामाजिक विपणन अवधारणा'],
+    correctAnswer: 'Product Concept',
+    correctAnswerHi: 'उत्पाद अवधारणा (Product Concept)',
+    explanation: 'NCERT Classification of Marketing Philosophies:\n• Product Concept: Assumes buyers prioritize high quality, features, and performance. Focus is on product excellence.\n• Production Concept: Focuses on high production quantity and low cost to ensure wide availability.\n• Selling Concept: Focuses on aggressive sales promotion and advertising to convince customers to buy.',
+    explanationHi: 'NCERT विपणन दर्शन:\nउत्पाद अवधारणा (Product Concept) उत्पाद की गुणवत्ता, बेहतर प्रदर्शन और विशेषताओं पर बल देती है।',
+    pitfall: 'Confusing Product Concept (quality focus) with Production Concept (volume & affordability focus).',
+    pitfallHi: 'उत्पाद अवधारणा (गुणवत्ता) को उत्पादन अवधारणा (कम लागत और बड़े पैमाने पर उत्पादन) से भ्रमित करना।',
+    boardTip: 'Core Pillar: Product Concept = Quality excellence; Production Concept = Low cost / mass distribution.',
+    boardTipHi: 'मुख्य सूत्र: उत्पाद अवधारणा = गुणवत्ता; उत्पादन अवधारणा = मात्रा व कम लागत।',
+    source: 'curated'
+  },
+  {
+    id: 'bst-12-04',
+    subject: 'business_studies',
+    chapter: 'Consumer Protection',
+    topic: 'Pecuniary Jurisdiction under Consumer Protection Act 2019',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Under the Consumer Protection Act, 2019, a consumer can file a complaint directly before the District Consumer Disputes Redressal Commission if the value of goods or services paid as consideration does not exceed:',
+    questionHi: 'उपभोक्ता संरक्षण अधिनियम, 2019 के अंतर्गत, कोई उपभोक्ता सीधे जिला उपभोक्ता विवाद निवारण आयोग में शिकायत दर्ज कर सकता है यदि प्रतिफल के रूप में भुगतान किए गए माल या सेवाओं का मूल्य किससे अधिक न हो?',
+    options: ['₹1 Crore', '₹50 Lakhs', '₹20 Lakhs', '₹10 Crores'],
+    optionsHi: ['₹1 करोड़', '₹50 लाख', '₹20 लाख', '₹10 करोड़'],
+    correctAnswer: '₹1 Crore',
+    correctAnswerHi: '₹1 करोड़',
+    explanation: 'Jurisdiction limits under Consumer Protection Act, 2019:\n1. District Commission: Entertains complaints where consideration paid does NOT exceed ₹1 Crore.\n2. State Commission: Value of consideration exceeds ₹1 Crore but does not exceed ₹10 Crores.\n3. National Commission: Value of consideration exceeds ₹10 Crores.',
+    explanationHi: 'उपभोक्ता संरक्षण अधिनियम 2019 के अधिकार क्षेत्र:\n1. जिला आयोग: ₹1 करोड़ तक के दावे।\n2. राज्य आयोग: ₹1 करोड़ से अधिक किंतु ₹10 करोड़ तक।\n3. राष्ट्रीय आयोग: ₹10 करोड़ से अधिक।',
+    pitfall: 'Remembering old 1986 Act limits (District was ₹20 Lakhs). CBSE strictly tests the revised 2019 Act.',
+    pitfallHi: 'पुराने 1986 अधिनियम की सीमाएं (जिला आयोग हेतु ₹20 लाख) याद रखना, जबकि 2019 में यह ₹1 करोड़ है।',
+    boardTip: 'Jurisdiction Anchor: District <= 1 Cr; State 1 Cr to 10 Cr; National > 10 Cr.',
+    boardTipHi: 'सीमाएं: जिला <= 1 करोड़; राज्य 1 से 10 करोड़; राष्ट्रीय > 10 करोड़।',
+    source: 'curated'
+  },
+  {
+    id: 'eco-12-03',
+    subject: 'economics',
+    chapter: 'Government Budget and the Economy',
+    topic: 'Fiscal Deficit vs Revenue Deficit',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In a government budget, if total estimated expenditure is ₹14,00,000 crore and total estimated receipts excluding borrowings are ₹11,00,000 crore, what is the Fiscal Deficit of the government?',
+    questionHi: 'एक सरकारी बजट में, यदि कुल अनुमानित व्यय ₹14,00,000 करोड़ है तथा ऋणों को छोड़कर कुल अनुमानित प्राप्तियां ₹11,00,000 करोड़ हैं, तो सरकार का राजकोषीय घाटा (Fiscal Deficit) कितना होगा?',
+    options: ['₹3,00,000 crore', '₹25,00,000 crore', '₹1,50,000 crore', 'Zero'],
+    optionsHi: ['₹3,00,000 करोड़', '₹25,00,000 करोड़', '₹1,50,000 करोड़', 'शून्य'],
+    correctAnswer: '₹3,00,000 crore',
+    correctAnswerHi: '₹3,00,000 करोड़',
+    explanation: 'Calculation of Fiscal Deficit:\nFormula: Fiscal Deficit = Total Budget Expenditure - Total Budget Receipts (Excluding Borrowings)\n= ₹14,00,000 crore - ₹11,00,000 crore = ₹3,00,000 crore.\nFiscal deficit precisely represents the total borrowing and other liability requirements of the government during that financial year.',
+    explanationHi: 'राजकोषीय घाटा = कुल व्यय - कुल प्राप्तियां (उधारियों को छोड़कर)\n= ₹14,00,000 करोड़ - ₹11,00,000 करोड़ = ₹3,00,000 करोड़। यह सरकार की कुल उधार आवश्यकताओं को दर्शाता है।',
+    pitfall: 'Adding borrowings to total receipts or subtracting interest payments (which yields Primary Deficit).',
+    pitfallHi: 'उधार को प्राप्तियों में जोड़ देना या ब्याज भुगतान घटा देना (जो प्राथमिक घाटा कहलाता है)।',
+    boardTip: 'Memory Formula: Fiscal Deficit = Total Borrowings of the Government.',
+    boardTipHi: 'राजकोषीय घाटा = सरकार की कुल उधार आवश्यकताएं।',
+    source: 'curated'
+  },
+  {
+    id: 'eco-12-04',
+    subject: 'economics',
+    chapter: 'Determination of Income and Employment',
+    topic: 'Marginal Propensity to Consume (MPC) and Investment Multiplier',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'If the Marginal Propensity to Save (MPS) in an economy is 0.2, what will be the value of the Investment Multiplier (k)?',
+    questionHi: 'यदि किसी अर्थव्यवस्था में सीमांत बचत प्रवृत्ति (MPS) 0.2 है, तो निवेश गुणक (k) का मान क्या होगा?',
+    options: ['5', '0.2', '1.25', '4'],
+    optionsHi: ['5', '0.2', '1.25', '4'],
+    correctAnswer: '5',
+    correctAnswerHi: '5',
+    explanation: 'Multiplier Formula:\nk = 1 / MPS = 1 / (1 - MPC).\nGiven MPS = 0.2:\nk = 1 / 0.2 = 5.\nThis implies that any initial increase in investment expenditure will result in a 5-fold increase in aggregate equilibrium national income.',
+    explanationHi: 'गुणक सूत्र:\nk = 1 / MPS = 1 / 0.2 = 5।\nइसका अर्थ है कि निवेश में किसी भी प्रारंभिक वृद्धि से कुल राष्ट्रीय आय में 5 गुना वृद्धि होगी।',
+    pitfall: 'Using k = 1 / (1 - MPS) which gives 1.25 (confusing MPC and MPS).',
+    pitfallHi: 'k = 1 / (1 - MPS) लगाना जो गलत मान 1.25 देता है।',
+    boardTip: 'Remember: k = 1 / MPS and MPC + MPS = 1.',
+    boardTipHi: 'सूत्र याद रखें: k = 1 / MPS तथा MPC + MPS = 1।',
+    source: 'curated'
+  },
+  {
+    id: 'eng-12-03',
+    subject: 'english_core',
+    chapter: 'The Rattrap',
+    topic: 'Theme of Human Kindness and Redemption',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In Selma Lagerlöf’s "The Rattrap", what transformative catalyst persuaded the peddler to return the 30 kronor stolen from the old crofter?',
+    questionHi: 'सेल्मा लेगरलोफ की कहानी "द रैटट्रैप" में, किस प्रेरक तत्व ने फेरीवाले को बूढ़े क्रॉफ्टर से चुराए गए 30 क्रोनोर लौटाने के लिए प्रेरित किया?',
+    options: [
+      'The unconditional compassion, trust, and dignity shown by Edla Willmansson',
+      'The fear of being arrested and thrown into prison by the police',
+      'The Ironmaster offering him a permanent high-paying managerial job',
+      'He lost his way completely in the dense Swedish winter forest'
+    ],
+    optionsHi: [
+      'एडला विलमैन्सन द्वारा दिखाया गया निस्वार्थ स्नेह, विश्वास और मानवीय सम्मान',
+      'पुलिस द्वारा पकड़े जाने और जेल जाने का भय',
+      'आयरनमास्टर द्वारा उसे एक स्थायी उच्च वेतन वाली नौकरी की पेशकश',
+      'स्वीडन के घने बर्फीले जंगल में उसका पूरी तरह रास्ता भटक जाना'
+    ],
+    correctAnswer: 'The unconditional compassion, trust, and dignity shown by Edla Willmansson',
+    correctAnswerHi: 'एडला विलमैन्सन द्वारा दिखाया गया निस्वार्थ स्नेह, विश्वास और मानवीय सम्मान',
+    explanation: 'Edla Willmansson treated the peddler with genuine hospitality and unshakeable respect even after his true ragged identity was exposed. Her elevated faith in him awakened his latent goodness, motivating him to leave the stolen money along with a letter signed as "Captain von Stahle", demonstrating that respect can redeem a fallen soul.',
+    explanationHi: 'एडला ने फेरीवाले के साथ एक वास्तविक कैप्टन जैसा सम्मानजनक और दयालु व्यवहार किया। उसके इस निस्वार्थ प्रेम ने फेरीवाले के भीतर सोई हुई अच्छाई को जगाया और उसने चोरी के पैसे लौटा दिए।',
+    pitfall: 'Selecting fear of police. The peddler was moved by empathy and dignity, not legal terror.',
+    pitfallHi: 'पुलिस के डर को कारण समझना। फेरीवाले का हृदय परिवर्तन मानवीय करुणा और सम्मान से हुआ था।',
+    boardTip: 'Central NCERT Theme: Essential goodness in a human being can be awakened through understanding and love.',
+    boardTipHi: 'केंद्रीय विषय: मनुष्य में निहित अच्छाई को प्रेम और समझ द्वारा पुनः जागृत किया जा सकता है।',
+    source: 'curated'
+  },
+  {
+    id: 'eng-12-04',
+    subject: 'english_core',
+    chapter: 'My Mother at Sixty-Six',
+    topic: 'Poetic Device & Fear of Aging and Mortality',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In the poem "My Mother at Sixty-Six" by Kamala Das, what literary device is used in the line: "her face ashen like that of a corpse"?',
+    questionHi: 'कमला दास की कविता "माई मदर एट सिक्सटी-सिक्स" में, पंक्ति "her face ashen like that of a corpse" में कौन सा साहित्यिक अलंकार (Poetic Device) प्रयुक्त हुआ है?',
+    options: ['Simile', 'Metaphor', 'Personification', 'Hyperbole'],
+    optionsHi: ['उपमा (Simile)', 'रूपक (Metaphor)', 'मानवीकरण (Personification)', 'अतिशयोक्ति (Hyperbole)'],
+    correctAnswer: 'Simile',
+    correctAnswerHi: 'उपमा (Simile)',
+    explanation: 'A Simile is a figure of speech that directly compares two distinct things using connecting words "like" or "as". Here, the poet explicitly compares the pale, lifeless complexion of her 66-year-old sleeping mother directly to a dead body using the word "like that of a corpse".',
+    explanationHi: 'जब "like" या "as" शब्द का उपयोग करके दो वस्तुओं की प्रत्यक्ष तुलना की जाती है, तो उसे Simile (उपमा अलंकार) कहते हैं। यहाँ माँ के पीले चेहरे की तुलना मृत शरीर से "like" शब्द द्वारा की गई है।',
+    pitfall: 'Confusing Simile with Metaphor. If "like" or "as" is explicitly used, it is strictly a Simile.',
+    pitfallHi: 'सिमिली और मेटाफर में भ्रम। "like" या "as" का प्रयोग होने पर यह अनिवार्य रूप से सिमिली (Simile) होता है।',
+    boardTip: 'Poetic devices in this poem: "ashen like that of a corpse" = Simile; "Trees sprinting" = Personification; "as a late winter\'s moon" = Simile.',
+    boardTipHi: 'प्रमुख अलंकार: "ashen like..." = Simile; "Trees sprinting" = Personification।',
+    source: 'curated'
+  },
+  {
+    id: 'acc-12-06',
+    subject: 'accountancy',
+    chapter: 'Accounting for Debentures',
+    topic: 'Issue of Debentures at Discount and Redemption at Premium',
+    grade: '12',
+    difficulty: 'hard',
+    questionType: 'mcq',
+    question: 'A company issues 5,000, 9% Debentures of ₹100 each at a discount of 5%, redeemable at a premium of 10% after 5 years. What is the total amount to be debited to "Loss on Issue of Debentures Account" at the time of issue?',
+    questionHi: 'एक कंपनी ₹100 वाले 5,000, 9% ऋणपत्र 5% की छूट पर निर्गमित करती है जो 5 वर्ष पश्चात 10% के प्रीमियम पर शोध्य हैं। निर्गमन के समय "ऋणपत्र निर्गमन पर हानि खाता" (Loss on Issue of Debentures A/c) में कुल कितनी राशि नाम (Debit) की जाएगी?',
+    options: ['₹75,000', '₹50,000', '₹25,000', '₹1,00,000'],
+    optionsHi: ['₹75,000', '₹50,000', '₹25,000', '₹1,00,000'],
+    correctAnswer: '₹75,000',
+    correctAnswerHi: '₹75,000',
+    explanation: 'Calculation of Loss on Issue:\n1. Total nominal face value = 5,000 × ₹100 = ₹5,00,000.\n2. Discount on issue = 5% of ₹5,00,000 = ₹25,000.\n3. Premium on redemption = 10% of ₹5,00,000 = ₹50,000.\n4. Total Loss on Issue = Discount on Issue + Premium on Redemption = ₹25,000 + ₹50,000 = ₹75,000.\nBoth losses are combined and written off through Securities Premium or Statement of P&L in the year of issue.',
+    explanationHi: 'ऋणपत्र निर्गमन पर हानि = निर्गमन पर छूट (₹25,000) + शोधन पर प्रीमियम (₹50,000) = ₹75,000। यह राशि "Loss on Issue of Debentures A/c" में नाम की जाती है।',
+    pitfall: 'Debiting only discount (₹25,000) or only redemption premium (₹50,000) instead of the sum of both.',
+    pitfallHi: 'केवल छूट या केवल शोधन प्रीमियम को लेना, जबकि दोनों का योग लिया जाता है।',
+    boardTip: 'Loss on Issue of Debentures = Discount on Issue + Premium on Redemption.',
+    boardTipHi: 'सूत्र: Loss on Issue = Discount on Issue + Premium on Redemption।',
+    source: 'curated'
+  },
+  {
+    id: 'bst-12-05',
+    subject: 'business_studies',
+    chapter: 'Financial Markets',
+    topic: 'Money Market Instruments - Treasury Bills (T-Bills)',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'Which money market instrument is also known as a "Zero Coupon Bond", issued by the Reserve Bank of India on behalf of the Central Government at a discount and redeemed at par?',
+    questionHi: 'कौन सा मुद्रा बाज़ार प्रपत्र "जीरो कूपन बॉन्ड" के नाम से भी जाना जाता है, जिसे केंद्र सरकार की ओर से भारतीय रिज़र्व बैंक द्वारा छूट पर जारी किया जाता है तथा सममूल्य पर शोधित किया जाता है?',
+    options: ['Treasury Bill (T-Bill)', 'Commercial Paper', 'Certificate of Deposit', 'Call Money'],
+    optionsHi: ['ट्रेजरी बिल (Treasury Bill)', 'कमर्शियल पेपर (Commercial Paper)', 'जमा प्रमाण पत्र (Certificate of Deposit)', 'मांग मुद्रा (Call Money)'],
+    correctAnswer: 'Treasury Bill (T-Bill)',
+    correctAnswerHi: 'ट्रेजरी बिल (Treasury Bill)',
+    explanation: 'NCERT CBSE Core Concept:\nTreasury Bills (T-Bills) are short-term promissory notes issued by the RBI on behalf of the Central Government of India to meet short-term financial requirements. They are issued at a discount to face value and redeemed at par, earning them the title "Zero Coupon Bonds". They are available for minimum amount of ₹25,000 and in multiples thereof.',
+    explanationHi: 'ट्रेजरी बिल (T-Bill) को जीरो कूपन बॉन्ड भी कहते हैं। इसे केंद्र सरकार की ओर से RBI द्वारा न्यूनतम ₹25,000 तथा इसके गुणकों में जारी किया जाता है।',
+    pitfall: 'Confusing Commercial Paper (issued by large creditworthy companies) with Treasury Bills (issued by RBI on behalf of Central Government).',
+    pitfallHi: 'कमर्शियल पेपर (कॉर्पोरेट द्वारा जारी) को ट्रेजरी बिल (RBI द्वारा जारी) से भ्रमित करना।',
+    boardTip: 'T-Bills: Issued by RBI for GoI; Zero Coupon; Min denomination ₹25,000.',
+    boardTipHi: 'ट्रेजरी बिल: RBI द्वारा केंद्र सरकार हेतु जारी; शून्य कूपन; न्यूनतम ₹25,000।',
+    source: 'curated'
+  },
+  {
+    id: 'eco-12-05',
+    subject: 'economics',
+    chapter: 'Balance of Payments & Foreign Exchange Rate',
+    topic: 'Autonomous vs Accommodating Items in Balance of Payments',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In the Balance of Payments (BOP) accounts, transactions which are undertaken for economic motives such as profit maximization, independent of the state of the BOP, are termed as:',
+    questionHi: 'भुगतान संतुलन (BOP) खातों में, वे सौदे जो लाभ कमाने जैसे आर्थिक उद्देश्यों से किए जाते हैं और जिनका भुगतान संतुलन की स्थिति से कोई संबंध नहीं होता, कहलाते हैं:',
+    options: [
+      'Autonomous Items ("Above the Line" items)',
+      'Accommodating Items ("Below the Line" items)',
+      'Official Reserve Transactions',
+      'Unilateral Capital Transfers'
+    ],
+    optionsHi: [
+      'स्वायत्त सौदे (Autonomous Items / "Above the Line")',
+      'समायोजक सौदे (Accommodating Items / "Below the Line")',
+      'आधिकारिक आरक्षित लेनदेन',
+      'एकपक्षीय पूंजीगत हस्तांतरण'
+    ],
+    correctAnswer: 'Autonomous Items ("Above the Line" items)',
+    correctAnswerHi: 'स्वायत्त सौदे (Autonomous Items / "Above the Line")',
+    explanation: 'Distinction in BOP Accounts:\n• Autonomous transactions ("above the line"): International economic transactions undertaken for their own sake (e.g., commercial profit maximization). They create a deficit or surplus in BOP.\n• Accommodating transactions ("below the line"): Transactions undertaken by monetary authorities (like RBI) to bridge the gap or deficit/surplus caused by autonomous transactions.',
+    explanationHi: 'स्वायत्त सौदे (Autonomous): स्वतंत्र लाभ हेतु किए जाते हैं ("रेखा के ऊपर")। समायोजक सौदे (Accommodating): भुगतान संतुलन के घाटे या अधिशेष को पूरा करने के लिए किए जाते हैं ("रेखा के नीचे")।',
+    pitfall: 'Confusing accommodating items (which bridge deficit) with autonomous items (which cause deficit or surplus).',
+    pitfallHi: 'समायोजक सौदों को स्वायत्त सौदों से मिला देना। स्वायत्त लाभ के लिए होते हैं जबकि समायोजक घाटा पाटने के लिए होते हैं।',
+    boardTip: 'Memory Key: Autonomous = Profit-motivated (Above the line); Accommodating = Deficit-covering (Below the line).',
+    boardTipHi: 'सूत्र: स्वायत्त = लाभ हेतु (Above line); समायोजक = घाटा पाटने हेतु (Below line)।',
+    source: 'curated'
+  },
+  {
+    id: 'eng-12-05',
+    subject: 'english_core',
+    chapter: 'The Enemy',
+    topic: 'Conflict Between Humanitarian Duty and Patriotism',
+    grade: '12',
+    difficulty: 'medium',
+    questionType: 'mcq',
+    question: 'In Pearl S. Buck’s story "The Enemy", what central moral dilemma does Dr. Sadao Hoki face when an injured American prisoner of war washes ashore near his house?',
+    questionHi: 'पर्ल एस. बक की कहानी "द एनिमी" में, जब एक घायल अमेरिकी युद्धबंदी समुद्र तट पर बहकर आता है, तो डॉ. सदाओ होकी के सामने कौन सा मुख्य नैतिक धर्मसंकट उत्पन्न होता है?',
+    options: [
+      'The conflict between his Hippocratic duty as a surgeon and his national loyalty as a Japanese citizen',
+      'The fear that the General would confiscate his private medical estate',
+      'Whether to demand a large financial ransom from the American military',
+      'Hana wanting to adopt the American soldier into their Japanese family'
+    ],
+    optionsHi: [
+      'एक शल्य चिकित्सक (डॉक्टर) के रूप में मानवीय कर्तव्य तथा एक जापानी नागरिक के रूप में राष्ट्रनिष्ठा के बीच अंतर्द्वंद्व',
+      'यह भय कि जनरल उनकी निजी संपत्ति जब्त कर लेगा',
+      'अमेरिकी सेना से बड़ी फिरौती की मांग करनी चाहिए या नहीं',
+      'हाना का अमेरिकी सैनिक को अपने परिवार में अपनाने की इच्छा रखना'
+    ],
+    correctAnswer: 'The conflict between his Hippocratic duty as a surgeon and his national loyalty as a Japanese citizen',
+    correctAnswerHi: 'एक शल्य चिकित्सक (डॉक्टर) के रूप में मानवीय कर्तव्य तथा एक जापानी नागरिक के रूप में राष्ट्रनिष्ठा के बीच अंतर्द्वंद्व',
+    explanation: 'Core Literary Theme:\nDr. Sadao is a skilled Japanese surgeon trained in America. During World War II, a wounded white American soldier washes ashore. Sadao is torn between his patriotic duty as a Japanese subject (which dictates handing him over as an enemy) and his medical Hippocratic oath to save human life regardless of nationality. Ultimately, universal humanitarian ethics transcend narrow national prejudices.',
+    explanationHi: 'केंद्रीय विषय: डॉ. सदाओ का एक डॉक्टर के रूप में जीवन बचाने का कर्तव्य बनाम एक जापानी नागरिक के रूप में देशभक्ति। सदाओ ने एक घायल इंसान की जान बचाकर साबित किया कि मानवता की पुकार राष्ट्रीय सीमाओं से ऊपर होती है।',
+    pitfall: 'Selecting fear of the General. Sadao explicitly took the soldier into his home to operate on him before informing the General.',
+    pitfallHi: 'जनरल के भय को मुख्य कारण समझना।',
+    boardTip: 'Central CBSE Focus: Universal brotherhood and medical ethics vs national chauvinism during war.',
+    boardTipHi: 'केंद्रीय बिंदु: युद्ध काल में मानवीय मूल्य तथा चिकित्सा धर्म संकीर्ण राष्ट्रवाद से परे होते हैं।',
+    source: 'curated'
   }
 ];
 
@@ -1479,22 +1773,40 @@ export function getCuratedQuestions(
   chapter?: string,
   count: number = 5,
   difficulty?: string,
-  grade: GradeClass = '12'
+  grade: GradeClass = '12',
+  stream?: StreamType
 ): Question[] {
-  // First, filter by the requested class grade strictly to avoid mixing Class 10 and 12
-  let pool = CURATED_BOARD_QUESTIONS.filter(q => (q.grade || '12') === grade);
-  let filtered = [...pool];
+  const safeSubject = typeof subject === 'string' ? subject : undefined;
+  const safeChapter = typeof chapter === 'string' ? chapter : undefined;
+  const safeDifficulty = typeof difficulty === 'string' ? difficulty : undefined;
+  const safeGrade = grade === '10' ? '10' : '12';
 
-  if (subject) {
-    const subMatches = filtered.filter(q => q.subject.toLowerCase() === subject.toLowerCase());
-    if (subMatches.length > 0) {
-      filtered = subMatches;
+  // First, filter by the requested class grade strictly to avoid mixing Class 10 and 12
+  let pool = CURATED_BOARD_QUESTIONS.filter(q => (q.grade || '12') === safeGrade);
+
+  // If grade 12, filter pool strictly by stream
+  if (safeGrade === '12') {
+    if (stream === 'commerce' || (safeSubject && ['accountancy', 'business_studies', 'economics', 'english_core'].includes(safeSubject.toLowerCase()))) {
+      pool = pool.filter(q => ['accountancy', 'business_studies', 'economics', 'english_core'].includes(q.subject.toLowerCase()));
+    } else if (stream === 'science' || (safeSubject && ['mathematics', 'physics', 'chemistry'].includes(safeSubject.toLowerCase()))) {
+      pool = pool.filter(q => ['mathematics', 'physics', 'chemistry'].includes(q.subject.toLowerCase()));
+    }
+  } else if (safeGrade === '10') {
+    pool = pool.filter(q => ['mathematics', 'science', 'social_science', 'english'].includes(q.subject.toLowerCase()));
+  }
+
+  if (safeSubject && safeSubject !== 'all') {
+    const subPool = pool.filter(q => q.subject.toLowerCase() === safeSubject.toLowerCase());
+    if (subPool.length > 0) {
+      pool = subPool;
     }
   }
 
-  if (chapter && chapter !== 'all') {
+  let filtered = [...pool];
+
+  if (safeChapter && safeChapter !== 'all') {
     const chapterMatches = filtered.filter(
-      q => q.chapter.toLowerCase().includes(chapter.toLowerCase()) || chapter.toLowerCase().includes(q.chapter.toLowerCase())
+      q => q.chapter.toLowerCase().includes(safeChapter.toLowerCase()) || safeChapter.toLowerCase().includes(q.chapter.toLowerCase())
     );
     if (chapterMatches.length > 0) {
       filtered = chapterMatches;
@@ -1506,13 +1818,6 @@ export function getCuratedQuestions(
     if (diffMatches.length > 0) {
       filtered = diffMatches;
     }
-  }
-
-  if (filtered.length < count && subject) {
-    const sameSubjectFallback = pool.filter(
-      q => q.subject.toLowerCase() === subject.toLowerCase() && !filtered.some(f => f.id === q.id)
-    );
-    filtered = [...filtered, ...sameSubjectFallback];
   }
 
   if (filtered.length === 0) {

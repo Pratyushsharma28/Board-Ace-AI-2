@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
+import { useClass } from '../context/ClassContext';
 import { getSavedAttempts, calculateAnalytics } from '../utils/storage';
 import { getRevisionSummary } from '../utils/revisionEngine';
 import { SubjectId } from '../types/quiz';
@@ -22,8 +22,6 @@ import {
   HelpCircle,
 } from 'lucide-react';
 
-const COACH_STORAGE_KEY = 'boardace_study_coach_goals_v2';
-
 interface CoachTask {
   id: string;
   title: string;
@@ -35,30 +33,96 @@ interface CoachTask {
 
 export const StudyCoachPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, subjects, isClass10, isClass12, gradeLabel } = useClass();
   const navigate = useNavigate();
 
-  const attempts = useMemo(() => getSavedAttempts(), []);
-  const analytics = useMemo(() => calculateAnalytics(), []);
+  const coachStorageKey = `boardace_study_coach_goals_${grade}_${grade === '12' ? stream : 'general'}_v2`;
+
+  const attempts = useMemo(() => getSavedAttempts(grade, stream), [grade, stream]);
+  const analytics = useMemo(() => calculateAnalytics(grade, stream), [grade, stream]);
   const revSummary = useMemo(() => getRevisionSummary(), []);
 
   // Form states
-  const [selectedSubject, setSelectedSubject] = useState<SubjectId>('physics');
+  const [selectedSubject, setSelectedSubject] = useState<SubjectId>(() => subjects[0]?.id || 'mathematics');
   const [targetDailyMinutes, setTargetDailyMinutes] = useState<number>(60);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskMinutes, setNewTaskMinutes] = useState(25);
+
+  // Sync selectedSubject if it leaves current subjects
+  useEffect(() => {
+    if (!subjects.some((s) => s.id === selectedSubject)) {
+      setSelectedSubject(subjects[0]?.id || 'mathematics');
+    }
+  }, [grade, stream, subjects]);
 
   // AI Advice state
   const [coachAdvice, setCoachAdvice] = useState<string | null>(null);
   const [isLoadingAdvice, setIsLoadingAdvice] = useState(false);
 
-  // Stored tasks
+  // Stored tasks per academic track
   const [tasks, setTasks] = useState<CoachTask[]>(() => {
     try {
-      const saved = localStorage.getItem(COACH_STORAGE_KEY);
+      const saved = localStorage.getItem(coachStorageKey);
       if (saved) return JSON.parse(saved);
     } catch {}
 
-    // Initial default high-yield goals
+    // Initial default high-yield goals based on grade and stream
+    if (grade === '10') {
+      return [
+        {
+          id: 't-1',
+          title: 'Solve 5 Quadratic Equations nature of roots problems',
+          subject: 'mathematics',
+          estimatedMinutes: 20,
+          completed: false,
+          isAiSuggested: true,
+        },
+        {
+          id: 't-2',
+          title: 'Review Chemical Reactions & Redox balancing',
+          subject: 'science',
+          estimatedMinutes: 20,
+          completed: false,
+          isAiSuggested: true,
+        },
+        {
+          id: 't-3',
+          title: 'Revise Rise of Nationalism in Europe key dates',
+          subject: 'social_science',
+          estimatedMinutes: 15,
+          completed: false,
+          isAiSuggested: true,
+        },
+      ];
+    } else if (stream === 'commerce') {
+      return [
+        {
+          id: 't-1',
+          title: 'Revise Partnership Fundamentals interest on drawings',
+          subject: 'accountancy',
+          estimatedMinutes: 20,
+          completed: false,
+          isAiSuggested: true,
+        },
+        {
+          id: 't-2',
+          title: 'Practice Principles of Management case studies',
+          subject: 'business_studies',
+          estimatedMinutes: 20,
+          completed: false,
+          isAiSuggested: true,
+        },
+        {
+          id: 't-3',
+          title: 'Review National Income Value Added method formulas',
+          subject: 'economics',
+          estimatedMinutes: 20,
+          completed: false,
+          isAiSuggested: true,
+        },
+      ];
+    }
+
     return [
       {
         id: 't-1',
@@ -90,9 +154,9 @@ export const StudyCoachPage: React.FC = () => {
   // Save tasks locally
   useEffect(() => {
     try {
-      localStorage.setItem(COACH_STORAGE_KEY, JSON.stringify(tasks));
+      localStorage.setItem(coachStorageKey, JSON.stringify(tasks));
     } catch {}
-  }, [tasks]);
+  }, [tasks, coachStorageKey]);
 
   // Derived intelligent suggestions generated from actual student data
   const dataDrivenSuggestions = useMemo(() => {
@@ -419,9 +483,11 @@ export const StudyCoachPage: React.FC = () => {
                   onChange={(e) => setSelectedSubject(e.target.value as SubjectId)}
                   className="px-3 py-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer"
                 >
-                  <option value="physics">Physics</option>
-                  <option value="chemistry">Chemistry</option>
-                  <option value="mathematics">Mathematics</option>
+                  {subjects.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {translateSubject(s.id)}
+                    </option>
+                  ))}
                 </select>
 
                 <select

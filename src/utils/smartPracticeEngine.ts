@@ -24,9 +24,13 @@ export interface SmartPracticePreferences {
 
 const SMART_PREFERENCES_KEY = 'boardace_smart_practice_prefs_v1';
 
-export function getSmartPracticePreferences(): SmartPracticePreferences {
+export function getSmartPracticePreferences(grade: GradeClass = '12', stream: StreamType = 'science'): SmartPracticePreferences {
   try {
-    const raw = localStorage.getItem(SMART_PREFERENCES_KEY);
+    const key = `boardace_smart_practice_prefs_${grade}_${grade === '12' ? stream : 'general'}_v1`;
+    let raw = localStorage.getItem(key);
+    if (!raw) {
+      raw = localStorage.getItem(SMART_PREFERENCES_KEY);
+    }
     if (!raw) {
       return {
         targetSubject: 'all',
@@ -34,7 +38,12 @@ export function getSmartPracticePreferences(): SmartPracticePreferences {
         autoStepUp: true,
       };
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    const validSubs = getSubjectsForGrade(grade, stream).map(s => s.id);
+    if (parsed.targetSubject !== 'all' && !validSubs.includes(parsed.targetSubject)) {
+      parsed.targetSubject = 'all';
+    }
+    return parsed;
   } catch (e) {
     return {
       targetSubject: 'all',
@@ -44,8 +53,14 @@ export function getSmartPracticePreferences(): SmartPracticePreferences {
   }
 }
 
-export function saveSmartPracticePreferences(prefs: SmartPracticePreferences): void {
+export function saveSmartPracticePreferences(
+  prefs: SmartPracticePreferences,
+  grade: GradeClass = '12',
+  stream: StreamType = 'science'
+): void {
   try {
+    const key = `boardace_smart_practice_prefs_${grade}_${grade === '12' ? stream : 'general'}_v1`;
+    localStorage.setItem(key, JSON.stringify(prefs));
     localStorage.setItem(SMART_PREFERENCES_KEY, JSON.stringify(prefs));
   } catch (e) {
     console.error('Failed to save smart practice preferences', e);
@@ -75,6 +90,7 @@ export function analyzeStudentPerformance(
 
   // Build lookup index from active CBSE Grade/Stream Syllabus
   const activeSubjects = getSubjectsForGrade(grade, stream);
+  const activeSubjectIds = new Set(activeSubjects.map(s => s.id));
   activeSubjects.forEach(sub => {
     sub.chapters.forEach(chap => {
       chap.topics.forEach(t => {
@@ -93,8 +109,25 @@ export function analyzeStudentPerformance(
     });
   });
 
+  // Filter attempts strictly by the requested class and stream
+  const relevantAttempts = attempts.filter(att => {
+    const attGrade = att.quizConfig?.grade || '12';
+    if (attGrade !== grade) return false;
+    if (grade === '12') {
+      const attStream = att.quizConfig?.stream || (
+        ['accountancy', 'business_studies', 'economics', 'english_core'].includes(att.quizConfig?.subject || '')
+          ? 'commerce'
+          : 'science'
+      );
+      if (attStream !== stream) return false;
+    }
+    const subId = (att.quizConfig?.subject || '').toLowerCase();
+    if (!activeSubjectIds.has(subId as SubjectId)) return false;
+    return true;
+  });
+
   // Sort attempts chronologically (oldest to newest) to track improvement and difficulty progression
-  const sortedAttempts = [...attempts].sort(
+  const sortedAttempts = [...relevantAttempts].sort(
     (a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime()
   );
 
@@ -193,12 +226,30 @@ export function analyzeStudentPerformance(
  */
 export function generateSmartRecommendations(
   attempts: QuizAttempt[] = getSavedAttempts(),
-  subjectFilter: 'all' | SubjectId = 'all'
+  subjectFilterOrOptions: 'all' | SubjectId | { targetSubject?: string; subject?: string; grade?: GradeClass; stream?: StreamType } = 'all',
+  gradeArg: GradeClass = '12',
+  streamArg: StreamType = 'science'
 ): SmartPracticeRecommendation[] {
-  const { topicPerformances } = analyzeStudentPerformance(attempts);
+  let subjectFilter: 'all' | SubjectId = 'all';
+  let grade: GradeClass = gradeArg;
+  let stream: StreamType = streamArg;
+
+  if (typeof subjectFilterOrOptions === 'object' && subjectFilterOrOptions !== null) {
+    subjectFilter = (subjectFilterOrOptions.targetSubject || subjectFilterOrOptions.subject || 'all') as any;
+    grade = subjectFilterOrOptions.grade || gradeArg;
+    stream = subjectFilterOrOptions.stream || streamArg;
+  } else {
+    subjectFilter = subjectFilterOrOptions as any;
+  }
+
+  const { topicPerformances } = analyzeStudentPerformance(attempts, grade, stream);
   const recommendations: SmartPracticeRecommendation[] = [];
 
+  const activeSubjects = getSubjectsForGrade(grade, stream);
+  const activeSubjectIds = new Set(activeSubjects.map(s => s.id));
+
   const topicsList = Object.values(topicPerformances).filter(tp => {
+    if (!activeSubjectIds.has(tp.subject)) return false;
     if (subjectFilter === 'all') return true;
     return tp.subject === subjectFilter;
   });
@@ -211,7 +262,7 @@ export function generateSmartRecommendations(
   repeatedMistakeTopics.forEach(tp => {
     // Recommend revision: start with easy or medium questions to rebuild fundamentals
     const targetDifficulty: DifficultyLevel = 'easy';
-    const recQuestions = findQuestionsForRecommendation(tp.subject, tp.chapter, tp.topic, targetDifficulty);
+    const recQuestions = findQuestionsForRecommendation(tp.subject, tp.chapter, tp.topic, targetDifficulty, grade, stream);
 
     recommendations.push({
       id: `rec-mistake-${tp.subject}-${encodeURIComponent(tp.topic)}`,
@@ -248,7 +299,7 @@ export function generateSmartRecommendations(
 
   lowAccuracyTopics.forEach(tp => {
     const targetDifficulty: DifficultyLevel = 'medium';
-    const recQuestions = findQuestionsForRecommendation(tp.subject, tp.chapter, tp.topic, targetDifficulty);
+    const recQuestions = findQuestionsForRecommendation(tp.subject, tp.chapter, tp.topic, targetDifficulty, grade, stream);
 
     recommendations.push({
       id: `rec-accuracy-${tp.subject}-${encodeURIComponent(tp.topic)}`,
@@ -285,7 +336,7 @@ export function generateSmartRecommendations(
 
   masteryTopics.forEach(tp => {
     const targetDifficulty: DifficultyLevel = 'hard';
-    const recQuestions = findQuestionsForRecommendation(tp.subject, tp.chapter, tp.topic, targetDifficulty);
+    const recQuestions = findQuestionsForRecommendation(tp.subject, tp.chapter, tp.topic, targetDifficulty, grade, stream);
 
     recommendations.push({
       id: `rec-mastery-${tp.subject}-${encodeURIComponent(tp.topic)}`,
@@ -308,15 +359,39 @@ export function generateSmartRecommendations(
     });
   });
 
-  // 4. UNATTEMPTED OR STARTER TOPICS (if user has few recommendations or new session)
+  // 4. UNATTEMPTED OR STARTER TOPICS (Strictly aligned with Class & Stream)
   if (recommendations.length < 3) {
-    const highWeightageChaps = [
-      { subject: 'mathematics' as SubjectId, chapter: 'Matrices', topic: 'Symmetric & Skew-Symmetric Matrices', weight: '5-6 marks' },
-      { subject: 'physics' as SubjectId, chapter: 'Electric Charges and Fields', topic: "Gauss’s Law and Applications", weight: '7-8 marks' },
-      { subject: 'chemistry' as SubjectId, chapter: 'Electrochemistry', topic: 'Nernst Equation and Cell Potential Calculations', weight: '7-8 marks' },
-      { subject: 'physics' as SubjectId, chapter: 'Current Electricity', topic: 'Drift Velocity & Mobility (Ohm’s Law Derivation)', weight: '8-9 marks' },
-      { subject: 'mathematics' as SubjectId, chapter: 'Continuity and Differentiability', topic: 'Second Order Derivatives', weight: '8-9 marks' },
-    ];
+    let highWeightageChaps: Array<{ subject: SubjectId; chapter: string; topic: string; weight: string }> = [];
+
+    if (grade === '10') {
+      highWeightageChaps = [
+        { subject: 'mathematics', chapter: 'Quadratic Equations', topic: 'Nature of Roots & Discriminant Analysis', weight: '5-6 marks' },
+        { subject: 'science', chapter: 'Chemical Reactions and Equations', topic: 'Redox Reactions (Oxidation and Reduction)', weight: '5-6 marks' },
+        { subject: 'science', chapter: 'Life Processes', topic: 'Double Circulation of Blood in Human Heart', weight: '6-7 marks' },
+        { subject: 'social_science', chapter: 'The Rise of Nationalism in Europe', topic: 'Unification of Germany and Italy', weight: '5 marks' },
+        { subject: 'mathematics', chapter: 'Triangles', topic: 'Basic Proportionality Theorem (Thales Theorem)', weight: '6 marks' },
+        { subject: 'english', chapter: 'A Letter to God (G.L. Fuentes)', topic: 'Lencho’s Faith and Irony of the Situation', weight: '4-5 marks' },
+      ];
+    } else if (stream === 'commerce') {
+      highWeightageChaps = [
+        { subject: 'accountancy', chapter: 'Accounting for Partnership Firms - Fundamentals', topic: 'Interest on Partner Drawings (Average Period Method)', weight: '6-8 marks' },
+        { subject: 'business_studies', chapter: 'Principles of Management', topic: 'Unity of Command vs Unity of Direction', weight: '5-6 marks' },
+        { subject: 'economics', chapter: 'National Income and Related Aggregates', topic: 'Factor Income vs Transfer Receipts', weight: '6-8 marks' },
+        { subject: 'accountancy', chapter: 'Accounting for Share Capital', topic: 'Forfeiture & Maximum Permissible Discount on Reissue', weight: '8 marks' },
+        { subject: 'business_studies', chapter: 'Financial Management', topic: 'Trading on Equity & Financial Leverage', weight: '6 marks' },
+        { subject: 'economics', chapter: 'Money and Banking', topic: 'Credit Creation & Legal Reserve Ratio', weight: '6 marks' },
+        { subject: 'english_core', chapter: 'The Last Lesson', topic: 'M. Hamel’s Speech on the French Language', weight: '5 marks' },
+      ];
+    } else {
+      // Class 12 Science
+      highWeightageChaps = [
+        { subject: 'mathematics', chapter: 'Matrices', topic: 'Symmetric & Skew-Symmetric Matrices', weight: '5-6 marks' },
+        { subject: 'physics', chapter: 'Electric Charges and Fields', topic: "Gauss’s Law and Applications", weight: '7-8 marks' },
+        { subject: 'chemistry', chapter: 'Electrochemistry', topic: 'Nernst Equation and Cell Potential Calculations', weight: '7-8 marks' },
+        { subject: 'physics', chapter: 'Current Electricity', topic: 'Drift Velocity & Mobility (Ohm’s Law Derivation)', weight: '8-9 marks' },
+        { subject: 'mathematics', chapter: 'Continuity and Differentiability', topic: 'Second Order Derivatives', weight: '8-9 marks' },
+      ];
+    }
 
     highWeightageChaps.forEach(hw => {
       if (subjectFilter !== 'all' && hw.subject !== subjectFilter) return;
@@ -326,7 +401,7 @@ export function generateSmartRecommendations(
       const attempted = tp ? tp.attempted : 0;
       if (attempted === 0) {
         const targetDifficulty: DifficultyLevel = 'medium';
-        const recQuestions = findQuestionsForRecommendation(hw.subject, hw.chapter, hw.topic, targetDifficulty);
+        const recQuestions = findQuestionsForRecommendation(hw.subject, hw.chapter, hw.topic, targetDifficulty, grade, stream);
 
         recommendations.push({
           id: `rec-unattempted-${hw.subject}-${encodeURIComponent(hw.topic)}`,
@@ -356,16 +431,30 @@ export function generateSmartRecommendations(
 
 /**
  * Reuses existing question data from CURATED_BOARD_QUESTIONS whenever possible.
- * Falls back to same subject & difficulty if exact topic is not available.
+ * Strictly filters by target grade and stream to prevent cross-stream/grade question contamination.
  */
 function findQuestionsForRecommendation(
   subject: SubjectId,
   chapter: string,
   topic: string,
-  difficulty: DifficultyLevel
+  difficulty: DifficultyLevel,
+  grade: GradeClass = '12',
+  stream: StreamType = 'science'
 ): Question[] {
+  // Restrict pool strictly to the requested class grade and stream
+  let pool = CURATED_BOARD_QUESTIONS.filter(q => (q.grade || '12') === grade);
+  if (grade === '12') {
+    if (stream === 'commerce' || ['accountancy', 'business_studies', 'economics', 'english_core'].includes(subject.toLowerCase())) {
+      pool = pool.filter(q => ['accountancy', 'business_studies', 'economics', 'english_core'].includes(q.subject.toLowerCase()));
+    } else {
+      pool = pool.filter(q => ['mathematics', 'physics', 'chemistry'].includes(q.subject.toLowerCase()));
+    }
+  } else if (grade === '10') {
+    pool = pool.filter(q => ['mathematics', 'science', 'social_science', 'english'].includes(q.subject.toLowerCase()));
+  }
+
   // 1. Exact match on subject, chapter/topic, and difficulty
-  let matches = CURATED_BOARD_QUESTIONS.filter(
+  let matches = pool.filter(
     q =>
       q.subject.toLowerCase() === subject.toLowerCase() &&
       (q.chapter.toLowerCase().includes(chapter.toLowerCase()) ||
@@ -376,7 +465,7 @@ function findQuestionsForRecommendation(
 
   // 2. If not enough exact matches, find same subject & chapter with any difficulty
   if (matches.length < 3) {
-    const chapterMatches = CURATED_BOARD_QUESTIONS.filter(
+    const chapterMatches = pool.filter(
       q =>
         q.subject.toLowerCase() === subject.toLowerCase() &&
         (q.chapter.toLowerCase().includes(chapter.toLowerCase()) ||
@@ -388,7 +477,7 @@ function findQuestionsForRecommendation(
 
   // 3. If still needed, match same subject and targeted difficulty
   if (matches.length < 3) {
-    const diffMatches = CURATED_BOARD_QUESTIONS.filter(
+    const diffMatches = pool.filter(
       q =>
         q.subject.toLowerCase() === subject.toLowerCase() &&
         q.difficulty === difficulty &&
@@ -397,9 +486,14 @@ function findQuestionsForRecommendation(
     matches = [...matches, ...diffMatches];
   }
 
-  // 4. Fallback to same subject
+  // 4. Fallback to same subject strictly within this grade and stream pool
   if (matches.length === 0) {
-    matches = CURATED_BOARD_QUESTIONS.filter(q => q.subject.toLowerCase() === subject.toLowerCase());
+    matches = pool.filter(q => q.subject.toLowerCase() === subject.toLowerCase());
+  }
+
+  // 5. Final fallback strictly within this grade and stream pool (never mix grades or streams)
+  if (matches.length === 0) {
+    matches = pool;
   }
 
   return matches.slice(0, 5);

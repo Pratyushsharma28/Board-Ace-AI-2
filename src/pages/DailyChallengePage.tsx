@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import { Question, SubjectId } from '../types/quiz';
-import { CURATED_BOARD_QUESTIONS } from '../data/sampleQuestions';
+import { CURATED_BOARD_QUESTIONS, getCuratedQuestions } from '../data/sampleQuestions';
 import { saveBookmark, isBookmarked } from '../utils/storage';
 import { saveToRevision } from '../utils/revisionEngine';
 import {
@@ -30,10 +31,14 @@ interface DailyCompletionRecord {
   total: number;
   timeSpentSeconds: number;
   completedAt: string;
+  academicTarget?: string;
 }
 
 export const DailyChallengePage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, isClass12 } = useClass();
+
+  const currentAcademicKey = `${grade}_${grade === '12' ? stream : 'general'}`;
 
   const todayStr = useMemo(() => {
     const d = new Date();
@@ -61,52 +66,78 @@ export const DailyChallengePage: React.FC = () => {
     return history.length > 0 ? 1 : 0;
   }, [history]);
 
-  // Check if today was already completed
+  // Check if today was already completed for the active class/stream
   const todayRecord = useMemo(() => {
-    return history.find((h) => h.date === todayStr);
-  }, [history, todayStr]);
+    return history.find(
+      (h) => h.date === todayStr && (h.academicTarget === currentAcademicKey || (!h.academicTarget && grade === '12' && stream === 'science'))
+    );
+  }, [history, todayStr, currentAcademicKey, grade, stream]);
 
-  // Generate today's 5 questions deterministically using date seed
+  // Generate today's 5 questions deterministically using date seed strictly within active academic context
   const dailyQuestions = useMemo<Question[]>(() => {
-    const allQ = CURATED_BOARD_QUESTIONS;
-    if (!allQ || allQ.length === 0) return [];
+    let pool = CURATED_BOARD_QUESTIONS.filter((q) => {
+      const qGrade = q.grade || '12';
+      if (grade === '10') {
+        return qGrade === '10';
+      }
+      if (qGrade !== '12') return false;
+      const sub = (q.subject || '').toLowerCase();
+      if (stream === 'commerce') {
+        return ['accountancy', 'business_studies', 'economics', 'english_core', 'english'].includes(sub);
+      }
+      return ['mathematics', 'physics', 'chemistry'].includes(sub);
+    });
 
-    // Deterministic hash from date string
+    if (!pool || pool.length === 0) {
+      return getCuratedQuestions(undefined, undefined, 5, 'medium', grade, stream);
+    }
+
+    // Deterministic hash from date string and academic selection
+    const seedStr = `${todayStr}_${currentAcademicKey}`;
     let hash = 0;
-    for (let i = 0; i < todayStr.length; i++) {
-      hash = (hash << 5) - hash + todayStr.charCodeAt(i);
+    for (let i = 0; i < seedStr.length; i++) {
+      hash = (hash << 5) - hash + seedStr.charCodeAt(i);
       hash |= 0;
     }
     const seed = Math.abs(hash);
 
-    // Pick 5 varied questions (2 Maths, 2 Physics, 1 Chemistry or balanced)
-    const maths = allQ.filter((q) => q.subject === 'mathematics');
-    const phys = allQ.filter((q) => q.subject === 'physics');
-    const chem = allQ.filter((q) => q.subject === 'chemistry');
-
+    // Group questions by subject to ensure balanced representation across the active stream
+    const subjectList = Array.from(new Set(pool.map((q) => q.subject)));
     const selected: Question[] = [];
-    if (maths.length > 0) {
-      selected.push(maths[seed % maths.length]);
-      selected.push(maths[(seed + 1) % maths.length]);
-    }
-    if (phys.length > 0) {
-      selected.push(phys[(seed + 2) % phys.length]);
-      selected.push(phys[(seed + 3) % phys.length]);
-    }
-    if (chem.length > 0) {
-      selected.push(chem[(seed + 4) % chem.length]);
-    }
 
-    // Fill remaining if needed
-    while (selected.length < 5 && allQ.length >= 5) {
-      const fallbackQ = allQ[(seed + selected.length) % allQ.length];
+    // 1. Round-robin pick from each available subject first
+    subjectList.forEach((sub, sIdx) => {
+      const subPool = pool.filter((q) => q.subject === sub);
+      if (subPool.length > 0) {
+        const picked = subPool[(seed + sIdx) % subPool.length];
+        if (!selected.some((x) => x.id === picked.id)) {
+          selected.push(picked);
+        }
+      }
+    });
+
+    // 2. Fill remaining slots up to 5 questions deterministically
+    let attempt = 0;
+    while (selected.length < 5 && selected.length < pool.length && attempt < 50) {
+      const fallbackQ = pool[(seed + selected.length + attempt) % pool.length];
       if (!selected.some((x) => x.id === fallbackQ.id)) {
         selected.push(fallbackQ);
       }
+      attempt++;
+    }
+
+    // 3. If still fewer than 5, pull fresh curated questions for this grade and stream
+    if (selected.length < 5) {
+      const extra = getCuratedQuestions(undefined, undefined, 5 - selected.length, 'medium', grade, stream);
+      extra.forEach((eq) => {
+        if (!selected.some((x) => x.id === eq.id) && selected.length < 5) {
+          selected.push(eq);
+        }
+      });
     }
 
     return selected.slice(0, 5);
-  }, [todayStr]);
+  }, [todayStr, grade, stream, currentAcademicKey]);
 
   // Quiz running states
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -114,6 +145,14 @@ export const DailyChallengePage: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState<boolean>(() => !!todayRecord);
   const [timeSpent, setTimeSpent] = useState(0);
   const [bookmarkedIds, setBookmarkedIds] = useState<Record<string, boolean>>({});
+
+  // Reset quiz runners when switching academic selection
+  useEffect(() => {
+    setSelectedAnswers({});
+    setCurrentQuestionIndex(0);
+    setIsCompleted(!!todayRecord);
+    setTimeSpent(0);
+  }, [currentAcademicKey, todayRecord]);
 
   // Timer
   useEffect(() => {
@@ -154,9 +193,13 @@ export const DailyChallengePage: React.FC = () => {
       total: dailyQuestions.length,
       timeSpentSeconds: timeSpent,
       completedAt: new Date().toISOString(),
+      academicTarget: currentAcademicKey,
     };
 
-    const updated = [newRecord, ...history.filter((h) => h.date !== todayStr)];
+    const updated = [
+      newRecord,
+      ...history.filter((h) => !(h.date === todayStr && (h.academicTarget === currentAcademicKey || (!h.academicTarget && grade === '12' && stream === 'science')))),
+    ];
     setHistory(updated);
     try {
       localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(updated));
@@ -210,8 +253,8 @@ export const DailyChallengePage: React.FC = () => {
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
             {language === 'hi'
-              ? 'प्रतिदिन केवल 5 मिनट में अपनी बोर्ड परीक्षा तैयारी का मूल्यांकन करें। किसी लॉगिन की आवश्यकता नहीं।'
-              : 'Every single day, 5 fresh curated CBSE Class 12 board questions to test retention and maintain exam velocity.'}
+              ? `प्रतिदिन केवल 5 मिनट में अपनी सीबीएसई कक्षा ${grade} ${isClass12 ? (stream === 'commerce' ? 'कॉमर्स' : 'साइंस') : ''} बोर्ड परीक्षा तैयारी का मूल्यांकन करें। किसी लॉगिन की आवश्यकता नहीं।`
+              : `Every single day, 5 fresh curated CBSE Class ${grade} ${isClass12 ? (stream === 'commerce' ? 'Commerce' : 'Science') : ''} board questions to test retention and maintain exam velocity.`}
           </p>
         </div>
 

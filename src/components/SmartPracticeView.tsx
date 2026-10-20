@@ -41,18 +41,33 @@ export const SmartPracticeView: React.FC<SmartPracticeViewProps> = ({
 }) => {
   const { language, t, translateSubject, translateChapter } = useLanguage();
   const { grade, stream, setStream, subjects, isClass12 } = useClass();
-  const attempts = useMemo(() => getSavedAttempts(), []);
+  const attempts = useMemo(() => getSavedAttempts(grade, stream), [grade, stream]);
 
   // Performance Analysis
-  const performance = useMemo(() => analyzeStudentPerformance(attempts), [attempts]);
+  const performance = useMemo(() => analyzeStudentPerformance(attempts, grade, stream), [attempts, grade, stream]);
 
   // Preferences from Local Storage
-  const [prefs, setPrefs] = useState<SmartPracticePreferences>(() => getSmartPracticePreferences());
+  const [prefs, setPrefs] = useState<SmartPracticePreferences>(() => getSmartPracticePreferences(grade, stream));
 
   // Filter and Inspect States
-  const [selectedSubject, setSelectedSubject] = useState<'all' | SubjectId>(prefs.targetSubject);
+  const [selectedSubject, setSelectedSubject] = useState<'all' | SubjectId>(() => {
+    const p = getSmartPracticePreferences(grade, stream);
+    return (p.targetSubject !== 'all' && subjects.some(s => s.id === p.targetSubject)) ? p.targetSubject : 'all';
+  });
   const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | DifficultyLevel>('all');
   const [expandedRecId, setExpandedRecId] = useState<string | null>(null);
+
+  // Reset selectedSubject to 'all' if active selection doesn't include it
+  React.useEffect(() => {
+    const p = getSmartPracticePreferences(grade, stream);
+    setPrefs(p);
+    setSelectedSubject(prev => {
+      if (prev !== 'all' && !subjects.some(s => s.id === prev)) {
+        return 'all';
+      }
+      return prev;
+    });
+  }, [grade, stream, subjects]);
 
   // Auto Step-Up Preference Toggle
   const handleToggleStepUp = () => {
@@ -61,7 +76,7 @@ export const SmartPracticeView: React.FC<SmartPracticeViewProps> = ({
       autoStepUp: !prefs.autoStepUp,
     };
     setPrefs(updated);
-    saveSmartPracticePreferences(updated);
+    saveSmartPracticePreferences(updated, grade, stream);
   };
 
   const handleSubjectChange = (newSub: 'all' | SubjectId) => {
@@ -71,13 +86,13 @@ export const SmartPracticeView: React.FC<SmartPracticeViewProps> = ({
       targetSubject: newSub,
     };
     setPrefs(updated);
-    saveSmartPracticePreferences(updated);
+    saveSmartPracticePreferences(updated, grade, stream);
   };
 
   // Generate Deterministic Recommendations
   const allRecommendations = useMemo(() => {
-    return generateSmartRecommendations(attempts, selectedSubject);
-  }, [attempts, selectedSubject]);
+    return generateSmartRecommendations(attempts, selectedSubject, grade, stream);
+  }, [attempts, selectedSubject, grade, stream]);
 
   // Filter recommendations by difficulty if user selected one
   const filteredRecommendations = useMemo(() => {
@@ -110,7 +125,7 @@ export const SmartPracticeView: React.FC<SmartPracticeViewProps> = ({
                 {t.smartPractice.heroHeading}
               </h1>
               <p className="text-xs text-blue-200 font-medium">
-                {t.hero.sessionBadgeSub} · Mathematics (041) · Physics (042) · Chemistry (043)
+                {t.hero.sessionBadgeSub} · {subjects.map(s => `${translateSubject(s.id)} (${s.code || ''})`).join(' · ')}
               </p>
             </div>
 

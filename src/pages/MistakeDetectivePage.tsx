@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import { getSavedAttempts } from '../utils/storage';
 import { getRevisionItems, markItemAsRevised } from '../utils/revisionEngine';
 import { classifyMistake, getRevisionTip } from '../utils/mistakeDetective';
@@ -32,6 +33,7 @@ interface RecordedMistake {
 
 export const MistakeDetectivePage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, subjects } = useClass();
   const navigate = useNavigate();
 
   const [selectedSubject, setSelectedSubject] = useState<'all' | SubjectId>('all');
@@ -44,38 +46,48 @@ export const MistakeDetectivePage: React.FC = () => {
     selectedAnswer: string;
   } | null>(null);
 
-  // Extract real mistakes from actual attempts and revision items
+  // Reset selectedSubject if not present in current class/stream
+  useEffect(() => {
+    if (selectedSubject !== 'all' && !subjects.some((s) => s.id === selectedSubject)) {
+      setSelectedSubject('all');
+    }
+  }, [grade, stream, subjects]);
+
+  // Extract real mistakes strictly from actual attempts and revision items for active academic track
   const mistakes = useMemo(() => {
     const list: RecordedMistake[] = [];
     const seenQIds = new Set<string>();
+    const activeSubjectIds = new Set(subjects.map((s) => s.id));
 
     // 1. From revision items (these track incorrect answers)
     const revItems = getRevisionItems();
     revItems.forEach((item) => {
-      if (item.savedReason === 'incorrect_answer' && !seenQIds.has(item.question.id)) {
-        seenQIds.add(item.question.id);
-        const wrongAns = item.userLastWrongAnswer || item.question.options[0];
-        const category = item.userLastMistakeCategory || classifyMistake(item.question, wrongAns);
-        list.push({
-          id: `rev-${item.id}`,
-          question: item.question,
-          selectedAnswer: wrongAns,
-          category,
-          subject: (['mathematics', 'physics', 'chemistry'].includes(item.question.subject?.toLowerCase())
-            ? item.question.subject.toLowerCase()
-            : 'physics') as SubjectId,
-          chapter: item.question.chapter,
-          attemptedAt: item.savedAt,
-          resolved: item.isRevised,
-        });
+      const qGrade = item.question?.grade || '12';
+      const itemSub = (item.question?.subject?.toLowerCase() || item.subject?.toLowerCase() || '') as SubjectId;
+      if (qGrade === grade && activeSubjectIds.has(itemSub)) {
+        if (item.savedReason === 'incorrect_answer' && !seenQIds.has(item.question.id)) {
+          seenQIds.add(item.question.id);
+          const wrongAns = item.userLastWrongAnswer || item.question.options[0];
+          const category = item.userLastMistakeCategory || classifyMistake(item.question, wrongAns);
+          list.push({
+            id: `rev-${item.id}`,
+            question: item.question,
+            selectedAnswer: wrongAns,
+            category,
+            subject: itemSub,
+            chapter: item.question.chapter,
+            attemptedAt: item.savedAt,
+            resolved: item.isRevised,
+          });
+        }
       }
     });
 
-    // 2. From actual quiz attempts
-    const attempts = getSavedAttempts();
+    // 2. From actual quiz attempts for active grade and stream
+    const attempts = getSavedAttempts(grade, stream);
     attempts.forEach((att) => {
       att.questions.forEach((q) => {
-        const userAns = att.userAnswers[q.id];
+        const userAns = att.userAnswers ? att.userAnswers[q.id] : undefined;
         if (userAns && userAns !== q.correctAnswer && !seenQIds.has(q.id)) {
           seenQIds.add(q.id);
           const category = classifyMistake(q, userAns);
@@ -94,7 +106,7 @@ export const MistakeDetectivePage: React.FC = () => {
     });
 
     return list;
-  }, []);
+  }, [grade, stream, subjects]);
 
   const filteredMistakes = useMemo(() => {
     return mistakes.filter((m) => {
@@ -201,26 +213,29 @@ export const MistakeDetectivePage: React.FC = () => {
           {/* Filter Bar */}
           <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-xs">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-1.5">
-                {[
-                  { id: 'all', label: 'All Subjects' },
-                  { id: 'mathematics', label: 'Mathematics' },
-                  { id: 'physics', label: 'Physics' },
-                  { id: 'chemistry', label: 'Chemistry' },
-                ].map((s) => (
+                <button
+                  onClick={() => setSelectedSubject('all')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    selectedSubject === 'all'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {language === 'hi' ? 'सभी विषय' : 'All Subjects'}
+                </button>
+                {subjects.map((s) => (
                   <button
                     key={s.id}
-                    onClick={() => setSelectedSubject(s.id as any)}
+                    onClick={() => setSelectedSubject(s.id)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       selectedSubject === s.id
                         ? 'bg-indigo-600 text-white shadow-xs'
                         : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
-                    {s.label}
+                    {translateSubject(s.id)}
                   </button>
                 ))}
-              </div>
 
               <div className="relative w-full sm:w-64">
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />

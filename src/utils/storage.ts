@@ -226,12 +226,24 @@ export function saveActiveExamState(state: ActiveExamState): void {
   }
 }
 
-export function getActiveExamState(): ActiveExamState | null {
+export function getActiveExamState(grade?: GradeClass, stream?: StreamType): ActiveExamState | null {
   try {
     const raw = localStorage.getItem(ACTIVE_EXAM_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (parsed && Array.isArray(parsed.questions) && parsed.questions.length > 0 && parsed.config) {
+      if (grade) {
+        const examGrade = parsed.config.grade || '12';
+        if (examGrade !== grade) return null;
+        if (grade === '12' && stream) {
+          const examStream = parsed.config.stream || (
+            ['accountancy', 'business_studies', 'economics', 'english_core'].includes(parsed.config.subject || '')
+              ? 'commerce'
+              : 'science'
+          );
+          if (examStream !== stream) return null;
+        }
+      }
       return parsed;
     }
     return null;

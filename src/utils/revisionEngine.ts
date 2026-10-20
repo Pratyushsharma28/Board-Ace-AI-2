@@ -1,4 +1,4 @@
-import { Question, SubjectId, RevisionItem, RevisionSaveReason, RevisionSummary, MistakeCategory, QuizAttempt } from '../types/quiz';
+import { Question, SubjectId, RevisionItem, RevisionSaveReason, RevisionSummary, MistakeCategory, QuizAttempt, GradeClass, StreamType } from '../types/quiz';
 import { getSavedAttempts, getBookmarks } from './storage';
 import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
 import { CURATED_BOARD_QUESTIONS } from '../data/sampleQuestions';
@@ -64,10 +64,18 @@ export function isItemDueForRevision(item: RevisionItem): boolean {
  * Normalizes subject string into SubjectId
  */
 export function normalizeSubjectId(subj: string): SubjectId {
-  const s = subj?.toLowerCase() || '';
+  const s = subj?.toLowerCase().trim() || '';
   if (s.includes('math')) return 'mathematics';
+  if (s.includes('phys')) return 'physics';
   if (s.includes('chem')) return 'chemistry';
-  return 'physics';
+  if (s.includes('account')) return 'accountancy';
+  if (s.includes('business')) return 'business_studies';
+  if (s.includes('econom')) return 'economics';
+  if (s.includes('english_core') || (s.includes('english') && s.includes('core'))) return 'english_core';
+  if (s.includes('social')) return 'social_science';
+  if (s.includes('science')) return 'science';
+  if (s.includes('english')) return 'english';
+  return (s || 'physics') as SubjectId;
 }
 
 /**
@@ -380,7 +388,7 @@ export function getRevisionSummary(items: RevisionItem[] = getRevisionItems()): 
   let incorrectSavedCount = 0;
   let bookmarkedCount = 0;
 
-  const subjectCounts = {
+  const subjectCounts: Record<string, number> = {
     mathematics: 0,
     physics: 0,
     chemistry: 0,
@@ -400,10 +408,8 @@ export function getRevisionSummary(items: RevisionItem[] = getRevisionItems()): 
       bookmarkedCount += 1;
     }
 
-    const sub = item.subject;
-    if (sub === 'mathematics') subjectCounts.mathematics += 1;
-    else if (sub === 'chemistry') subjectCounts.chemistry += 1;
-    else subjectCounts.physics += 1;
+    const sub = item.subject || 'physics';
+    subjectCounts[sub] = (subjectCounts[sub] || 0) + 1;
   });
 
   return {
@@ -412,23 +418,51 @@ export function getRevisionSummary(items: RevisionItem[] = getRevisionItems()): 
     masteredCount,
     incorrectSavedCount,
     bookmarkedCount,
-    subjectCounts,
+    subjectCounts: subjectCounts as any,
   };
 }
 
 /**
  * Recommends topics and questions for revision based on actual mistakes
- * and historical quiz attempts.
+ * and historical quiz attempts strictly within active academic track.
  */
 export function getRevisionRecommendations(
   attempts: QuizAttempt[] = getSavedAttempts(),
-  revisionItems: RevisionItem[] = getRevisionItems()
+  revisionItemsOrGrade: RevisionItem[] | GradeClass = getRevisionItems(),
+  gradeArg: GradeClass | StreamType = '12',
+  streamArg: StreamType = 'science'
 ): RevisionRecommendation[] {
+  let revisionItems: RevisionItem[];
+  let grade: GradeClass;
+  let stream: StreamType;
+
+  if (typeof revisionItemsOrGrade === 'string') {
+    revisionItems = getRevisionItems();
+    grade = (revisionItemsOrGrade as GradeClass) === '10' ? '10' : '12';
+    stream = (gradeArg as StreamType) || 'science';
+  } else {
+    revisionItems = Array.isArray(revisionItemsOrGrade) ? revisionItemsOrGrade : getRevisionItems();
+    grade = (gradeArg as GradeClass) === '10' ? '10' : '12';
+    stream = streamArg || 'science';
+  }
+
   const recommendations: RevisionRecommendation[] = [];
   const topicStats: Record<
     string,
     { subject: SubjectId; chapter: string; total: number; correct: number; incorrect: number }
   > = {};
+
+  // Restrict curated question search strictly to active grade and stream
+  let validCurated = CURATED_BOARD_QUESTIONS.filter(q => (q.grade || '12') === grade);
+  if (grade === '12') {
+    if (stream === 'commerce') {
+      validCurated = validCurated.filter(q => ['accountancy', 'business_studies', 'economics', 'english_core'].includes(q.subject.toLowerCase()));
+    } else {
+      validCurated = validCurated.filter(q => ['mathematics', 'physics', 'chemistry'].includes(q.subject.toLowerCase()));
+    }
+  } else if (grade === '10') {
+    validCurated = validCurated.filter(q => ['mathematics', 'science', 'social_science', 'english'].includes(q.subject.toLowerCase()));
+  }
 
   // 1. Tally stats from actual attempts
   attempts.forEach(att => {
@@ -475,10 +509,10 @@ export function getRevisionRecommendations(
     if (stat.incorrect > 0 || (stat.total >= 2 && stat.correct / stat.total < 0.75)) {
       const accuracy = stat.total > 0 ? Math.round((stat.correct / stat.total) * 100) : 0;
       
-      // Find an authentic curated question for this topic
-      const sampleQ = CURATED_BOARD_QUESTIONS.find(
+      // Find an authentic curated question for this topic within active grade/stream pool
+      const sampleQ = validCurated.find(
         cq => cq.topic === topic || (cq.subject.toLowerCase() === stat.subject && cq.chapter === stat.chapter)
-      );
+      ) || validCurated.find(cq => cq.subject.toLowerCase() === stat.subject);
 
       recommendations.push({
         id: `rec-${topic.replace(/\s+/g, '-').toLowerCase()}`,
@@ -493,6 +527,27 @@ export function getRevisionRecommendations(
       });
     }
   });
+
+  // If no mistake-driven recommendations yet, provide high-yield syllabus starter recommendations
+  if (recommendations.length === 0 && validCurated.length > 0) {
+    const distinctSubjects = Array.from(new Set(validCurated.map(q => q.subject)));
+    distinctSubjects.slice(0, 3).forEach(sub => {
+      const q = validCurated.find(cq => cq.subject === sub);
+      if (q) {
+        recommendations.push({
+          id: `starter-${sub}-${q.id}`,
+          subject: sub as SubjectId,
+          chapter: q.chapter,
+          topic: q.topic || 'Core High-Yield Topic',
+          reason: 'High-yield board exam topic. Master key concepts and numerical formulas.',
+          reasonHi: 'उच्च-अंक बोर्ड परीक्षा विषय। मुख्य अवधारणाओं और सूत्रों का अभ्यास करें।',
+          mistakeCount: 0,
+          accuracy: 100,
+          sampleQuestion: q,
+        });
+      }
+    });
+  }
 
   // Sort by highest mistakes first
   return recommendations.sort((a, b) => b.mistakeCount - a.mistakeCount).slice(0, 4);

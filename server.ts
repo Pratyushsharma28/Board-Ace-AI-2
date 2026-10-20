@@ -109,6 +109,7 @@ import {
   VERIFIED_CBSE_CHAPTERS,
   getVerifiedChapters,
 } from './src/utils/questionValidator.ts';
+import { getCuratedQuestions } from './src/data/sampleQuestions.ts';
 
 // Master List of Valid Official CBSE Subjects across Class 10 and Class 12 (Science & Commerce)
 const ALL_VALID_SUBJECTS = [
@@ -353,7 +354,7 @@ Academic Requirements:
     const questionsArray = Array.isArray(parsed) ? parsed : (parsed.questions || parsed.data || []);
     
     // Run Question Accuracy and Validation Engine
-    const validationSummary = validateQuestionBatch(questionsArray, subject, chapter, count);
+    const validationSummary = validateQuestionBatch(questionsArray, subject, chapter, count, String(grade));
 
     if (validationSummary.validCount === 0) {
       console.warn('[Validation Engine] All questions rejected. Reasons:', validationSummary.rejectionReasons);
@@ -517,9 +518,27 @@ Return a single JSON object.`;
     parsedQuestion.topic = topic || parsedQuestion.topic;
 
     // Run Question Accuracy and Validation Engine
-    const validationResult = validateSingleQuestion(parsedQuestion, normalizedSubject, chapter);
+    const validationResult = validateSingleQuestion(parsedQuestion, normalizedSubject, chapter, 0, String(grade));
     if (!validationResult.isValid || !validationResult.question) {
       console.warn('[Mistake Detective] Generated similar question failed validation:', validationResult.errors);
+      const reqStream = req.body.stream || (
+        ['accountancy', 'business_studies', 'economics', 'english_core'].includes(normalizedSubject)
+          ? 'commerce'
+          : 'science'
+      );
+      let curatedFallback = getCuratedQuestions(normalizedSubject, chapter, 1, difficulty, String(grade) as any, reqStream as any);
+      if (!curatedFallback || curatedFallback.length === 0) {
+        curatedFallback = getCuratedQuestions(normalizedSubject, undefined, 1, difficulty, String(grade) as any, reqStream as any);
+      }
+      if (curatedFallback && curatedFallback.length > 0) {
+        return res.json({
+          success: true,
+          question: {
+            ...curatedFallback[0],
+            source: 'curated',
+          },
+        });
+      }
       return res.status(422).json({
         success: false,
         error: 'The generated follow-up question did not pass board verification. Please continue reviewing the verified explanation above.',

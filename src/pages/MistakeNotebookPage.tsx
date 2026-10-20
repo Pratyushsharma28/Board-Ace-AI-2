@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import { getRevisionItems, updateRevisionItemNotes, markItemAsRevised } from '../utils/revisionEngine';
 import { RevisionItem, SubjectId, DifficultyLevel } from '../types/quiz';
-import { CBSE_CLASS_12_SUBJECTS } from '../data/syllabus';
 import {
   BookOpen,
   Edit3,
@@ -22,6 +22,7 @@ import {
 
 export const MistakeNotebookPage: React.FC = () => {
   const { language, t, translateSubject } = useLanguage();
+  const { grade, stream, subjects } = useClass();
 
   const [revisionItems, setRevisionItems] = useState<RevisionItem[]>(() => getRevisionItems());
 
@@ -32,13 +33,29 @@ export const MistakeNotebookPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'due' | 'revised'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Reset selectedSubject if not present in current class/stream
+  useEffect(() => {
+    if (selectedSubject !== 'all' && !subjects.some((s) => s.id === selectedSubject)) {
+      setSelectedSubject('all');
+      setSelectedChapter('all');
+    }
+  }, [grade, stream, subjects]);
+
   // Editing notes state: questionId -> draft notes
   const [editingNotes, setEditingNotes] = useState<Record<string, string>>({});
   const [savedNotesIndicator, setSavedNotesIndicator] = useState<Record<string, boolean>>({});
 
-  // Filtered mistake questions
+  // Filtered mistake questions strictly within active academic track
   const mistakeList = useMemo(() => {
+    const activeSubjectIds = new Set(subjects.map((s) => s.id));
+
     return revisionItems.filter((item) => {
+      // Must match active grade & stream subjects
+      const qGrade = item.question?.grade || '12';
+      if (qGrade !== grade || !activeSubjectIds.has(item.subject)) {
+        return false;
+      }
+
       // Keep only incorrect answers
       if (item.savedReason !== 'incorrect_answer' && item.incorrectCount === 0) {
         return false;
@@ -66,17 +83,17 @@ export const MistakeNotebookPage: React.FC = () => {
 
       return true;
     });
-  }, [revisionItems, selectedSubject, selectedChapter, selectedDifficulty, selectedStatus, searchQuery]);
+  }, [revisionItems, selectedSubject, selectedChapter, selectedDifficulty, selectedStatus, searchQuery, grade, subjects]);
 
   const availableChapters = useMemo(() => {
     if (selectedSubject === 'all') {
       const set = new Set<string>();
-      CBSE_CLASS_12_SUBJECTS.forEach((s) => s.chapters.forEach((c) => set.add(c.name)));
+      subjects.forEach((s) => s.chapters.forEach((c) => set.add(c.name)));
       return Array.from(set);
     }
-    const subj = CBSE_CLASS_12_SUBJECTS.find((s) => s.id === selectedSubject);
+    const subj = subjects.find((s) => s.id === selectedSubject);
     return subj ? subj.chapters.map((c) => c.name) : [];
-  }, [selectedSubject]);
+  }, [selectedSubject, subjects]);
 
   const handleNotesChange = (questionId: string, value: string) => {
     setEditingNotes((prev) => ({ ...prev, [questionId]: value }));
@@ -146,9 +163,11 @@ export const MistakeNotebookPage: React.FC = () => {
             className="p-2.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer"
           >
             <option value="all">{language === 'hi' ? 'सभी विषय' : 'All Subjects'}</option>
-            <option value="physics">Physics</option>
-            <option value="chemistry">Chemistry</option>
-            <option value="mathematics">Mathematics</option>
+            {subjects.map((s) => (
+              <option key={s.id} value={s.id}>
+                {translateSubject(s.id)}
+              </option>
+            ))}
           </select>
 
           {/* Chapter Filter */}

@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { SubjectId, Question, RevisionItem, RevisionSaveReason } from '../types/quiz';
 import { useLanguage } from '../context/LanguageContext';
+import { useClass } from '../context/ClassContext';
 import {
   getRevisionItems,
   isItemDueForRevision,
@@ -51,10 +52,11 @@ export const SmartRevisionView: React.FC<SmartRevisionViewProps> = ({
   onStartQuiz,
 }) => {
   const { language, t, translateSubject, translateChapter } = useLanguage();
+  const { grade, stream, subjects } = useClass();
 
   // Storage state
   const [items, setItems] = useState<RevisionItem[]>(() => getRevisionItems());
-  const attempts = useMemo(() => getSavedAttempts(), []);
+  const attempts = useMemo(() => getSavedAttempts(grade, stream), [grade, stream]);
 
   // Filter states
   const [selectedSubject, setSelectedSubject] = useState<'all' | SubjectId>('all');
@@ -63,6 +65,29 @@ export const SmartRevisionView: React.FC<SmartRevisionViewProps> = ({
 
   // Expandable explanations
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+
+  // Reset selectedSubject if not in active subjects
+  useEffect(() => {
+    if (selectedSubject !== 'all' && !subjects.some(s => s.id === selectedSubject)) {
+      setSelectedSubject('all');
+    }
+  }, [subjects, selectedSubject]);
+
+  // Filter items by active class & stream
+  const activeItems = useMemo(() => {
+    return items.filter(item => {
+      const qGrade = item.question?.grade || '12';
+      if (qGrade !== grade) return false;
+      if (grade === '12') {
+        const sub = item.subject?.toLowerCase() || '';
+        if (stream === 'commerce') {
+          return ['accountancy', 'business_studies', 'economics', 'english_core', 'english'].includes(sub);
+        }
+        return ['mathematics', 'physics', 'chemistry'].includes(sub);
+      }
+      return true;
+    });
+  }, [items, grade, stream]);
 
   // Active in-card interactive retry
   const [activeRetryId, setActiveRetryId] = useState<string | null>(null);
@@ -82,12 +107,12 @@ export const SmartRevisionView: React.FC<SmartRevisionViewProps> = ({
   };
 
   // Summary Metrics
-  const summary = useMemo(() => getRevisionSummary(items), [items]);
+  const summary = useMemo(() => getRevisionSummary(activeItems), [activeItems]);
 
-  // Recommendations based on real mistakes & attempts
+  // Recommendations based on real mistakes & attempts strictly within active academic track
   const recommendations = useMemo(() => {
-    return getRevisionRecommendations(attempts, items);
-  }, [attempts, items]);
+    return getRevisionRecommendations(attempts, activeItems, grade, stream);
+  }, [attempts, activeItems, grade, stream]);
 
   // Toggle item expanded explanation
   const toggleExpand = (id: string) => {

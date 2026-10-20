@@ -35,7 +35,7 @@ export const ExamPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { language, t, translateSubject } = useLanguage();
-  const { grade, subjects, gradeLabel } = useClass();
+  const { grade, stream, subjects, gradeLabel } = useClass();
 
   const resumeRequested = searchParams.get('resume') === 'true';
 
@@ -46,7 +46,7 @@ export const ExamPage: React.FC = () => {
     if (!subjects.some((s) => s.id === subject)) {
       setSubject(subjects[0]?.id || 'mathematics');
     }
-  }, [grade, subjects]);
+  }, [grade, stream, subjects]);
 
   const [paperType, setPaperType] = useState<'standard' | 'full'>('standard'); // standard: 15 Qs (30m), full: 30 Qs (60m)
   const [rulesAcknowledged, setRulesAcknowledged] = useState(false);
@@ -96,11 +96,12 @@ export const ExamPage: React.FC = () => {
 
   const handleStartExam = () => {
     const qCount = paperType === 'standard' ? 15 : 30;
-    const questions = getCuratedQuestions(subject, undefined, qCount, 'mixed', grade);
+    const questions = getCuratedQuestions(subject, undefined, qCount, 'mixed', grade, stream);
 
     const config: QuizConfig = {
       board: 'CBSE',
       grade,
+      stream,
       subject,
       chapter: 'all',
       difficulty: 'mixed',

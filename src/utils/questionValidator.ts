@@ -18,6 +18,8 @@ export interface RawQuestionInput {
   correctAnswer?: any;
   explanation?: string;
   subject?: string;
+  grade?: string;
+  stream?: string;
   chapter?: string;
   topic?: string;
   difficulty?: string;
@@ -605,7 +607,8 @@ export function validateSingleQuestion(
   raw: RawQuestionInput,
   expectedSubject?: string,
   expectedChapter?: string,
-  index = 0
+  index = 0,
+  expectedGrade?: string
 ): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -672,7 +675,18 @@ export function validateSingleQuestion(
 
   // Subject and Chapter Validation
   const rawSubject = (raw.subject || expectedSubject || 'mathematics').toLowerCase();
-  const validSubjects = ['mathematics', 'physics', 'chemistry', 'science', 'social_science', 'english'];
+  const validSubjects = [
+    'mathematics',
+    'physics',
+    'chemistry',
+    'science',
+    'social_science',
+    'english',
+    'accountancy',
+    'business_studies',
+    'economics',
+    'english_core',
+  ];
   if (!validSubjects.includes(rawSubject)) {
     errors.push(`Invalid subject "${rawSubject}". Must be a valid CBSE Class 10 or 12 subject.`);
   } else {
@@ -681,17 +695,18 @@ export function validateSingleQuestion(
   const subject = validSubjects.includes(rawSubject) ? rawSubject : 'mathematics';
 
   const chapter = String(raw.chapter || expectedChapter || '').trim();
+  const qGrade = String(raw.grade || expectedGrade || '12');
   if (chapter && chapter !== 'all') {
-    const verifiedChapters = getVerifiedChapters(subject, '12');
-    const verifiedChapters10 = getVerifiedChapters(subject, '10');
-    const combinedVerified = [...verifiedChapters, ...verifiedChapters10];
-    const isChapterValid = combinedVerified.length === 0 || combinedVerified.some(
+    const verifiedChapters = getVerifiedChapters(subject, qGrade);
+    const fallbackAllChapters = [...VERIFIED_CBSE_CHAPTERS[subject] || [], ...VERIFIED_CBSE_CHAPTERS_CLASS_10[subject] || []];
+    const targetChapters = verifiedChapters.length > 0 ? verifiedChapters : fallbackAllChapters;
+    const isChapterValid = targetChapters.length === 0 || targetChapters.some(
       c => c.toLowerCase() === chapter.toLowerCase() ||
            chapter.toLowerCase().includes(c.toLowerCase()) ||
            c.toLowerCase().includes(chapter.toLowerCase())
     );
     if (!isChapterValid) {
-      warnings.push(`Chapter "${chapter}" not in verified 2026-27 list for ${subject}.`);
+      warnings.push(`Chapter "${chapter}" not in verified 2026-27 list for ${subject} (Class ${qGrade}).`);
       confidenceScore -= 0.1;
     } else {
       passedChecks.push('chapter_syllabus_aligned');
@@ -880,7 +895,8 @@ export function validateQuestionBatch(
   rawQuestions: any[],
   subject: string,
   chapter: string,
-  targetCount: number
+  targetCount: number,
+  grade: string = '12'
 ): BatchValidationSummary {
   const summary: BatchValidationSummary = {
     totalReceived: Array.isArray(rawQuestions) ? rawQuestions.length : 0,
@@ -907,7 +923,7 @@ export function validateQuestionBatch(
       continue;
     }
 
-    const result = validateSingleQuestion(raw, subject, chapter, i);
+    const result = validateSingleQuestion(raw, subject, chapter, i, grade);
     if (result.isValid && result.question) {
       seenQuestions.add(normKey);
       summary.questions.push(result.question);

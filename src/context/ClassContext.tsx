@@ -65,6 +65,10 @@ export const ClassProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const setGrade = (newGrade: GradeClass) => {
     setGradeState(newGrade);
+    const newSubjects = getSubjectsForGrade(newGrade, stream);
+    if (!newSubjects.some(s => s.id === currentSubjectId)) {
+      setCurrentSubjectId(newSubjects[0]?.id || 'mathematics');
+    }
     setCurrentChapter('all');
     try {
       localStorage.setItem(SELECTED_GRADE_KEY, newGrade);
@@ -76,6 +80,10 @@ export const ClassProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const setStream = (newStream: StreamType) => {
     setStreamState(newStream);
+    const newSubjects = getSubjectsForGrade(grade, newStream);
+    if (!newSubjects.some(s => s.id === currentSubjectId)) {
+      setCurrentSubjectId(newSubjects[0]?.id || 'accountancy');
+    }
     setCurrentChapter('all');
     try {
       localStorage.setItem(SELECTED_STREAM_KEY, newStream);
